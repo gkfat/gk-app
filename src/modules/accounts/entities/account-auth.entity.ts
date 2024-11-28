@@ -10,6 +10,10 @@ import { Account } from './account.entity';
 
 @Entity()
 export class AccountAuth {
+    constructor(auth: Partial<AccountAuth>) {
+        Object.assign(this, auth);
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 

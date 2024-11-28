@@ -1,4 +1,4 @@
-import { Account } from 'src/modules/accounts/account.entity';
+import { Account } from 'src/modules/accounts/entities/account.entity';
 import {
     Column,
     Entity,
@@ -8,6 +8,10 @@ import {
 
 @Entity()
 export class Role {
+    constructor(role: Partial<Role>) {
+        Object.assign(this, role);
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
