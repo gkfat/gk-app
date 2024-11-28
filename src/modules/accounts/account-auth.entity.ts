@@ -1,0 +1,32 @@
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Account } from './account.entity';
+
+@Entity()
+export class AccountAuth {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ type: 'bigint'})
+    account_id: number;
+
+    @Column()
+    type: string;
+
+    @Column({ length: 255 })
+    identifier: string;
+
+    @Column({ length: 1024, nullable: true  })
+    credential?: string;
+
+    @ManyToOne(() => Account, (account) => account.auths)
+    @JoinColumn({name: 'account_id'})
+    account: Account;
+}
+

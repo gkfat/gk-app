@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: nestapp-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nestapp_db
+    ports:
+      - "25432:5432"
+    networks:
+      - nestapp-network
+
+networks:
+  nestapp-network:
+    driver: bridge
+
+volumes:
+  db_data:
