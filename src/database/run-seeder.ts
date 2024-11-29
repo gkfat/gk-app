@@ -20,14 +20,18 @@ async function run() {
 
     const options: DataSourceOptions & SeederOptions = {
         type: 'postgres',
-        host: configService.getOrThrow<string>('DB_HOST'),
-        port: configService.getOrThrow<number>('DB_PORT'),
-        username: configService.getOrThrow<string>('DB_USERNAME'),
-        password: configService.getOrThrow<string>('DB_PASSWORD'),
-        database: configService.getOrThrow<string>('DB_NAME'),
-        entities: [Account, AccountAuth, Role],
+        host: configService.getOrThrow('DB_HOST'),
+        port: +configService.getOrThrow('DB_PORT'),
+        username: configService.getOrThrow('DB_USERNAME'),
+        password: configService.getOrThrow('DB_PASSWORD'),
+        database: configService.getOrThrow('DB_NAME'),
+        entities: [
+            Account,
+            AccountAuth,
+            Role,
+        ],
 
-        seeds: ['src/database/seeds/**/*{.ts,.js}']
+        seeds: ['src/database/seeds/**/*{.ts,.js}'],
     };
 
     const dataSource = new DataSource(options);
@@ -38,7 +42,7 @@ async function run() {
 }
 
 run().then(() => {
-    console.log('Seeding completed')
+    console.log('Seeding completed');
 }).catch((err) => {
-    console.error(`Error running seeders: `, err)
+    console.error('Error running seeders: ', err);
 });

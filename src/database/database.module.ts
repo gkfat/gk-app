@@ -13,12 +13,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             useFactory: async (configService: ConfigService) => {
                 return {
                     type: 'postgres',
-                    host: configService.getOrThrow<string>('DB_HOST'),
-                    port: configService.getOrThrow<number>('DB_PORT'),
-                    username: configService.getOrThrow<string>('DB_USERNAME'),
-                    password: configService.getOrThrow<string>('DB_PASSWORD'),
-                    database: configService.getOrThrow<string>('DB_NAME'),
-                    synchronize: configService.getOrThrow<boolean>('DB_SYNCHRONIZE'),
+                    host: configService.getOrThrow('DB_HOST'),
+                    port: +configService.get('DB_PORT'),
+                    username: configService.getOrThrow('DB_USERNAME'),
+                    password: configService.getOrThrow('DB_PASSWORD'),
+                    database: configService.getOrThrow('DB_NAME'),
+                    synchronize: configService.getOrThrow('DB_SYNCHRONIZE'),
                     autoLoadEntities: true,
                 };
             },

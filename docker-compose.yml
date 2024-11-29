@@ -10,6 +10,14 @@ services:
       - "25432:5432"
     networks:
       - nestapp-network
+      
+  redis:
+    image: redis:alpine
+    container_name: nestapp-redis
+    ports:
+      - "26379:6379"
+    networks:
+      - nestapp-network
 
 networks:
   nestapp-network:

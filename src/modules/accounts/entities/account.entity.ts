@@ -31,13 +31,17 @@ export class Account {
     @Column({ default: false })
         enabled: boolean;
 
-    @Column({ nullable: true, default: null })
+    @Column({
+        nullable: true, default: null, 
+    })
         last_login_at: Date;
 
     @CreateDateColumn()
         create_at: Date;
 
-    @UpdateDateColumn({ nullable: true, default: null })
+    @UpdateDateColumn({
+        nullable: true, default: null, 
+    })
         update_at: Date;
 
     @DeleteDateColumn({ nullable: true })

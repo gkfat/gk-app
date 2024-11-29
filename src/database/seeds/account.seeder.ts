@@ -15,7 +15,7 @@ export class AccountSeeder implements Seeder {
         const roles = Object.values(Roles);
 
         for (const role of roles) {
-            const newRole = new Role({ role })
+            const newRole = new Role({ role });
             await roleRepository.upsert(newRole, ['role']);
         }
 
@@ -27,9 +27,7 @@ export class AccountSeeder implements Seeder {
             ? hashPassword(process.env.SUPER_PASSWORD)
             : hashPassword('super');
 
-        const accountRole = await roleRepository.findOneBy({
-            role: Roles.SUPER
-        })
+        const accountRole = await roleRepository.findOneBy({ role: Roles.SUPER });
 
         const accountAuth = new AccountAuth({
             type: LoginType.PASSWORD,
@@ -42,7 +40,7 @@ export class AccountSeeder implements Seeder {
             email,
             enabled: true,
             auths: [accountAuth],
-            roles: [accountRole]
+            roles: [accountRole],
         });
 
         await accountRepository.save(superAccount);
