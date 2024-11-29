@@ -5,7 +5,7 @@ import {
     Body,
     Controller,
     Get,
-    HttpStatus,
+    NotFoundException,
     Post,
     Res,
 } from '@nestjs/common';
@@ -15,7 +15,7 @@ import { CreateAccountDto } from './dto/create-account.dto';
 @Controller('accounts')
 export class AccountsController {
     constructor(
-        private readonly accountsService: AccountsService
+        private readonly accountsService: AccountsService,
     ) {}
 
     @Post('create')
@@ -29,7 +29,7 @@ export class AccountsController {
     async list(@Res() res: Response) {
         const accounts = await this.accountsService.findAll();
 
-        return res.json(accounts)
+        return res.json(accounts);
     }
 
     @Get('me')
@@ -38,23 +38,21 @@ export class AccountsController {
         const findAccount = await this.accountsService.findOne(+id);
 
         if (!findAccount) {
-            res.status(HttpStatus.NOT_FOUND).send({
-                message: `Account not found`
-            })
+            throw new NotFoundException('Account not found');
         }
 
         return res.json(findAccount);
 
-    //     if (!ctx.$tokenPayload) {
-    //         ctx.status = StatusCodes.FORBIDDEN;
-    //         ctx.body = {
-    //             message: 'invalid account',
-    //         };
-    //         return;
-    //     }
+        //     if (!ctx.$tokenPayload) {
+        //         ctx.status = StatusCodes.FORBIDDEN;
+        //         ctx.body = {
+        //             message: 'invalid account',
+        //         };
+        //         return;
+        //     }
 
-    //     const id = Number(ctx.$tokenPayload.scopes.id);
-    //     const result = await accountService.getAccountById(id);
+        //     const id = Number(ctx.$tokenPayload.scopes.id);
+        //     const result = await accountService.getAccountById(id);
 
     //     ctx.body = result;
     // }

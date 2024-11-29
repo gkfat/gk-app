@@ -10,4 +10,4 @@ async function initNest () {
     return app;
 }
 
-export default initNest
+export default initNest;

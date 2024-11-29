@@ -15,22 +15,24 @@ export class AccountAuth {
     }
 
     @PrimaryGeneratedColumn()
-    id: number;
+        id: number;
 
-    @Column({ type: 'bigint'})
-    account_id: number;
+    @Column({ type: 'bigint' })
+        account_id: number;
 
     @Column()
-    type: string;
+        type: string;
 
     @Column({ length: 255 })
-    identifier: string;
+        identifier: string;
 
-    @Column({ length: 1024, nullable: true  })
-    credential?: string;
+    @Column({
+        length: 1024, nullable: true,  
+    })
+        credential?: string;
 
     @ManyToOne(() => Account, (account) => account.auths)
-    @JoinColumn({name: 'account_id'})
-    account: Account;
+    @JoinColumn({ name: 'account_id' })
+        account: Account;
 }
 

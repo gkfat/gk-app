@@ -13,11 +13,11 @@ export class Role {
     }
 
     @PrimaryGeneratedColumn()
-    id: number;
+        id: number;
 
-    @Column()
-    role: string;
+    @Column({ unique: true })
+        role: string;
 
     @ManyToMany(() => Account, (account) => account.roles)
-    accounts: Account[];
+        accounts: Account[];
 }

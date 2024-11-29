@@ -20,34 +20,34 @@ export class Account {
     }
 
     @PrimaryGeneratedColumn()
-    id: number;
+        id: number;
+
+    @Column({ unique: true })
+        email: string;
 
     @Column()
-    email: string;
+        name: string;
 
-    @Column()
-    name: string;
+    @Column({ default: false })
+        enabled: boolean;
 
-    @Column({default: false})
-    enabled: boolean;
-
-    @Column({nullable: true})
-    last_login_at: Date;
+    @Column({ nullable: true, default: null })
+        last_login_at: Date;
 
     @CreateDateColumn()
-    create_at: Date;
+        create_at: Date;
 
-    @UpdateDateColumn({nullable: true})
-    update_at: Date;
+    @UpdateDateColumn({ nullable: true, default: null })
+        update_at: Date;
 
-    @DeleteDateColumn({nullable: true})
-    delete_at: Date;
+    @DeleteDateColumn({ nullable: true })
+        delete_at: Date;
 
-    @ManyToMany(() => Role, (role) => role.accounts, {cascade: true})
-    @JoinTable({ name: 'account_role'})
-    roles: Role[];
+    @ManyToMany(() => Role, (role) => role.accounts, { cascade: true })
+    @JoinTable({ name: 'account_role' })
+        roles: Role[];
 
-    @OneToMany(() => AccountAuth, (auth) => auth.account, {cascade: true})
-    auths: AccountAuth[];
+    @OneToMany(() => AccountAuth, (auth) => auth.account, { cascade: true })
+        auths: AccountAuth[];
 }
 
