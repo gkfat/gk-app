@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
+              
                 return {
                     type: 'postgres',
                     host: configService.getOrThrow('DB_HOST'),

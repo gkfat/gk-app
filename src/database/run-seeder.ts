@@ -39,10 +39,13 @@ async function run() {
     await dataSource.initialize();
     
     await runSeeders(dataSource);
+
 }
 
 run().then(() => {
-    console.log('Seeding completed');
+    console.log('Seeding completed, closing app.');
 }).catch((err) => {
     console.error('Error running seeders: ', err);
+}).finally(() => {
+    process.exit(1);
 });

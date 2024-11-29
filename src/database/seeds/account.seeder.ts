@@ -43,6 +43,6 @@ export class AccountSeeder implements Seeder {
             roles: [accountRole],
         });
 
-        await accountRepository.save(superAccount);
+        await accountRepository.upsert(superAccount, ['email']);
     }
 }
