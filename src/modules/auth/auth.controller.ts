@@ -1,9 +1,11 @@
 import { Response } from 'express';
 
 import {
+    BadRequestException,
     Body,
     Controller,
     ForbiddenException,
+    HttpStatus,
     InternalServerErrorException,
     Post,
     Res,
@@ -12,6 +14,7 @@ import {
 import { AccountsService } from '../accounts/accounts.service';
 import { AuthService } from './auth.service';
 import { LoginOrCreateDto } from './dto/login-or-create.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,6 +22,19 @@ export class AuthController {
         private readonly accountsService: AccountsService,
         private readonly authService: AuthService,
     ) {}
+
+    @Post('sign-up')
+    async signUp(@Body() reqBody: SignUpDto, @Res() res: Response) {
+        const findAccount = await this.accountsService.findOneByEmail(reqBody.email);
+
+        if (findAccount) {
+            throw new BadRequestException('Invalid email or password');
+        }
+
+        const account = await this.accountsService.create(reqBody);
+
+        return res.json({ account });
+    }
 
     @Post('login')
     async login(@Body() reqBody: LoginOrCreateDto, @Res() res: Response) {
@@ -33,7 +49,7 @@ export class AuthController {
 
             const token = await this.authService.generateJwt(account);
 
-            return res.json({
+            return res.status(HttpStatus.OK).json({
                 account,
                 token,
             });

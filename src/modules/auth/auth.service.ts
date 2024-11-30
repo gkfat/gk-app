@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
-import * as jwt from 'jsonwebtoken';
 import ms from 'ms';
+import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import { LoginType } from 'src/enums/login-type.enum';
 import { verifyPasswordLogin } from 'src/utils/credential';
 import { getBase64Uuid } from 'src/utils/uuid';
@@ -13,6 +13,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 import { AccountAuth } from '../accounts/entities/account-auth.entity';
 import { Account } from '../accounts/entities/account.entity';
@@ -28,6 +29,7 @@ export class AuthService {
         private readonly configService: ConfigService,
         private readonly oauthService: OAuthService,
         private readonly entityManager: EntityManager,
+        private readonly jwtService: JwtService,
     ) {
         this.redisClient = this.redisService.getOrThrow();
     }
@@ -105,20 +107,19 @@ export class AuthService {
     }
 
     async generateJwt(account: Account) {
-        const secret = this.configService.get('JWT_SECRET');
-        const expiresIn = this.configService.get('JWT_EXPIRES_IN') || '1d';
+        const payload: ITokenPayload = {
+            scope: {
+                sub: account.id,
+                email: account.email,
+                name: account.name,
+                roles: account.roles,
+            },
+        };
 
         const jti = getBase64Uuid();
-        const token = jwt.sign(
-            { scopes: account },
-            secret,
-            {
-                expiresIn,
-                algorithm: 'HS256',
-                jwtid: jti,
-            },
-        );
+        const token = await this.jwtService.signAsync(payload, { jwtid: jti });
 
+        const expiresIn = this.configService.get('JWT_EXPIRES_IN') || '1d';
         const ttl = ms(expiresIn);
 
         await this.redisClient.set(`token:${account.id}`, jti, 'PX',ttl);
