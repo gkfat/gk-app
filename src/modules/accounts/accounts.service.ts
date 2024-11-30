@@ -1,6 +1,7 @@
 import { LoginType } from 'src/enums/login-type.enum';
 import { Roles } from 'src/enums/roles.enum';
 import { hashPassword } from 'src/utils/credential';
+import { getPermissionsByRoles } from 'src/utils/permissions';
 import {
     EntityManager,
     Repository,
@@ -54,10 +55,17 @@ export class AccountsService {
     }
 
     async findOne(id: number) {
-        return this.accountRepository.findOne({
+        const account =  await this.accountRepository.findOne({
             where: { id },
             relations: { roles: true }, 
         });
+
+        const getPermissions = getPermissionsByRoles(account.roles);
+
+        return {
+            ...account,
+            permissions: getPermissions,
+        };
     }
 
     async findOneByEmail(email: string) {

@@ -28,7 +28,7 @@ export class Account {
     @Column()
         name: string;
 
-    @Column({ default: false })
+    @Column({ default: true })
         enabled: boolean;
 
     @Column({

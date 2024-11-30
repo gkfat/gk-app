@@ -12,6 +12,7 @@ export interface ITokenPayload {
         email: string;
         name: string;
         roles: Role[];
+        permissions: string[];
     }
 }
 

@@ -1,4 +1,8 @@
 import { Response } from 'express';
+import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
+import { Permissions } from 'src/enums/permissions';
+import { AuthGuard } from 'src/middlewares/auth.guard';
+import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 
 import {
     Controller,
@@ -7,7 +11,6 @@ import {
     UseGuards,
 } from '@nestjs/common';
 
-import { AuthGuard } from '../auth/auth.guard';
 import { Role } from './entities/role.entity';
 import { RolesService } from './roles.service';
 
@@ -17,7 +20,8 @@ export class RolesController {
         private readonly rolesService: RolesService,
     ) {}
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.privilege.roles.get)
     @Get()
     async list(@Res() res: Response<Role[]>) {
         const roles = await this.rolesService.findAll();

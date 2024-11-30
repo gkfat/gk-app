@@ -1,8 +1,11 @@
 import { Response } from 'express';
+import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
     $TokenPayload,
     ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
+import { Permissions } from 'src/enums/permissions';
+import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 import { AccountsService } from 'src/modules/accounts/accounts.service';
 
 import {
@@ -15,7 +18,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '../../middlewares/auth.guard';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { Account } from './entities/account.entity';
 
@@ -32,7 +35,8 @@ export class AccountsController {
         return res.json(account);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.account.accounts.get)
     @Get()
     async list(@Res() res: Response) {
         const accounts = await this.accountsService.findAll();
@@ -40,7 +44,8 @@ export class AccountsController {
         return res.json(accounts);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.account.me.get)
     @Get('me')
     async getAccount(@$TokenPayload() payload: ITokenPayload , @Res() res: Response) {
         const { scope: { sub } } = payload;

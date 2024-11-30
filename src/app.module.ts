@@ -9,6 +9,7 @@ import {
 } from '@nestjs/config';
 
 import { DatabaseModule } from './database/database.module';
+import { MiddlewaresModule } from './middlewares/middlewares.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RolesModule } from './modules/roles/roles.module';
@@ -36,6 +37,8 @@ const envFilePath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.en
                 };
             },
         }),
+      
+        MiddlewaresModule,
         DatabaseModule,
         AuthModule,
         AccountsModule,

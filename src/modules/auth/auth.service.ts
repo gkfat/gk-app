@@ -3,6 +3,7 @@ import ms from 'ms';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import { LoginType } from 'src/enums/login-type.enum';
 import { verifyPasswordLogin } from 'src/utils/credential';
+import { getPermissionsByRoles } from 'src/utils/permissions';
 import { getBase64Uuid } from 'src/utils/uuid';
 import { EntityManager } from 'typeorm';
 
@@ -107,19 +108,27 @@ export class AuthService {
     }
 
     async generateJwt(account: Account) {
+        const getPermissions = getPermissionsByRoles(account.roles);
+
         const payload: ITokenPayload = {
             scope: {
                 sub: account.id,
                 email: account.email,
                 name: account.name,
                 roles: account.roles,
+                permissions: getPermissions,
             },
         };
 
         const jti = getBase64Uuid();
-        const token = await this.jwtService.signAsync(payload, { jwtid: jti });
 
+        const secret = this.configService.get('JWT_SECRET');
         const expiresIn = this.configService.get('JWT_EXPIRES_IN') || '1d';
+
+        const token = await this.jwtService.signAsync(payload, {
+            jwtid: jti, secret, expiresIn, algorithm: 'HS256', 
+        });
+
         const ttl = ms(expiresIn);
 
         await this.redisClient.set(`token:${account.id}`, jti, 'PX',ttl);
