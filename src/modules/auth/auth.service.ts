@@ -1,4 +1,4 @@
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 import ms from 'ms';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import { LoginType } from 'src/enums/login-type.enum';
@@ -7,7 +7,6 @@ import { getPermissionsByRoles } from 'src/utils/permissions';
 import { getBase64Uuid } from 'src/utils/uuid';
 import { EntityManager } from 'typeorm';
 
-import { RedisService } from '@liaoliaots/nestjs-redis';
 import {
     BadRequestException,
     Injectable,
@@ -15,25 +14,27 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { AccountAuth } from '../accounts/entities/account-auth.entity';
 import { Account } from '../accounts/entities/account.entity';
+import { CacheService } from '../cache/cache.service';
 import { LoginOrCreateDto } from './dto/login-or-create.dto';
 import { OAuthService } from './oauth.service';
 
 @Injectable()
 export class AuthService {
-    private readonly redisClient: Redis;
+    private client: Redis;
 
     constructor(
-        private readonly redisService: RedisService,
+        @InjectRepository(Account)
+        @InjectRepository(AccountAuth)
+        private readonly cacheService: CacheService,
         private readonly configService: ConfigService,
         private readonly oauthService: OAuthService,
         private readonly entityManager: EntityManager,
         private readonly jwtService: JwtService,
-    ) {
-        this.redisClient = this.redisService.getOrThrow();
-    }
+    ) {}
 
     async loginOrCreate(reqBody: LoginOrCreateDto) {
         let id: number | null = null;
@@ -131,10 +132,22 @@ export class AuthService {
 
         const ttl = ms(expiresIn);
 
-        await this.redisClient.set(`token:${account.id}`, jti, 'PX',ttl);
+        await this.cacheService.deleteValue(`token:${account.id}`);
+        await this.cacheService.setValue(`token:${account.id}`, jti, ttl);
 
         return token;
     }
 
+    async setValue(key: string , value: string, ttl: string) {
+        return await this.client.set(key, value, 'PX', ttl);
+    }
+
+    async getValue(key: string) {
+        return await this.client.get(key);
+    }
+
+    async deleteValue(key: string) {
+        return await this.client.del(key);
+    }
 }
 

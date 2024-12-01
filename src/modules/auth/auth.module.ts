@@ -3,9 +3,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MiddlewaresModule } from '../../middlewares/middlewares.module';
-import { AccountsModule } from '../accounts/accounts.module';
+import { AccountsService } from '../accounts/accounts.service';
 import { AccountAuth } from '../accounts/entities/account-auth.entity';
 import { Account } from '../accounts/entities/account.entity';
+import { CacheModule } from '../cache/cache.module';
+import { CacheService } from '../cache/cache.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { OAuthService } from './oauth.service';
@@ -13,11 +15,16 @@ import { OAuthService } from './oauth.service';
 @Module({
     imports: [
         JwtModule,
+        CacheModule,
         MiddlewaresModule,
-        AccountsModule,
         TypeOrmModule.forFeature([Account, AccountAuth]),
     ],
     controllers: [AuthController],
-    providers: [AuthService, OAuthService],
+    providers: [
+        AuthService,
+        OAuthService,
+        AccountsService,
+        CacheService,
+    ],
 })
 export class AuthModule {}
