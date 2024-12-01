@@ -14,11 +14,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 
+import { CacheService } from '../../middlewares/cache.service';
 import { AccountAuth } from '../accounts/entities/account-auth.entity';
 import { Account } from '../accounts/entities/account.entity';
-import { CacheService } from '../cache/cache.service';
 import { LoginOrCreateDto } from './dto/login-or-create.dto';
 import { OAuthService } from './oauth.service';
 
@@ -27,8 +26,6 @@ export class AuthService {
     private client: Redis;
 
     constructor(
-        @InjectRepository(Account)
-        @InjectRepository(AccountAuth)
         private readonly cacheService: CacheService,
         private readonly configService: ConfigService,
         private readonly oauthService: OAuthService,

@@ -4,9 +4,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CacheService } from '../../middlewares/cache.service';
 import { AuthService } from '../auth/auth.service';
 import { OAuthService } from '../auth/oauth.service';
-import { CacheService } from '../cache/cache.service';
 import { AccountsController } from './accounts.controller';
 import { AccountsService } from './accounts.service';
 import { AccountAuth } from './entities/account-auth.entity';

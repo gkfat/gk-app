@@ -1,5 +1,5 @@
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
-import { CacheService } from 'src/modules/cache/cache.service';
+import { CacheService } from 'src/middlewares/cache.service';
 import { extractTokenFromHeader } from 'src/utils/token';
 
 import {

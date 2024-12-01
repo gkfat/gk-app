@@ -1,5 +1,7 @@
 import { Response } from 'express';
-import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
+import {
+    RequirePermissions,
+} from 'src/decorators/require-permissions.decorators';
 import {
     $TokenPayload,
     ITokenPayload,
@@ -23,8 +25,8 @@ import {
 } from '@nestjs/common';
 
 import { AuthGuard } from '../../middlewares/auth.guard';
+import { CacheService } from '../../middlewares/cache.service';
 import { AuthService } from '../auth/auth.service';
-import { CacheService } from '../cache/cache.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountRolesDto } from './dto/update-account-roles.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';

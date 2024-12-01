@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CacheService } from '../../middlewares/cache.service';
 import { MiddlewaresModule } from '../../middlewares/middlewares.module';
 import { AccountsService } from '../accounts/accounts.service';
 import { AccountAuth } from '../accounts/entities/account-auth.entity';
 import { Account } from '../accounts/entities/account.entity';
-import { CacheModule } from '../cache/cache.module';
-import { CacheService } from '../cache/cache.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { OAuthService } from './oauth.service';
@@ -15,7 +14,6 @@ import { OAuthService } from './oauth.service';
 @Module({
     imports: [
         JwtModule,
-        CacheModule,
         MiddlewaresModule,
         TypeOrmModule.forFeature([Account, AccountAuth]),
     ],
