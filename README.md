@@ -1,13 +1,10 @@
 # A Got Todo App
 
-## local dev
+A todo app
 
-run database
-```shell
-docker compose --env-file .env -p nestapp up -d
-```
+## Tech stacks
 
-seed super account
-```shell
-pnpm run seed
-```
+- Nest.js
+- Vue3
+- Postgres
+- Redis

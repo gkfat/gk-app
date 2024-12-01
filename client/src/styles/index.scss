@@ -1,0 +1,34 @@
+
+:root {
+    --font-monospace: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+* {
+    font-size: 14px;
+}
+
+.v-application {
+    font-family: "Noto Sans", "Roboto", sans-serif;
+
+    .font-family-monospace {
+        font-family: var(--font-monospace);
+    }
+
+    .v-data-table {
+        font-family: var(--font-monospace);
+
+        &--fixed-layout {
+            table {
+                table-layout: fixed;
+            }
+        }
+    }
+}
+
+.v-theme--light.v-data-table>.v-table__wrapper>table>tbody>tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper)>td {
+    background: #eee;
+}
+
+.v-data-table-header__content {
+    justify-content: center !important;
+}
