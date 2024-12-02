@@ -1,31 +1,29 @@
-# Got Todo Client
+# Got2do App Client
 
-## Project setup
+## How to run
 
-1. install packages
-```
+install packages
+
+```shell
 pnpm install
 ```
 
-2. local develop
-需求 `.env.development` file
-```
+local develop
+
+```shell
 pnpm dev
 ```
 
-3. lint
-```
-pnpm lint
+lint
+
+```shell
+pnpm lint:fix
 ```
 
-4. build dist(production)
-需求 `.env` file
-```
+build dist
+
+```shell
+# require .env file
+
 pnpm build
-```
-
-5. 本地啟動專案(production)並 host on 8080 port
-需求 `.env` file
-```
-pnpm run docker:front
 ```

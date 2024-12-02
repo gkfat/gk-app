@@ -1,8 +1,6 @@
 {
-    "name": "got-todo-client",
+    "name": "got2do-app-client",
     "version": "0.0.0",
-    "description": "",
-    "author": "",
     "private": true,
     "license": "UNLICENSED",
     "engines": {

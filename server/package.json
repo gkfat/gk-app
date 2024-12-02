@@ -1,8 +1,6 @@
 {
-    "name": "got-todo-server",
+    "name": "got2do-server",
     "version": "0.0.0",
-    "description": "",
-    "author": "",
     "private": true,
     "license": "UNLICENSED",
     "engines": {
@@ -17,7 +15,7 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:e2e": "jest --config ./test/jest-e2e.json",
-        "seed:dev": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./src/database/run-seeder.ts",
+        "seed": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./src/database/run-seeder.ts",
         "seed:prod": "ts-node -r tsconfig-paths/register ./src/database/run-seeder.ts"
     },
     "dependencies": {

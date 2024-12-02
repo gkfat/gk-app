@@ -1,22 +1,36 @@
-# A Got Todo Server
+# Got2do App Server
 
-## local dev
+## How to run
 
-run database
+require engine
+
 ```shell
-docker compose --env-file .env -p nestapp up -d
+nodejs >= 20
 ```
 
-seed super account
-```shell
-cd server
+run database & redis
 
+```shell
+# for local dev
+docker compose --env-file .env.development -p got2do up -d
+```
+
+migration
+
+```shell
+# start the server will auto run migration
+pnpm dev
+```
+
+seed 
+
+```shell
+# will execute src/database/run-seeder.ts
 pnpm run seed
 ```
 
-init client
-```shell
-cd client
+start server
 
+```shell
 pnpm dev
 ```

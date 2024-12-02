@@ -1,4 +1,4 @@
-# A Got Todo App
+# A Got2do App
 
 A todo app
 

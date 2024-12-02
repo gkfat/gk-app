@@ -22,7 +22,7 @@ export class AccountSeeder implements Seeder {
         const accountRepository = dataSource.getRepository(Account);
 
         const name = 'super';
-        const email = process.env.SUPER_EMAIL || 'super@nestapp.com';
+        const email = process.env.SUPER_EMAIL || 'super@got2do.com';
         const password = process.env.SUPER_PASSWORD
             ? hashPassword(process.env.SUPER_PASSWORD)
             : hashPassword('super');
