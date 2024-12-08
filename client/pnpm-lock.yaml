@@ -44,6 +44,9 @@ importers:
       vue-router:
         specifier: ^4.2.5
         version: 4.2.5(vue@3.4.31(typescript@5.0.2))
+      vue3-google-login:
+        specifier: ^2.0.33
+        version: 2.0.33(vue@3.4.31(typescript@5.0.2))
       vuetify:
         specifier: ^3.7.4
         version: 3.7.4(typescript@5.0.2)(vite-plugin-vuetify@2.0.4)(vue@3.4.31(typescript@5.0.2))
@@ -1936,6 +1939,11 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
+
+  vue3-google-login@2.0.33:
+    resolution: {integrity: sha512-Hx3JJUREXWCFOOB4AzZKy/x7C+X18kxmT0AquBekm0TRubp11nrWijOLEgmhuij48dQPNumyaAi5IQAeDKk7yw==}
+    peerDependencies:
+      vue: ^3.0.3
 
   vue@3.4.31:
     resolution: {integrity: sha512-njqRrOy7W3YLAlVqSKpBebtZpDVg21FPoaq1I7f/+qqBThK9ChAIjkRWgeP6Eat+8C+iia4P3OYqpATP21BCoQ==}
@@ -4135,6 +4143,10 @@ snapshots:
       '@vue/language-core': 2.1.10(typescript@5.0.2)
       semver: 7.6.2
       typescript: 5.0.2
+
+  vue3-google-login@2.0.33(vue@3.4.31(typescript@5.0.2)):
+    dependencies:
+      vue: 3.4.31(typescript@5.0.2)
 
   vue@3.4.31(typescript@5.0.2):
     dependencies:

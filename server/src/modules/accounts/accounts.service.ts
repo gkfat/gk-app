@@ -33,11 +33,11 @@ export class AccountsService {
             password,
         } = createAccountDto;
 
-        const findRole = await this.entityManager.findOne(Role, { where: { role: Roles.GUEST } });
+        const findMemberRole = await this.entityManager.findOne(Role, { where: { role: Roles.MEMBER } });
 
         const newAccount = new Account({
             ...createAccountDto,
-            roles: [findRole],
+            roles: [findMemberRole],
             auths: [
                 new AccountAuth({
                     type: LoginType.PASSWORD, identifier: email, credential: hashPassword(password), 

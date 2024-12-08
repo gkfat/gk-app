@@ -11,7 +11,4 @@ const basicPermissions = [
     dashboard.dashboard.get,
 ];
 
-export const Privileges = {
-    [Roles.GUEST]: [...basicPermissions],
-    [Roles.MEMBER]: [...basicPermissions],
-};
+export const Privileges = { [Roles.MEMBER]: [...basicPermissions] };

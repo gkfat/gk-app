@@ -5,7 +5,7 @@
                 min-width="320px"
                 elevation="10"
                 rounded="xl"
-                class="pa-7"
+                class="pa-7 pb-3"
             >
                 <v-card-title class="text-h5 mb-3 text-center">
                     {{ appStore.state.environmentVariables.appTitle }}
@@ -134,12 +134,19 @@
 
                 </v-tabs-window>
 
-                <v-tabs v-model="currentTab" align-tabs="center" hide-slider>
+                <v-divider>或</v-divider>
+
+                <v-card-actions>
+                    <GoogleLogin @update:credential="onGoogleLogin"></GoogleLogin>
+                </v-card-actions>
+
+                <v-tabs class="mt-5" v-model="currentTab" align-tabs="center" hide-slider>
                     <v-tab v-if="currentTab === 'login'" value="signup" class="text-info" variant="plain" :ripple="false">{{ t('login.button_signup') }}</v-tab>
                     <v-tab v-if="currentTab === 'signup'" value="login" class="text-info" variant="plain" :ripple="false">{{ t('login.button_login') }}</v-tab>
                 </v-tabs>
 
             </v-card>
+
         </v-row>
     </v-container>
 </template>
@@ -167,6 +174,8 @@ import { useAppStore } from '@/store/app';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Auth } from '@/types/auth';
+
+import GoogleLogin from './components/GoogleLogin.vue';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
@@ -222,6 +231,22 @@ const form = {
     passwordConfirm: useField<string>('passwordConfirm'),
 };
 
+const doLogin = async (data: Auth.Login.Request) => {
+    try {
+        await authStore.login(data);
+
+        // change route
+        const redirect = route.query.redirect ?? '/';
+
+        // @ts-ignore
+        router.push(redirect);
+    } catch (err) {
+        notifierStore.error({
+            content: t('login.message_login_fail'),
+        });
+    }
+}
+
 const onSubmit = handleSubmit(async (value) => {
     loading.value = true;
 
@@ -231,20 +256,8 @@ const onSubmit = handleSubmit(async (value) => {
             password: value.password,
             type: LoginType.PASSWORD
         };
-    
-        try {
-            await authStore.login(params)
-    
-            // change route
-            const redirect = route.query.redirect ?? '/';
-    
-            // @ts-ignore
-            router.push(redirect);
-        } catch (err) {
-            notifierStore.error({
-                content: t('login.message_login_fail'),
-            });
-        }
+
+        await doLogin(params);
     } else if (currentTab.value === 'signup') {
         const params: Auth.SignUp.Request = {
             email: value.email,
@@ -253,7 +266,7 @@ const onSubmit = handleSubmit(async (value) => {
         };
     
         try {
-            await AuthService.signUp(params)
+            await AuthService.signUp(params);
     
             notifierStore.success({
                 content: t('login.message_signup_success'),
@@ -269,6 +282,15 @@ const onSubmit = handleSubmit(async (value) => {
 
     loading.value = false;
 })
+
+const onGoogleLogin = async (token: string) => {
+    const params: Auth.Login.Request = {
+        type: LoginType.GOOGLE,
+        idToken: token,
+    };
+
+    await doLogin(params);
+}
 
 onMounted(() => {
     currentTab.value = 'login'

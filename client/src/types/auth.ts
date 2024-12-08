@@ -5,8 +5,8 @@ import { Account } from './account';
 export namespace Auth {
     export namespace Login {
         export interface Request {
-            email: string;
-            password: string;
+            email?: string;
+            password?: string;
             type: LoginType;
             idToken?: string;
         }

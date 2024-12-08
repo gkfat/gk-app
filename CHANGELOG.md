@@ -12,3 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 建立 Got Todo App server
 - 建立 Got Todo App client
 - 新增註冊、登入功能
+- 新增 Google login

@@ -1,5 +1,7 @@
 import type { App } from 'vue';
 
+import Vue3GoogleLogin from 'vue3-google-login';
+
 import router from '@/router';
 
 import { i18n } from './i18n';
@@ -14,5 +16,8 @@ export const registerPlugins = (app: App) => {
         .use(i18n)
         .use(vuetify)
         .use(router)
+        .use(Vue3GoogleLogin, {
+            clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID
+        })
         .use(pinia);
 };
