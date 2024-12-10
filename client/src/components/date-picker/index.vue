@@ -215,9 +215,7 @@ const setValue = (timestamp: number) => {
     confirmDateRange();
 };
 
-defineExpose({
-    setValue,
-});
+defineExpose({ setValue });
 </script>
 
 <style lang="scss">

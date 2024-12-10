@@ -1,5 +1,5 @@
 <template>
-     <v-list>
+    <v-list>
         <v-list-item :title="account.name">
             <template #prepend>
                 <v-avatar

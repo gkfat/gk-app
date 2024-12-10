@@ -64,8 +64,11 @@ watch(
 );
 
 const themes = [
-    { title: '淺色', value: false, icon: 'mdi-white-balance-sunny' },
-    { title: '深色', value: true, icon: 'mdi-moon-waxing-crescent' },
+    {
+        title: '淺色', value: false, icon: 'mdi-white-balance-sunny', 
+    }, {
+        title: '深色', value: true, icon: 'mdi-moon-waxing-crescent', 
+    },
 ];
 
 onMounted(() => {

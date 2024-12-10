@@ -6,8 +6,6 @@
         <PageHeader
             :title="t('dashboard.title')"
         />
-
-       
     </PageContent>
 </template>
 <script lang="ts" setup>

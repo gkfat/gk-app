@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+ 
 export namespace Common {
 
     /** 資料表格標頭 */

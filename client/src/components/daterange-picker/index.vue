@@ -161,11 +161,21 @@ const customProps = defineProps<{
 const dateRange = ref<Date[]>([]);
 
 const dateRangeSelection = [
-    { title: '過去一小時', value: Range.HOUR_AGO },
-    { title: '今天', value: Range.TODAY },
-    { title: '昨天', value: Range.YESTERDAY },
-    { title: '過去七天', value: Range.LAST_7_DAYS },
-    { title: '未來一個月', value: Range.NEXT_30_DAYS },
+    {
+        title: '過去一小時', value: Range.HOUR_AGO, 
+    },
+    {
+        title: '今天', value: Range.TODAY, 
+    },
+    {
+        title: '昨天', value: Range.YESTERDAY, 
+    },
+    {
+        title: '過去七天', value: Range.LAST_7_DAYS, 
+    },
+    {
+        title: '未來一個月', value: Range.NEXT_30_DAYS, 
+    },
 ];
 
 const datePickerFormatter = (dates: Date[]) => {
@@ -215,34 +225,19 @@ const setDateRange = (type: Range) => {
 
     switch (type) {
     case Range.HOUR_AGO:
-        dateRange.value = [
-            now.add(-1, 'hour').toDate(),
-            now.toDate(),
-        ];
+        dateRange.value = [now.add(-1, 'hour').toDate(), now.toDate()];
         break;
     case Range.TODAY:
-        dateRange.value = [
-            getRelativeRangeOfDay().from.toDate(),
-            getRelativeRangeOfDay().to.toDate(),
-        ];
+        dateRange.value = [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay().to.toDate()];
         break;
     case Range.YESTERDAY:
-        dateRange.value = [
-            getRelativeRangeOfDay(-1).from.toDate(),
-            getRelativeRangeOfDay(-1).to.toDate(),
-        ];
+        dateRange.value = [getRelativeRangeOfDay(-1).from.toDate(), getRelativeRangeOfDay(-1).to.toDate()];
         break;
     case Range.LAST_7_DAYS:
-        dateRange.value = [
-            getRelativeRangeOfDay(-7).from.toDate(),
-            getRelativeRangeOfDay().to.toDate(),
-        ];
+        dateRange.value = [getRelativeRangeOfDay(-7).from.toDate(), getRelativeRangeOfDay().to.toDate()];
         break;
     case Range.NEXT_30_DAYS:
-        dateRange.value = [
-            getRelativeRangeOfDay().from.toDate(),
-            getRelativeRangeOfDay(30).to.toDate(),
-        ];
+        dateRange.value = [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay(30).to.toDate()];
         break;
     default: break;
     }

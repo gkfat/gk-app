@@ -1,5 +1,5 @@
 <template>
-     <v-container class="fill-height d-flex align-center">
+    <v-container class="fill-height d-flex align-center">
         <v-row justify="center">
             <v-card
                 min-width="320px"
@@ -19,7 +19,9 @@
                                 <!-- Email -->
                                 <v-row>
                                     <v-col cols="12">
-                                        <p class="text-caption">{{ t('login.input_label_email') }}</p>
+                                        <p class="text-caption">
+                                            {{ t('login.input_label_email') }}
+                                        </p>
                                         <v-text-field
                                             v-model="form.email.value.value"
                                             :error-messages="form.email.errorMessage.value"
@@ -34,7 +36,9 @@
         
                                     <!-- Password -->
                                     <v-col cols="12">
-                                        <p class="text-caption">{{ t('login.input_label_password') }}</p>
+                                        <p class="text-caption">
+                                            {{ t('login.input_label_password') }}
+                                        </p>
                                         <v-text-field
                                             v-model="form.password.value.value"
                                             :error-messages="form.password.errorMessage.value"
@@ -53,7 +57,16 @@
                         </v-card-text>
         
                         <v-card-text>
-                            <v-btn color="primary" flat rounded="xl" :loading="loading" @click="onSubmit" block>{{ t('login.button_login') }}</v-btn>
+                            <v-btn
+                                color="primary"
+                                flat
+                                rounded="xl"
+                                :loading="loading"
+                                block
+                                @click="onSubmit"
+                            >
+                                {{ t('login.button_login') }}
+                            </v-btn>
                         </v-card-text>
                     </v-tabs-window-item>
                     
@@ -64,7 +77,9 @@
                                 <v-row>
                                     <!-- Email -->
                                     <v-col cols="12">
-                                        <p class="text-caption">{{ t('login.input_label_email') }}</p>
+                                        <p class="text-caption">
+                                            {{ t('login.input_label_email') }}
+                                        </p>
                                         <v-text-field
                                             v-model="form.email.value.value"
                                             :error-messages="form.email.errorMessage.value"
@@ -78,7 +93,9 @@
                                     </v-col>
 
                                     <v-col cols="12">
-                                        <p class="text-caption">{{ t('login.input_label_name') }}</p>
+                                        <p class="text-caption">
+                                            {{ t('login.input_label_name') }}
+                                        </p>
                                         <v-text-field
                                             v-model="form.name.value.value"
                                             :error-messages="form.name.errorMessage.value"
@@ -92,7 +109,9 @@
         
                                     <!-- Password -->
                                     <v-col cols="12">
-                                        <p class="text-caption">{{ t('login.input_label_password') }}</p>
+                                        <p class="text-caption">
+                                            {{ t('login.input_label_password') }}
+                                        </p>
                                         <v-text-field
                                             v-model="form.password.value.value"
                                             :error-messages="form.password.errorMessage.value"
@@ -109,7 +128,9 @@
 
                                     <!-- Confirm Password -->
                                     <v-col cols="12">
-                                        <p class="text-caption">{{ t('login.input_label_password_confirm') }}</p>
+                                        <p class="text-caption">
+                                            {{ t('login.input_label_password_confirm') }}
+                                        </p>
                                         <v-text-field
                                             v-model="form.passwordConfirm.value.value"
                                             :error-messages="form.passwordConfirm.errorMessage.value"
@@ -128,25 +149,52 @@
                         </v-card-text>
         
                         <v-card-text>
-                            <v-btn color="warning" flat rounded="xl" :loading="loading" @click="onSubmit" block>{{ t('login.button_signup') }}</v-btn>
+                            <v-btn
+                                color="warning"
+                                flat
+                                rounded="xl"
+                                :loading="loading"
+                                block
+                                @click="onSubmit"
+                            >
+                                {{ t('login.button_signup') }}
+                            </v-btn>
                         </v-card-text>
                     </v-tabs-window-item>
-
                 </v-tabs-window>
 
                 <v-divider>或</v-divider>
 
                 <v-card-actions>
-                    <GoogleLogin @update:credential="onGoogleLogin"></GoogleLogin>
+                    <GoogleLogin @update:credential="onGoogleLogin" />
                 </v-card-actions>
 
-                <v-tabs class="mt-5" v-model="currentTab" align-tabs="center" hide-slider>
-                    <v-tab v-if="currentTab === 'login'" value="signup" class="text-info" variant="plain" :ripple="false">{{ t('login.button_signup') }}</v-tab>
-                    <v-tab v-if="currentTab === 'signup'" value="login" class="text-info" variant="plain" :ripple="false">{{ t('login.button_login') }}</v-tab>
+                <v-tabs
+                    v-model="currentTab"
+                    class="mt-5"
+                    align-tabs="center"
+                    hide-slider
+                >
+                    <v-tab
+                        v-if="currentTab === 'login'"
+                        value="signup"
+                        class="text-info"
+                        variant="plain"
+                        :ripple="false"
+                    >
+                        {{ t('login.button_signup') }}
+                    </v-tab>
+                    <v-tab
+                        v-if="currentTab === 'signup'"
+                        value="login"
+                        class="text-info"
+                        variant="plain"
+                        :ripple="false"
+                    >
+                        {{ t('login.button_login') }}
+                    </v-tab>
                 </v-tabs>
-
             </v-card>
-
         </v-row>
     </v-container>
 </template>
@@ -194,7 +242,7 @@ const { handleSubmit } = useForm({
         email: '',
         password: '',
         name: '',
-        passwordConfirm: ''
+        passwordConfirm: '',
     },
     validationSchema: yup.object({
         email: yup
@@ -210,7 +258,7 @@ const { handleSubmit } = useForm({
                     return value.length > 0;
                 }
 
-                return true
+                return true;
             }),
         passwordConfirm: yup
             .string()
@@ -219,8 +267,8 @@ const { handleSubmit } = useForm({
                     return value.length > 0;
                 }
 
-                return true
-            })
+                return true;
+            }),
     }),
 });
 
@@ -241,11 +289,9 @@ const doLogin = async (data: Auth.Login.Request) => {
         // @ts-ignore
         router.push(redirect);
     } catch (err) {
-        notifierStore.error({
-            content: t('login.message_login_fail'),
-        });
+        notifierStore.error({ content: t('login.message_login_fail') });
     }
-}
+};
 
 const onSubmit = handleSubmit(async (value) => {
     loading.value = true;
@@ -254,7 +300,7 @@ const onSubmit = handleSubmit(async (value) => {
         const params: Auth.Login.Request = {
             email: value.email,
             password: value.password,
-            type: LoginType.PASSWORD
+            type: LoginType.PASSWORD,
         };
 
         await doLogin(params);
@@ -268,20 +314,16 @@ const onSubmit = handleSubmit(async (value) => {
         try {
             await AuthService.signUp(params);
     
-            notifierStore.success({
-                content: t('login.message_signup_success'),
-            });
+            notifierStore.success({ content: t('login.message_signup_success') });
 
-            currentTab.value = 'login'
+            currentTab.value = 'login';
         } catch (err) {
-            notifierStore.error({
-                content: t('login.message_sugnup_fail'),
-            });
+            notifierStore.error({ content: t('login.message_sugnup_fail') });
         }
     }
 
     loading.value = false;
-})
+});
 
 const onGoogleLogin = async (token: string) => {
     const params: Auth.Login.Request = {
@@ -290,11 +332,11 @@ const onGoogleLogin = async (token: string) => {
     };
 
     await doLogin(params);
-}
+};
 
 onMounted(() => {
-    currentTab.value = 'login'
-})
+    currentTab.value = 'login';
+});
 </script>
 <style lang="scss" scoped>
 .v-field__input {

@@ -86,8 +86,7 @@ interface CustomItem {
     title: string;
     value: CustomValue;
 }
-
-// eslint-disable-next-line no-unused-vars
+ 
 const emits = defineEmits<{(e: 'update:modelValue', value: CustomValue | CustomValue[] | null): void}>();
 
 const customProps = withDefaults(defineProps<{
@@ -234,7 +233,7 @@ watch(
                     // 全選
                     selectedValue.value = customProps.allItem.value;
                 } else {
-                    // eslint-disable-next-line prefer-destructuring
+                     
                     selectedValue.value = selectedValue.value[0];
                 }
                 emitModelValue();

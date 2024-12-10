@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 
 export enum Range {
     HOUR_AGO = 'hour_ago',

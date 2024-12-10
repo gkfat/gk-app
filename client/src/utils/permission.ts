@@ -9,11 +9,9 @@ function isGuest() {
         return true;
     }
 
-    const {roles} = authStore.state.account;
+    const { roles } = authStore.state.account;
 
-    return roles.length === 1 && roles[0].role === Roles.GUEST
+    return roles.length === 1 && roles[0].role === Roles.GUEST;
 }
 
-export const permissionChecker = {
-    isGuest,
-};
+export const permissionChecker = { isGuest };

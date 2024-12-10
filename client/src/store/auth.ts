@@ -15,12 +15,12 @@ export const useAuthStore = defineStore('auth', () => {
     const login = async (params: Auth.Login.Request) => {
         const {
             account,
-            token
+            token,
         } = await AuthService.login(params);
 
         state.value.token = token;
         state.value.account = account;
-    }
+    };
 
     const logout = async () => {
         state.value.token = null;

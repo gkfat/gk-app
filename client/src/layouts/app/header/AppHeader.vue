@@ -1,9 +1,9 @@
 <template>
     <v-app-bar
         v-if="isLoggedIn"
-            flat
-            class="pe-3"
-        >
+        flat
+        class="pe-3"
+    >
         <v-app-bar-nav-icon
             @click="appStore.toggleDrawer"
         />

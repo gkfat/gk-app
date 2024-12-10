@@ -16,11 +16,7 @@ export const Permissions = {
         },
     },
 
-    dashboard: {
-        dashboard: {
-            get: 'dashboard.dashboard.get'
-        }
-    },
+    dashboard: { dashboard: { get: 'dashboard.dashboard.get' } },
 
     /**
      * 權限相關

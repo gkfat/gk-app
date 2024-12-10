@@ -16,11 +16,8 @@ export function checkRoutePermission({ meta }: { meta: RouteMeta }) {
         meta.permissionsMode = 'allof';
     }
 
-
     return authStore.havePermission(
         meta.permissions,
-        {
-            strategy: meta.permissionsMode,
-        },
+        { strategy: meta.permissionsMode },
     );
 }

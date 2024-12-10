@@ -1,7 +1,5 @@
 import { Response } from 'express';
-import {
-    RequirePermissions,
-} from 'src/decorators/require-permissions.decorators';
+import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
     $TokenPayload,
     ITokenPayload,

@@ -28,9 +28,7 @@ export const installGuard = (router: Router) => {
             if (to.meta.requireLoggedIn) {
                 return next({
                     name: 'Login',
-                    query: {
-                        redirect: to.fullPath,
-                    },
+                    query: { redirect: to.fullPath },
                 });
             }
         }
@@ -44,44 +42,34 @@ export const installGuard = (router: Router) => {
             if (to.name !== 'Login') {
                 const notifierStore = useNotifierStore();
 
-                notifierStore.error({
-                    content: 'Token 驗證失敗，請重新登入。',
-                });
+                notifierStore.error({ content: 'Token 驗證失敗，請重新登入。' });
 
                 return next({
                     name: 'Login',
-                    query: {
-                        redirect: to.fullPath,
-                    },
+                    query: { redirect: to.fullPath },
                 });
             }
         }
 
         // 已登入但試圖進入登入頁
         if (to.name === 'Login') {
-            return next({
-                path: from.fullPath,
-            });
+            return next({ path: from.fullPath });
         }
 
         // 若帳號的狀態為初次啟用則導去個人資料頁
         if (account && permissionChecker.isGuest() && to.name !== 'Profile') {
-            return next({
-                name: 'Profile',
-            });
+            return next({ name: 'Profile' });
         }
 
         // 若進入頁面需要權限, 需驗證權限
         if (to.meta.permissions) {
             const hasPermission = checkRoutePermission({ meta: to.meta });
 
-            console.log({hasPermission})
+            console.log({ hasPermission });
 
             // 無權限, 轉導 401 頁面
             if (!hasPermission) {
-                return next({
-                    name: '401',
-                });
+                return next({ name: '401' });
             }
         }
 

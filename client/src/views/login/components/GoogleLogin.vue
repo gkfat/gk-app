@@ -13,19 +13,19 @@
 <script lang="ts" setup>
 import { CallbackTypes } from 'vue3-google-login';
 
-const emit = defineEmits(['update:credential'])
+const emit = defineEmits(['update:credential']);
 
 const handleGoogleLogin: CallbackTypes.CredentialCallback = async (res: any) => {
     try {
         const credential = res?.credential;
 
         if (credential) {
-            emit('update:credential', credential)
+            emit('update:credential', credential);
         }
     } catch (err) {
-        console.error(err)
+        console.error(err);
     }
-}
+};
 </script>
 <style lang="scss" scoped>
 .g-btn-wrapper {

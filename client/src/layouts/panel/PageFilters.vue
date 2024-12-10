@@ -114,13 +114,15 @@ const { t } = useI18n();
 
 const isOpen = ref(false);
 
-const {
-    filterConditions,
-} = defineProps<{
+const { filterConditions } = defineProps<{
     filterConditions: Common.FilterCondition[];
 }>();
 
-const emit = defineEmits(['on:submit', 'on:reset', 'update:condition']);
+const emit = defineEmits([
+    'on:submit',
+    'on:reset',
+    'update:condition',
+]);
 
 /** 開關收合篩選器 */
 const toggleFilter = (open: boolean) => {
@@ -140,9 +142,7 @@ const onConditionUpdate = (key: string) => {
     emit('update:condition', key);
 };
 
-defineExpose({
-    toggleFilter,
-});
+defineExpose({ toggleFilter });
 </script>
 <style lang="css" scoped>
 /* :deep(.v-expansion-panel-text) {

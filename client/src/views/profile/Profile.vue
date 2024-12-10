@@ -165,7 +165,7 @@ const account = computed(() => authStore.state?.account);
 const isGuest = computed(() => permissionChecker.isGuest());
 const getLastLoginTime = computed(() => {
     if (account.value) {
-        return timeFormat(createDate(toMiliSeconds(account.value.last_login_time)));
+        return timeFormat(createDate(toMiliSeconds(account.value.last_login_at)));
     }
 
     return 'N/A';
@@ -173,9 +173,7 @@ const getLastLoginTime = computed(() => {
 
 onMounted(() => {
     if (isGuest.value) {
-        notifierStore.warn({
-            content: t('profile.message_change_password_reminder'),
-        });
+        notifierStore.warn({ content: t('profile.message_change_password_reminder') });
     }
 });
 </script>

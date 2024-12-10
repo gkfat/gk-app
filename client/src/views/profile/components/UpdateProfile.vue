@@ -101,13 +101,13 @@ const showPassword = ref(false);
 
 const dialogCardRef = templateRef('dialogCardRef');
 
-const {
-    user,
-} = defineProps<{
+const { user } = defineProps<{
     user: User.User
 }>();
 
-const { handleSubmit, resetForm } = useForm({
+const {
+    handleSubmit, resetForm, 
+} = useForm({
     validationSchema: yup.object({
         oldPassword: yup
             .string()
@@ -146,7 +146,9 @@ const submit = handleSubmit(async (formValue) => {
     inProgress.value = true;
 
     try {
-        const { newPassword, oldPassword } = formValue;
+        const {
+            newPassword, oldPassword, 
+        } = formValue;
         const params: User.UpdateProfileReq = {
             name: user.name,
             old_password: oldPassword,
@@ -157,16 +159,12 @@ const submit = handleSubmit(async (formValue) => {
 
         authStore.setToken(token);
 
-        notifierStore.success({
-            content: t('edit_profile.message_update_profile_success'),
-        });
+        notifierStore.success({ content: t('edit_profile.message_update_profile_success') });
 
         emitAndClose();
     } catch (err) {
         console.error(err);
-        notifierStore.error({
-            content: t('edit_profile.message_update_profile_fail'),
-        });
+        notifierStore.error({ content: t('edit_profile.message_update_profile_fail') });
     }
 
     inProgress.value = false;

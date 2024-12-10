@@ -9,9 +9,7 @@ interface EnvironmentVariables {
 }
 
 function createDefaultState() {
-    return {
-        darkTheme: false,
-    };
+    return { darkTheme: false };
 }
 
 export const useAppStore = defineStore('app', () => {
@@ -21,9 +19,7 @@ export const useAppStore = defineStore('app', () => {
         drawer: false,
         settingDrawer: false,
         overlay: false,
-        environmentVariables: {
-            appTitle: '',
-        } as EnvironmentVariables,
+        environmentVariables: { appTitle: '' } as EnvironmentVariables,
     });
 
     const toggleDrawer = () => {

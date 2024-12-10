@@ -19,31 +19,36 @@ export default defineConfig(({ mode }) => {
     
     return {
         plugins: [
-            vue({
-                template: { transformAssetUrls },
-            }),
-            vuetify({
+            vue({ template: { transformAssetUrls } }), vuetify({
                 autoImport: true,
-                styles: {
-                    configFile: 'src/styles/index.scss',
-                },
+                styles: { configFile: 'src/styles/index.scss' },
             }),
         ],
         build: { chunkSizeWarningLimit: 1600 },
         resolve: {
             alias: [
-                { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+                {
+                    find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)), 
+                },
             ],
-            extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
+            extensions: [
+                '.js',
+                '.json',
+                '.jsx',
+                '.mjs',
+                '.ts',
+                '.tsx',
+                '.vue',
+            ],
         },
         envDir: './',
         server: {
             proxy: {
-                "/api": {
+                '/api': {
                     target: env.VITE_API_URL,
-                    changeOrigin: true
-                }
-            }
+                    changeOrigin: true,
+                },
+            },
         },
-    }
-})
+    };
+});

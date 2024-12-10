@@ -5,17 +5,16 @@
         disable-resize-watcher
         theme="dark"
     >
-       
-        <AppAvatar></AppAvatar>
+        <AppAvatar />
 
-        <v-divider></v-divider>
+        <v-divider />
         
         <AppDrawerItem />
 
         <template #append>
-            <v-divider></v-divider>
+            <v-divider />
     
-            <AppFooter></AppFooter>
+            <AppFooter />
         </template>
     </v-navigation-drawer>
 </template>
@@ -31,7 +30,7 @@ import AppDrawerItem from './components/AppDrawerItem.vue';
 import AppFooter from './components/AppFooter.vue';
 
 const appStore = useAppStore();
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 const isLoggedIn = computed(() => !!authStore.state?.token);
 const account = computed(() => authStore.state?.account);
