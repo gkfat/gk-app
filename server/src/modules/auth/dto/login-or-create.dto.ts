@@ -38,7 +38,7 @@ export class LoginOrCreateDto {
     @ValidateIf((o) => o.type === LoginType.GOOGLE)
     @IsNotEmpty()
     @ApiProperty({
-        required: false, description: 'required when not using password login type', 
+        required: false, description: 'required when using google login type', 
     })
-        idToken?: string;
+        code?: string;
 }

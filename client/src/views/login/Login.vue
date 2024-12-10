@@ -217,7 +217,7 @@ import {
 import * as yup from 'yup';
 
 import { AuthService } from '@/api/auth';
-import { LoginType } from '@/enums/login-type';
+import { EnumLoginType } from '@/enums/login-type';
 import { useAppStore } from '@/store/app';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
@@ -284,9 +284,8 @@ const doLogin = async (data: Auth.Login.Request) => {
         await authStore.login(data);
 
         // change route
-        const redirect = route.query.redirect ?? '/';
+        const redirect = route.query.redirect as string ?? '/';
 
-        // @ts-ignore
         router.push(redirect);
     } catch (err) {
         notifierStore.error({ content: t('login.message_login_fail') });
@@ -297,10 +296,10 @@ const onSubmit = handleSubmit(async (value) => {
     loading.value = true;
 
     if (currentTab.value === 'login') {
-        const params: Auth.Login.Request = {
+        const params: Auth.Login.PasswordLoginRequest = {
+            type: EnumLoginType.PASSWORD,
             email: value.email,
             password: value.password,
-            type: LoginType.PASSWORD,
         };
 
         await doLogin(params);
@@ -325,10 +324,10 @@ const onSubmit = handleSubmit(async (value) => {
     loading.value = false;
 });
 
-const onGoogleLogin = async (token: string) => {
-    const params: Auth.Login.Request = {
-        type: LoginType.GOOGLE,
-        idToken: token,
+const onGoogleLogin = async (code: string) => {
+    const params: Auth.Login.GoogleLoginRequest = {
+        type: EnumLoginType.GOOGLE,
+        code,
     };
 
     await doLogin(params);

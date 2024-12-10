@@ -1,4 +1,4 @@
-export enum LoginType {
+export enum EnumLoginType {
     PASSWORD = 'password',
     GOOGLE = 'google'
 }

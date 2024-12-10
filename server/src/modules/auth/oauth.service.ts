@@ -7,23 +7,34 @@ import { LoginOrCreateDto } from './dto/login-or-create.dto';
 
 @Injectable()
 export class OAuthService {
-    private CLIENT_ID: string;
     private gAuth: OAuth2Client;
 
     constructor(
         private readonly configService: ConfigService,
     ) {
-        this.CLIENT_ID = this.configService.getOrThrow('GOOGLE_CLIENT_ID');
-        this.gAuth = new OAuth2Client(this.CLIENT_ID);
+        const CLIENT_ID = this.configService.getOrThrow('GOOGLE_CLIENT_ID');
+        const CLIENT_SECRET = this.configService.getOrThrow('GOOGLE_CLIENT_SECRET');
+        const REDIRECT_URI = this.configService.getOrThrow('REDIRECT_URI');
+
+        this.gAuth = new OAuth2Client({
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            redirectUri: REDIRECT_URI,
+        });
     }
 
     async google(reqBody: LoginOrCreateDto) {
-        const { idToken } = reqBody;
-
+        const { code } = reqBody;
+        
         try {
+            const { tokens } = await this.gAuth.getToken(code);
+            this.gAuth.setCredentials(tokens);
+
+            const idToken = tokens.id_token;
+
             const ticket = await this.gAuth.verifyIdToken({
                 idToken,
-                audience: this.CLIENT_ID,
+                audience: this.gAuth._clientId,
             });
 
             const userInfo = ticket.getPayload();

@@ -1,12 +1,17 @@
 <template>
     <v-row>
         <v-col cols="12">
-            <GoogleLogin :callback="handleGoogleLogin" />
-            <!-- <v-btn color="primary" class="text-none" variant="outlined" rounded="lg" block>
+            <v-btn
+                color="primary"
+                class="text-none"
+                variant="outlined"
+                rounded="lg"
+                block
+            >
                 <GoogleLogin :callback="handleGoogleLogin">
                     使用 Google 繼續
                 </GoogleLogin>
-            </v-btn> -->
+            </v-btn>
         </v-col>
     </v-row>
 </template>
@@ -17,10 +22,10 @@ const emit = defineEmits(['update:credential']);
 
 const handleGoogleLogin: CallbackTypes.CredentialCallback = async (res: any) => {
     try {
-        const credential = res?.credential;
+        const code = res?.code;
 
-        if (credential) {
-            emit('update:credential', credential);
+        if (code) {
+            emit('update:credential', code);
         }
     } catch (err) {
         console.error(err);
