@@ -35,23 +35,27 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     /**
-     * 驗證 user 是否具備需求的角色
+     * 驗證 user 是否具備需求的權限
      */
-    const havePermission = (requiredPermissions: string[], { strategy = 'allof' }: {strategy: 'allof' | 'oneof'}) => {
+    const havePermission = (requiredPermissions: string | string[], data: { strategy: 'allof' | 'oneof' } = { strategy: 'allof' }) => {
         if (!requiredPermissions) return false;
         if (!state.value || !state.value.account) return false;
 
         const { account } = state.value;
 
+        const strategy = data?.strategy ?? 'allof';
+
         if (!['allof', 'oneof'].includes(strategy)) {
             throw new Error(`Invalid permission strategy: ${strategy}`);
         }
 
+        const permissionsToCheck = typeof requiredPermissions === 'string' ? [requiredPermissions] : requiredPermissions;
+
         if (strategy === 'allof') {
-            return requiredPermissions.every((p) => account.permissions.includes(p));
+            return permissionsToCheck.every((p) => account.permissions.includes(p));
         }
 
-        return requiredPermissions.some((p) => account.permissions.includes(p));
+        return permissionsToCheck.some((p) => account.permissions.includes(p));
     };
 
     return {

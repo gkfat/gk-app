@@ -23,7 +23,13 @@ export class OAuthService {
         });
     }
 
-    async google(reqBody: LoginOrCreateDto) {
+    async google(reqBody: LoginOrCreateDto): Promise<{
+        email: string;
+        name: string;
+        identifier: string;
+        avatar: string;
+        credential: null,
+    }> {
         const { code } = reqBody;
         
         try {
@@ -44,6 +50,7 @@ export class OAuthService {
                     email: userInfo.email,
                     name: userInfo.name,
                     identifier: userInfo.sub,
+                    avatar: userInfo.picture,
                     credential: null,
                 };
             }

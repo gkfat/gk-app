@@ -1,15 +1,29 @@
 <template>
     <v-list>
-        <v-list-item :title="account.name">
+        <v-list-item
+            :title="account.name"
+        >
             <template #prepend>
                 <v-avatar
                     color="secondary"
-                    :size="40"
                 >
-                    <span class="font-weight-bold">
+                    <v-img
+                        v-if="account.avatar"
+                        alt="avatar"
+                        :src="account.avatar"
+                    />
+
+                    <span
+                        v-else
+                        class="font-weight-bold"
+                    >
                         {{ avatarAlternative }}
                     </span>
                 </v-avatar>
+            </template>
+
+            <template #append>
+                <slot name="append" />
             </template>
         </v-list-item>
     </v-list>
@@ -22,7 +36,6 @@ import { useAuthStore } from '@/store/auth';
 
 const authStore = useAuthStore();
 
-const isLoggedIn = computed(() => !!authStore.state?.token);
 const account = computed(() => authStore.state?.account);
 
 const avatarAlternative = computed(() => {

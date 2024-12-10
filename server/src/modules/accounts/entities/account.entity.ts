@@ -28,6 +28,9 @@ export class Account {
     @Column()
         name: string;
 
+    @Column({ nullable: true })
+        avatar: string;
+
     @Column({ default: true })
         enabled: boolean;
 

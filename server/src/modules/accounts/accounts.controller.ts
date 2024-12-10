@@ -5,6 +5,8 @@ import {
     ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
 import { Permissions } from 'src/enums/permissions';
+import { AuthGuard } from 'src/middlewares/auth.guard';
+import { CacheService } from 'src/middlewares/cache.service';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 import { AccountsService } from 'src/modules/accounts/accounts.service';
 
@@ -22,8 +24,6 @@ import {
     UseGuards,
 } from '@nestjs/common';
 
-import { AuthGuard } from '../../middlewares/auth.guard';
-import { CacheService } from '../../middlewares/cache.service';
 import { AuthService } from '../auth/auth.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountRolesDto } from './dto/update-account-roles.dto';
@@ -70,7 +70,7 @@ export class AccountsController {
     }
 
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.account.accounts.enable)
+    @RequirePermissions(Permissions.account.accounts.update)
     @Put(':id/enable')
     async enableAccount(@Param('id') id: string, @Res() res: Response) {
         const findAccount = await this.accountsService.findOne(+id);
@@ -85,7 +85,7 @@ export class AccountsController {
     }
 
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.account.accounts.updateRoles)
+    @RequirePermissions(Permissions.account.accounts.update)
     @Put(':id/roles')
     async updateRoles(@Param('id') id: string, @Body() reqBody: UpdateAccountRolesDto, @Res() res: Response) {
         const findAccount = await this.accountsService.findOne(+id);

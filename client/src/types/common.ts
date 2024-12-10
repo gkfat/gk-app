@@ -1,4 +1,3 @@
- 
 export namespace Common {
 
     /** 資料表格標頭 */
@@ -8,7 +7,7 @@ export namespace Common {
         title?: string;
         fixed?: boolean;
         align?: 'start' | 'end' | 'center';
-        minWidth?: string | number;
+        minWidth?: string;
         maxWidth?: string;
         sortable?: boolean;
     }

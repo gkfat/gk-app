@@ -1,13 +1,13 @@
 import { RouteRecordRaw } from 'vue-router';
 
-import { Roles } from '@/enums/auth';
+import { EnumRoles } from '@/enums/auth';
 
 export const errorsRoutes: RouteRecordRaw[] = [
     {
         path: '',
         meta: {
             requireLoggedIn: true,
-            permissions: [Roles.ANYONE],
+            permissions: [EnumRoles.ANYONE],
             hidden: true,
             title: '',
         },

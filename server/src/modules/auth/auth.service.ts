@@ -89,6 +89,7 @@ export class AuthService {
                 const newAccount = new Account({
                     email: oauthResult.email,
                     name: oauthResult.name,
+                    avatar: oauthResult.avatar,
                     auths: [
                         new AccountAuth({
                             type,

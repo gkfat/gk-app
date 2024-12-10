@@ -2,8 +2,6 @@ import { Router } from 'vue-router';
 
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
-import { Account } from '@/types/account';
-import { permissionChecker } from '@/utils/permission';
 
 import { checkRoutePermission } from './util';
 
@@ -14,8 +12,6 @@ export const installGuard = (router: Router) => {
         if (to.name === '404') {
             return next();
         }
-
-        let account: Account.Account | null = null;
 
         // 無 token
         if (!authStore.state.token) {
@@ -35,7 +31,7 @@ export const installGuard = (router: Router) => {
 
         // 若有 token, 驗證 token 是否合法
         try {
-            account = await authStore.me();
+            await authStore.me();
         } catch (err) {
             await authStore.logout();
 
@@ -56,16 +52,9 @@ export const installGuard = (router: Router) => {
             return next({ path: from.fullPath });
         }
 
-        // 若帳號的狀態為初次啟用則導去個人資料頁
-        if (account && permissionChecker.isGuest() && to.name !== 'Profile') {
-            return next({ name: 'Profile' });
-        }
-
         // 若進入頁面需要權限, 需驗證權限
         if (to.meta.permissions) {
             const hasPermission = checkRoutePermission({ meta: to.meta });
-
-            console.log({ hasPermission });
 
             // 無權限, 轉導 401 頁面
             if (!hasPermission) {

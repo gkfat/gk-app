@@ -16,7 +16,7 @@ export const useAppStore = defineStore('app', () => {
     const storage = useLocalStorage('got-todo-appstore', createDefaultState(), { mergeDefaults: true });
 
     const state = ref({
-        drawer: false,
+        drawer: true,
         settingDrawer: false,
         overlay: false,
         environmentVariables: { appTitle: '' } as EnvironmentVariables,

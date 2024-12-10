@@ -3,9 +3,21 @@
         v-if="isLoggedIn"
         v-model="appStore.state.drawer"
         disable-resize-watcher
+        expand-on-hover
+        permanent
         theme="dark"
+        :rail="rail"
+        @click="rail = false"
     >
-        <AppAvatar />
+        <AppAvatar>
+            <template #append>
+                <v-btn
+                    :icon="rail ? 'mdi-pin-outline' : 'mdi-pin-off-outline'"
+                    variant="text"
+                    @click.stop="rail = !rail"
+                />
+            </template>    
+        </AppAvatar>
 
         <v-divider />
         
@@ -20,7 +32,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import {
+  computed,
+  ref,
+} from 'vue';
 
 import { useAppStore } from '@/store/app';
 import { useAuthStore } from '@/store/auth';
@@ -32,14 +47,7 @@ import AppFooter from './components/AppFooter.vue';
 const appStore = useAppStore();
 const authStore = useAuthStore();
 
+const rail = ref(true);
+
 const isLoggedIn = computed(() => !!authStore.state?.token);
-const account = computed(() => authStore.state?.account);
-
-const avatarAlternative = computed(() => {
-    if (account.value?.name) {
-        return account.value.name[0].toUpperCase();
-    }
-
-    return '';
-});
 </script>

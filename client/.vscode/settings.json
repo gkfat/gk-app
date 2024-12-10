@@ -1,18 +1,14 @@
 {
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit"
-    },
     "eslint.codeActionsOnSave.mode": "all",
-    "eslint.format.enable": true,
-    "eslint.validate": [
-        "vue",
-        "javascript",
-        "typescript",
-    ],
-    "[vue]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "files.eol": "\n",
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
     },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "eslint.format.enable": true,
+    "editor.formatOnSave": true,
     "i18n-ally.localesPaths": [
         "src/locales"
     ],

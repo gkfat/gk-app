@@ -10,8 +10,7 @@ export const Permissions = {
         accounts: {
             get: 'account.accounts.get',
             add: 'account.accounts.add',
-            updateRoles: 'account.accounts.update_roles',
-            enable: 'account.accounts.enable',
+            update: 'account.accounts.update',
             delete: 'account.accounts.delete',
         },
     },

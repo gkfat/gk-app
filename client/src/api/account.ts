@@ -11,4 +11,18 @@ export class AccountService {
             url: '/me',
         });
     }
+
+    static async list(): Promise<Account.List.Response> {
+        return agent({
+            method: 'GET',
+            url: '',
+        });
+    }
+
+    static async enable(id: number) {
+        return agent({
+            method: 'PUT',
+            url: `/${id}/enable`,
+        });
+    }
 }

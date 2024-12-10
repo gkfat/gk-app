@@ -5,6 +5,7 @@ export namespace Account {
         id: number;
         email: string;
         name: string;
+        avatar: string;
         enabled: boolean;
         last_login_at: string;
         create_at: string;
@@ -16,6 +17,10 @@ export namespace Account {
 
     export namespace Me {
         export type Response = Account;
+    }
+
+    export namespace List {
+        export type Response = Account[];
     }
   
 }

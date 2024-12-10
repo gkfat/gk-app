@@ -1,7 +1,5 @@
 import 'vue-router';
 
-import { Roles } from '@/enums/auth';
-
 declare module 'vue-router' {
     export interface RouteMeta {
         /** route nav i18n text */
