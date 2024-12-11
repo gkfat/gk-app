@@ -3,7 +3,6 @@ import { Role } from 'src/modules/roles/entities/role.entity';
 import {
     Column,
     CreateDateColumn,
-    DeleteDateColumn,
     Entity,
     JoinTable,
     ManyToMany,
@@ -47,9 +46,6 @@ export class Account {
         nullable: true, default: null, 
     })
         update_at: Date;
-
-    @DeleteDateColumn({ nullable: true })
-        delete_at: Date;
 
     @ManyToMany(() => Role, (role) => role.accounts, { cascade: true })
     @JoinTable({ name: 'account_role' })

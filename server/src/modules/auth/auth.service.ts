@@ -49,6 +49,7 @@ export class AuthService {
                         type,
                         identifier: email,
                     },
+                    withDeleted: false,
                 });
 
             if (!findAuth) {
@@ -80,11 +81,15 @@ export class AuthService {
                     type,
                     identifier: oauthResult.identifier,
                 },
+                withDeleted: false,
             });
 
             // 找不到 auth data, 自動建立帳號
             if (!findAuth) {
-                const findMemberRole = await this.entityManager.findOne(Role, { where: { role: Roles.MEMBER } });
+                const findMemberRole = await this.entityManager.findOne(Role, {
+                    where: { role: Roles.MEMBER },
+                    withDeleted: false, 
+                });
 
                 const newAccount = new Account({
                     email: oauthResult.email,

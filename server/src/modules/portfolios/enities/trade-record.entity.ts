@@ -2,7 +2,6 @@ import { EnumTradeDirection } from 'src/enums/trade-direction';
 import {
     Column,
     CreateDateColumn,
-    DeleteDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
@@ -25,9 +24,6 @@ export class TradeRecord {
         nullable: true, default: null, 
     })
         update_at: Date;
-
-    @DeleteDateColumn({ nullable: true })
-        delete_at: Date;
 
     @PrimaryGeneratedColumn()
         id: number;

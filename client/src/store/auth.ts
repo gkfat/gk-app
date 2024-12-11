@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { AccountService } from '@/api/account';
+import { AccountsService } from '@/api/accounts';
 import { AuthService } from '@/api/auth';
 import { Account } from '@/types/account';
 import { Auth } from '@/types/auth';
@@ -28,7 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const me = async () => {
         if (state.value.token) {
-            return await AccountService.me();
+            return await AccountsService.me();
         }
 
         return null;

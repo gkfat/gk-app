@@ -16,13 +16,13 @@ import { Role } from './entities/role.entity';
 import { RolesService } from './roles.service';
 
 @ApiBearerAuth('Authorization')
-@Controller('roles')
+@Controller('privileges')
 export class RolesController {
     constructor(
         private readonly rolesService: RolesService,
     ) {}
 
-    @Get()
+    @Get('roles')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.privilege.roles.get)
     async list(@Res() res: Response<Role[]>) {

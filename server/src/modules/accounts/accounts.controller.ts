@@ -13,6 +13,8 @@ import { AccountsService } from 'src/modules/accounts/accounts.service';
 import {
     Body,
     Controller,
+    Delete,
+    ForbiddenException,
     Get,
     HttpStatus,
     NotFoundException,
@@ -120,5 +122,20 @@ export class AccountsController {
         const token = await this.authService.generateJwt(account);
 
         return res.json({ token });
+    }
+
+    @Delete(':id')
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.account.accounts.delete)
+    async deleteAccount(@$TokenPayload() payload: ITokenPayload, @Param('id') id: string, @Res() res: Response<Account>) {
+        const { scope: { sub } } = payload;
+
+        if (+id === sub) {
+            throw new ForbiddenException('Cannot delete self');
+        }
+
+        await this.accountsService.deleteAccount(+id);
+
+        return res.sendStatus(HttpStatus.OK);
     }
 }

@@ -10,8 +10,8 @@
             :loading="inProgress"
             :disabled="inProgress"
         >
-            <v-card-title>
-                停用/啟用
+            <v-card-title class="text-error">
+                刪除帳號
             </v-card-title>
           
             <v-card-subtitle>
@@ -19,12 +19,7 @@
             </v-card-subtitle>
 
             <v-card-text>
-                <v-switch
-                    v-model="enableStatus"
-                    inset
-                    hide-details
-                    :color="enableStatus ? 'success' : undefined"
-                />
+               確認刪除？
             </v-card-text>
            
             <v-divider />
@@ -33,7 +28,7 @@
                 <v-spacer />
                 <v-btn
                     color="success"
-                    @click="setEnabled()"
+                    @click="onSubmit"
                 >
                     {{ t('button.confirm') }}
                 </v-btn>
@@ -64,32 +59,27 @@ const data = ref<Account.Account>(null);
 const inProgress = ref(false);
 const openDialog = ref(false);
 
-const enableStatus = ref(false);
-
 const toggleDialog = (open: boolean) => {
     openDialog.value = open;
 };
 
 const show = (account: Account.Account) => {
     data.value = account;
-    enableStatus.value = account.enabled;
     toggleDialog(true);
 };
 
 defineExpose({ show });
 
-const emit = defineEmits(['update:enabled']);
+const emit = defineEmits(['update:delete']);
 
-const setEnabled = async () => {
+const onSubmit = async () => {
     inProgress.value = true;
 
     try {
-        if (enableStatus.value !== data.value.enabled) {
-            await AccountsService.enable(data.value.id);
-            emit('update:enabled');
-        }
+        await AccountsService.delete(data.value.id);
+        emit('update:delete');
     } catch (err) {
-        notifierStore.error({ content: '啟/停用帳號失敗' });
+        notifierStore.error({ content: '刪除帳號失敗' });
     }
     inProgress.value = false;
     toggleDialog(false);

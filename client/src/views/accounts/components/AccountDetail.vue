@@ -10,10 +10,11 @@
             :disabled="inProgress"
         >
             <v-toolbar color="primary">
-                <v-toolbar-title class="text-h6 font-weight-medium">
-                    {{ dialogTitle }}
-                </v-toolbar-title>
+                <v-card-title>
+                    {{ editable ? t('button.edit') : t('button.detail') }}
+                </v-card-title>
                 <v-btn
+                class="ml-auto"
                     icon="mdi-close"
                     @click="toggleDialog(false)"
                 />
@@ -24,12 +25,11 @@
                     validate-on="input"
                     :readonly="!editable"
                 >
-                    <!-- id & email -->
                     <v-row>
                         <v-col cols="4">
                             <v-text-field
                                 v-model="data.id"
-                                :label="t('common_label.account_id')"
+                                label="ID"
                                 hide-details
                                 variant="outlined"
                                 readonly
@@ -38,7 +38,7 @@
                         <v-col>
                             <v-text-field
                                 v-model="data.email"
-                                :label="t('common_label.account')"
+                                label="Email"
                                 hide-details
                                 variant="outlined"
                                 readonly
@@ -49,13 +49,11 @@
                     <v-row>
                         <v-col>
                             <v-text-field
-                                v-model="form.name.value.value"
-                                :label="t('common_label.name')"
-                                :error-messages="form.name.errorMessage.value"
-                                hide-details="auto"
+                                v-model="data.name"
+                                label="名稱"
+                                hide-details
                                 variant="outlined"
-                                autofocus
-                                required
+                                readonly
                             />
                         </v-col>
                     </v-row>
@@ -63,44 +61,17 @@
                     <v-row>
                         <v-col>
                             <v-autocomplete
-                                v-model="form.roles.value.value"
+                                v-model="data.roles"
                                 :items="rolesData"
                                 item-title="role"
-                                :readonly="!editable || !havePermissionTo.updateRoles"
-                                :label="t('account_list.label_roles')"
+                                :readonly="!editable || !havePermissionTo.update"
+                                label="角色"
                                 :clearable="editable"
                                 chips
                                 closable-chips
                                 hide-no-data
                                 multiple
                                 return-object
-                                variant="outlined"
-                                hide-details
-                            >
-                                <template #chip="{ props, item }">
-                                    <v-chip
-                                        v-bind="props"
-                                        color="primary"
-                                    >
-                                        {{ item.title }}
-                                    </v-chip>
-                                </template>
-                            </v-autocomplete>
-                        </v-col>
-                    </v-row>
-                    <!-- 整合商 -->
-                    <v-row>
-                        <v-col>
-                            <v-autocomplete
-                                v-model="form.integratorScopes.value.value"
-                                :items="integratorStore.integratorIdList"
-                                :readonly="!editable || !havePermissionTo.updateIntegratorScope"
-                                :label="t('account_list.label_integrator_scope')"
-                                :clearable="editable"
-                                chips
-                                closable-chips
-                                hide-no-data
-                                multiple
                                 variant="outlined"
                                 hide-details
                             >
@@ -125,9 +96,9 @@
                 <v-btn
                     v-if="editable"
                     color="success"
-                    @click="submit()"
+                    @click="onSubmit"
                 >
-                    {{ t('button.save') }}
+                    {{ t('button.confirm') }}
                 </v-btn>
                 <v-btn
                     color="cancel"
@@ -140,69 +111,47 @@
     </v-dialog>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
-    computed,
-    ref,
+  computed,
+  ref,
 } from 'vue';
+
 import { useI18n } from 'vue-i18n';
 
-import {
-    useField,
-    useForm,
-} from 'vee-validate';
-import * as yup from 'yup';
-
-import { Permissions } from '@/common/enums/permissions';
-
-import { AccountsService } from '@/common/api/accounts';
-import { PrivilegeService } from '@/common/api/privilege';
-
-import { useIntegratorStore } from '@/common/stores/integrator';
-import { useNotifierStore } from '@/common/stores/notifier';
-import { useUserStore } from '@/common/stores/user';
-import {
-    useNotifierErrorHandler,
-} from '@/common/composables/useNotifierErrorHandler';
+import { AccountsService } from '@/api/accounts';
+import { PrivilegesService } from '@/api/privileges';
+import { Permissions } from '@/enums/permissions';
+import { useAuthStore } from '@/store/auth';
+import { useNotifierStore } from '@/store/notifier';
+import { Account } from '@/types/account';
+import { Role } from '@/types/role';
 
 const { t } = useI18n();
 const notifierStore = useNotifierStore();
-const integratorStore = useIntegratorStore();
-const userStore = useUserStore();
-const { errorHandler } = useNotifierErrorHandler(true);
+const authStore = useAuthStore();
 
-/**
- * 操作權限
- */
 const havePermissionTo = ref({
-    updateRoles: userStore.havePermission(Permissions.account.accounts.updateRoles),
-    updateIntegratorScope: userStore.havePermission(Permissions.account.accounts.updateIntegratorScope),
+    update: authStore.havePermission(Permissions.account.accounts.update),
 });
 
-/** @type {import('vue').Ref<App.Api.Accounts.Account | null>} */
-const data = ref(null);
+const data = ref<Account.Account>(null);
 const editable = ref(false);
 const inProgress = ref(false);
 const openDialog = ref(false);
 
-const dialogTitle = computed(() => (editable.value
-    ? t('common_label.edit')
-    : t('common_label.detail')));
-
-/**
- * 所有權限
- * @type {import('vue').Ref<App.Api.Accounts.Role[]>}
- */
-const rolesData = ref([]);
+const rolesData = ref<Role.Role[]>([]);
 
 const fetchRolesData = async () => {
     if (rolesData.value.length) return;
 
     try {
-        const res = await PrivilegeService.getRoleList();
-        rolesData.value = res.map((item) => item.role).filter((r) => r.role !== 'super');
+        const res = await PrivilegesService.listRoles();
+        rolesData.value = res.filter((role) => role.role !== 'super');
     } catch (error) {
-        errorHandler(error);
+        notifierStore.error({
+            content: '取得角色列表失敗'
+        })
 
         throw error;
     }
@@ -212,106 +161,38 @@ const setReadonlyData = () => {
     rolesData.value = data.value?.roles || [];
 };
 
-/**
- * 開關 dialog
- * @param {boolean} open
- */
-const toggleDialog = (open) => {
+const toggleDialog = (open: boolean) => {
     openDialog.value = open;
 };
 
 const emit = defineEmits(['update:detail']);
 
-// name regex rule
-const regexName = /^[^\s\-+*/\\=|!@#$%^&,.:;?'"[\]<>]+(?: [^\s\-+*/\\=|!@#$%^&,.:;?'"[\]<>]+)*$/gi;
-
-const { handleSubmit, resetForm } = useForm({
-    initialValues: {
-        name: '',
-        /** @type {App.Api.Accounts.Role[]} */
-        roles: [],
-        /** @type {string[]} */
-        integratorScopes: [],
-    },
-    validationSchema: yup.object({
-        name: yup
-            .string()
-            .max(100, t('input_error.max_length', { maxLen: 100 }))
-            .required(t('input_error.required'))
-            .matches(regexName, t('input_error.name_rule_invalid_character')),
-    }),
-});
-
-const form = {
-    /** @type {import('vee-validate').FieldContext<string>} */
-    name: useField('name'),
-    /** @type {import('vee-validate').FieldContext<App.Api.Accounts.Role[]>} */
-    roles: useField('roles'),
-    /** @type {import('vee-validate').FieldContext<string[]>} */
-    integratorScopes: useField('integratorScopes'),
-};
-
-// submit form
-const submit = handleSubmit(async (formValue) => {
+const onSubmit = async () => {
     inProgress.value = true;
-
-    if (!data.value) {
-        return;
-    }
 
     const { id } = data.value;
 
-    const {
-        name,
-        roles,
-        integratorScopes,
-    } = formValue;
-    /**
-     * @param {string | string[] | App.Api.Accounts.Role[]} a
-     * @param {string | string[] | App.Api.Accounts.Role[]} b
-     */
-    const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-
     try {
-        if (!equal(data.value.name, name)) {
-            await AccountsService.changeName(id, name);
-        }
-
-        if (!equal(data.value.roles, roles)) {
-            const roleIdList = roles.map((r) => r.id);
-            await AccountsService.updateRoles(id, roleIdList);
-        }
-
-        if (!equal(data.value.integratorScopes, integratorScopes)) {
-            await AccountsService.updateIntegratorScope(id, integratorScopes);
-        }
+        const roleIdList = data.value.roles.map((r) => r.id);
+        await AccountsService.updateRoles(id, roleIdList);
 
         emit('update:detail');
         notifierStore.success({
-            content: t('account_list.message_update_account_success', { account: `${data.value.id} - ${data.value.email}` }),
+            content: '變更會員資訊成功',
         });
     } catch (error) {
-        errorHandler(error);
+        notifierStore.error({
+            content: '變更會員資訊失敗',
+        });
     }
 
     inProgress.value = false;
     toggleDialog(false);
-});
+};
 
-/**
- * @param {App.Api.Accounts.Account} account
- * @param {boolean} edit
- */
-const show = async (account, edit) => {
-    data.value = account;
+const show = async (account: Account.Account, edit: boolean) => {
+    data.value = JSON.parse(JSON.stringify(account));
     editable.value = edit;
-
-    resetForm();
-
-    // set form data
-    form.name.setValue(data.value.name);
-    form.roles.setValue(data.value.roles);
-    form.integratorScopes.setValue(data.value.integratorScopes);
 
     // 有編輯權限才須 fetch all roles data
     if (edit) {

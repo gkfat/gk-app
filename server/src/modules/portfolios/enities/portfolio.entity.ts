@@ -2,7 +2,6 @@ import { Account } from 'src/modules/accounts/entities/account.entity';
 import {
     Column,
     CreateDateColumn,
-    DeleteDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
@@ -30,10 +29,6 @@ export class Portfolio {
         nullable: true, default: null, 
     })
         update_at: Date;
-
-    @ApiProperty()
-    @DeleteDateColumn({ nullable: true })
-        delete_at: Date;
 
     @ApiProperty()
     @PrimaryGeneratedColumn()

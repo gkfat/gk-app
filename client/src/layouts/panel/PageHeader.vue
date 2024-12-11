@@ -7,10 +7,10 @@
         >
             <v-card-title class="font-weight-bold">
                 {{ title }}
-                <em v-if="hasDataCount">{{ dataCount }}</em>
+                <em v-if="dataCount">{{ dataCount }}</em>
             </v-card-title>
 
-            <v-card-subtitle>
+            <v-card-subtitle v-if="subtitle">
                 {{ subtitle }}
             </v-card-subtitle>
         </v-col>
@@ -26,8 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 const {
     title,
     subtitle,
@@ -37,8 +35,6 @@ const {
     subtitle?: string;
     dataCount?: number;
 }>();
-
-const hasDataCount = computed(() => Number.isFinite(dataCount));
 </script>
 <style lang="css" scoped>
 

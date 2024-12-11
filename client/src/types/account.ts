@@ -10,7 +10,6 @@ export namespace Account {
         last_login_at: string;
         create_at: string;
         update_at: string | null;
-        delete_at: string | null;
         roles: Role.Role[];
         permissions: string[];
     }

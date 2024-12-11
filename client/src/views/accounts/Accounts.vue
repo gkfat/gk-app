@@ -3,38 +3,26 @@
         :loading="inProgress"
         show-go-to-top
     >
-        <v-card class="mb-5">
-            <v-card-title>
-                {{ t('nav.accounts') }}
-            </v-card-title>
-            <v-card-text>
-                <v-row>
-                    <v-col
-                        cols="auto"
-                        class="ml-auto"
+        <PageHeader
+            :title="t('nav.accounts')"
+        >
+            <template #controlPanel>
+                <v-row class="align-center">
+                    <v-btn
+                        color="info"
+                        class="mr-3"
+                        append-icon="mdi-reload"
+                        @click="listAccounts"
                     >
-                        <v-btn
-                            color="info"
-                            class="mr-3"
-                            append-icon="mdi-reload"
-                            @click="listAccounts"
-                        >
-                            {{ t('button.refresh') }}
-                        </v-btn>
-                        <v-btn
-                            v-if="havePermissionTo.addAccount"
-                            color="success"
-                            append-icon="mdi-plus"
-                            @click="showAddAccount()"
-                        >
-                            {{ t('button.create') }}
-                        </v-btn>
-                    </v-col>
+                        {{ t('button.refresh') }}
+                    </v-btn>
                 </v-row>
-            </v-card-text>
-        </v-card>
+            </template>
+        </PageHeader>
 
-        <v-card :loading="inProgress">
+        <v-spacer class="mb-3" />
+      
+        <v-card :loading="inProgress" flat>
             <v-card class="py-4">
                 <v-data-table
                     :headers="table.headers"
@@ -59,11 +47,10 @@
                                 <v-text-field
                                     v-model="search"
                                     prepend-inner-icon="mdi-magnify"
-                                    :label="t('button.search')"
+                                    :placeholder="t('button.search')"
                                     type="search"
                                     hide-details="auto"
-                                    density="compact"
-                                    variant="outlined"
+                                    variant="underlined"
                                     clearable
                                 />
                             </v-col>
@@ -107,14 +94,13 @@
 
                     <!-- actions -->
                     <template #item.actions="{ item }">
-                        <template v-if="havePermissionTo.updateAccount">
+                        <template v-if="havePermissionTo.updateAccount && !isSelf(item.id)">
                             <v-btn
                                 variant="text"
                                 icon="mdi-pencil"
                                 @click="showDetail(item, true)"
                             />
                             <v-btn
-                                v-if="item.id !== authStore.state.account.id"
                                 variant="text"
                                 color="error"
                                 icon="mdi-delete"
@@ -125,9 +111,8 @@
                         <!-- 無編輯權限 -->
                         <v-btn
                             v-else
-                            density="comfortable"
                             variant="text"
-                            color="primary"
+                            color="info"
                             icon="mdi-magnify"
                             @click="showDetail(item)"
                         />
@@ -137,20 +122,16 @@
         </v-card>
     </PageContent>
 
-    <AddAccount
-        ref="addAccountRef"
-        @update:add="listAccounts"
-    />
     <AccountDetail
         ref="accountDetailRef"
         @update:detail="listAccounts"
     />
     <EnableAccount
-        ref="EnableAccountRef"
+        ref="enableAccountRef"
         @update:enabled="listAccounts"
     />
-    <DialogDelete
-        ref="dialogDeleteRef"
+    <DeleteAccount
+        ref="deleteAccountRef"
         @update:delete="listAccounts"
     />
 </template>
@@ -163,9 +144,10 @@ import {
 
 import { useI18n } from 'vue-i18n';
 
-import { AccountService } from '@/api/account';
+import { AccountsService } from '@/api/accounts';
 import { Permissions } from '@/enums/permissions';
 import PageContent from '@/layouts/panel/PageContent.vue';
+import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Account } from '@/types/account';
@@ -176,9 +158,8 @@ import {
 } from '@/utils/time';
 import { templateRef } from '@vueuse/core';
 
-// import AccountDetail from './components/AccountDetail.vue';
-// import AddAccount from './components/AddAccount.vue';
-// import DialogDelete from './components/DialogDelete.vue';
+import AccountDetail from './components/AccountDetail.vue';
+import DeleteAccount from './components/DeleteAccount.vue';
 import EnableAccount from './components/EnableAccount.vue';
 
 const notifierStore = useNotifierStore();
@@ -186,9 +167,8 @@ const authStore = useAuthStore();
 const { t } = useI18n();
 
 const accountDetailRef = templateRef('accountDetailRef');
-const EnableAccountRef = templateRef('EnableAccountRef');
-const dialogDeleteRef = templateRef('dialogDeleteRef');
-const addAccountRef = templateRef('addAccountRef');
+const enableAccountRef = templateRef('enableAccountRef');
+const deleteAccountRef = templateRef('deleteAccountRef');
 
 /**
  * 操作權限
@@ -202,6 +182,8 @@ const havePermissionTo = ref({
 const inProgress = ref(false);
 const search = ref('');
 
+const isSelf = (id: number) => id === authStore.state.account.id
+
 const table = ref<{
     data: Account.Account[],
     headers: Common.DataTableHeader<Account.Account>[],
@@ -213,19 +195,19 @@ const table = ref<{
             key: 'id',
         },
         {
-            title: 'Enable',
+            title: '啟用',
             key: 'enabled',
         },
         {
-            title: 'Name',
+            title: '名稱',
             key: 'name',
         },
         {
-            title: 'Email',
+            title: '信箱',
             key: 'email',
         },
         {
-            title: 'Roles',
+            title: '角色',
             key: 'roles',
         },
         {
@@ -242,7 +224,6 @@ const table = ref<{
             title: '操作',
             key: 'actions',
             sortable: false,
-            align: 'center',
         },
     ],
 });
@@ -250,17 +231,11 @@ const table = ref<{
 const listAccounts = async () => {
     inProgress.value = true;
     try {
-        table.value.data = await AccountService.list();
+        table.value.data = await AccountsService.list();
     } catch {
         notifierStore.error({ content: '取得帳號列表失敗' });
     }
     inProgress.value = false;
-};
-
-const showAddAccount = () => {
-    if (addAccountRef.value) {
-        addAccountRef.value.show();
-    }
 };
 
 const showDetail = (data: Account.Account, editable = false) => {
@@ -270,14 +245,14 @@ const showDetail = (data: Account.Account, editable = false) => {
 };
 
 const showEnableAccount = (data: Account.Account) => {
-    if (havePermissionTo.value.updateAccount && data.id !== authStore.state.account.id) {
-        EnableAccountRef.value?.show(data);
+    if (havePermissionTo.value.updateAccount && !isSelf(data.id)) {
+        enableAccountRef.value?.show(data);
     }
 };
 
 const showDelete = (data: Account.Account) => {
-    if (dialogDeleteRef.value) {
-        dialogDeleteRef.value.show(data);
+    if (havePermissionTo.value.deleteAccount && !isSelf(data.id)) {
+        deleteAccountRef.value?.show(data);
     }
 };
 

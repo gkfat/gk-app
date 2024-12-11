@@ -7,7 +7,6 @@
         permanent
         theme="dark"
         :rail="rail"
-        @click="rail = false"
     >
         <AppAvatar>
             <template #append>

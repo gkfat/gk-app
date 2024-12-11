@@ -4,7 +4,7 @@ import { request } from './util/agent';
 
 const agent = request('/api/v1/accounts');
 
-export class AccountService {
+export class AccountsService {
     static async me(): Promise<Account.Me.Response> {
         return agent({
             method: 'GET',
@@ -23,6 +23,23 @@ export class AccountService {
         return agent({
             method: 'PUT',
             url: `/${id}/enable`,
+        });
+    }
+
+    static async updateRoles(id: number, roleIds: number[]) {
+        return agent({
+            method: 'PUT',
+            url: `/${id}/roles`,
+            data: {
+                roleIds
+            }
+        });
+    }
+
+    static async delete(id: number) {
+        return agent({
+            method: 'DELETE',
+            url: `/${id}`,
         });
     }
 }

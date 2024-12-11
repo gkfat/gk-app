@@ -83,10 +83,11 @@ export class AccountsService {
     async findOne(id: number) {
         const account = await this.accountRepository.findOne({
             where: { id },
-            relations: { roles: true }, 
+            relations: { roles: true },
+            withDeleted: false,
         });
 
-        const getPermissions = getPermissionsByRoles(account.roles);
+        const getPermissions = account ? getPermissionsByRoles(account.roles) : [];
 
         return {
             ...account,
@@ -117,6 +118,17 @@ export class AccountsService {
         account.enabled = !account.enabled;
 
         await this.accountRepository.save(account);
+    }
+
+    async deleteAccount(id: number) {
+        await this.entityManager.transaction(async (trx) => {
+            const accountAuth = await trx.findBy(AccountAuth, { account_id: id });
+            await trx.remove(accountAuth);
+
+            const account = await trx.findOneBy(Account, { id });
+
+            await trx.remove(account);
+        });
     }
 
 }
