@@ -21,4 +21,16 @@ export const Permissions = {
      * 權限相關
      */
     privilege: { roles: { get: 'privilege.roles.get' } },
+
+    /**
+     * Portfolio 相關
+     */
+    portfolio: {
+        portfolios: {
+            get: 'portfolio.portfolios.get',
+            add: 'portfolio.portfolios.add',
+            update: 'portfolio.portfolios.update',
+            delete: 'portfolio.portfolios.delete',
+        },
+    },
 };

@@ -1,3 +1,4 @@
+import { Portfolio } from 'src/modules/portfolios/enities/portfolio.entity';
 import { Role } from 'src/modules/roles/entities/role.entity';
 import {
     Column,
@@ -56,5 +57,8 @@ export class Account {
 
     @OneToMany(() => AccountAuth, (auth) => auth.account, { cascade: true })
         auths: AccountAuth[];
+
+    @OneToMany(() => Portfolio, (portfolio) => portfolio.account, { cascade: true })
+        portfolios: Portfolio[];
 }
 

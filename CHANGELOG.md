@@ -14,3 +14,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 新增註冊、登入功能
 - 新增 Google login
 - 新增會員管理 panel
+- 新增 portfolio API

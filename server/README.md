@@ -12,7 +12,7 @@ run database & redis
 
 ```shell
 # for local dev
-docker compose --env-file .env.development -p got2do up -d
+docker compose -p got2do up -d
 ```
 
 migration
