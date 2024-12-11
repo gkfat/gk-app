@@ -9,9 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 建立 Got Todo App server
-- 建立 Got Todo App client
-- 新增註冊、登入功能
-- 新增 Google login
-- 新增會員管理 panel
-- 新增 portfolio API
+- Server
+  - Swagger UI
+  - Database connection setting
+  - Seeds script
+  - JWT token validation & Auth guard
+  - RBAC guard
+  - Auth API: signup / login / Google login
+  - Accounts API: CRUD / update roles
+  - Privileges API: list roles
+  - Portfolios API: portfolio C / trade records C
+- Client
+  - Layout
+  - Signup / login / logout / Google login
+  - Accounts management
