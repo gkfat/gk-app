@@ -1,4 +1,7 @@
-import { IsArray } from 'class-validator';
+import {
+    IsArray,
+    IsNumber,
+} from 'class-validator';
 
 import {
     ApiProperty,
@@ -8,6 +11,7 @@ import {
 @ApiSchema({ name: 'UpdateAccountRolesRequest' })
 export class UpdateAccountRolesDto {
     @IsArray()
-    @ApiProperty()
+    @IsNumber({}, { each: true })
+    @ApiProperty({ type: [Number] })
         roleIds: number[];
 }

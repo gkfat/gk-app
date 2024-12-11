@@ -33,4 +33,7 @@ start server
 
 ```shell
 pnpm dev
+
+// server running on http://localhost:3000
+// api documentation on http://localhost:3000/documentation
 ```

@@ -10,19 +10,21 @@ import {
     Res,
     UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { Role } from './entities/role.entity';
 import { RolesService } from './roles.service';
 
+@ApiBearerAuth('Authorization')
 @Controller('roles')
 export class RolesController {
     constructor(
         private readonly rolesService: RolesService,
     ) {}
 
+    @Get()
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.privilege.roles.get)
-    @Get()
     async list(@Res() res: Response<Role[]>) {
         const roles = await this.rolesService.findAll();
 

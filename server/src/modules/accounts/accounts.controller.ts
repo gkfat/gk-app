@@ -23,6 +23,7 @@ import {
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { AuthService } from '../auth/auth.service';
 import { CreateAccountDto } from './dto/create-account.dto';
@@ -30,6 +31,7 @@ import { UpdateAccountRolesDto } from './dto/update-account-roles.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
 
+@ApiBearerAuth('Authorization')
 @Controller('accounts')
 export class AccountsController {
     constructor(
@@ -38,25 +40,18 @@ export class AccountsController {
         private readonly cacheService: CacheService,
     ) {}
 
-    @Post('create')
-    async createAccount(@Body() createAccountDto: CreateAccountDto, @Res() res: Response<Account>) {
-        const account =  await this.accountsService.create(createAccountDto);
-
-        return res.json(account);
-    }
-
+    @Get()
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.get)
-    @Get()
-    async list(@Res() res: Response) {
+    async list(@Res() res: Response<Account[]>) {
         const accounts = await this.accountsService.findAll();
 
         return res.json(accounts);
     }
 
+    @Get('me')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.me.get)
-    @Get('me')
     async getAccount(@$TokenPayload() payload: ITokenPayload | null, @Res() res: Response) {
         const { scope: { sub } } = payload;
 
@@ -69,9 +64,18 @@ export class AccountsController {
         return res.json(findAccount);
     }
 
+    @Post('create')
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.account.accounts.add)
+    async createAccount(@Body() createAccountDto: CreateAccountDto, @Res() res: Response<Account>) {
+        const account =  await this.accountsService.create(createAccountDto);
+
+        return res.json(account);
+    }
+
+    @Put(':id/enable')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.update)
-    @Put(':id/enable')
     async enableAccount(@Param('id') id: string, @Res() res: Response) {
         const findAccount = await this.accountsService.findOne(+id);
 
@@ -84,9 +88,9 @@ export class AccountsController {
         return res.sendStatus(HttpStatus.OK);
     }
 
+    @Put(':id/roles')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.update)
-    @Put(':id/roles')
     async updateRoles(@Param('id') id: string, @Body() reqBody: UpdateAccountRolesDto, @Res() res: Response) {
         const findAccount = await this.accountsService.findOne(+id);
 
@@ -101,9 +105,9 @@ export class AccountsController {
         return res.sendStatus(HttpStatus.OK);
     }
 
+    @Put(':id/update')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.me.update)
-    @Put(':id/update')
     async update(@$TokenPayload() payload: ITokenPayload, @Param('id') id: string, @Body() reqBody: UpdateAccountDto, @Res() res: Response) {
         const { scope: { sub } } = payload;
 

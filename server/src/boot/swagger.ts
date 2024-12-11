@@ -6,9 +6,17 @@ import {
 
 const initSwagger = (app: INestApplication) => {
     const config = new DocumentBuilder()
-        .setTitle('NestApp API')
+        .setTitle('Got2do API')
         .setDescription('API documentation')
         .setVersion('1.0')
+        .setBasePath('documentation')
+        .addBearerAuth({
+            type: 'http',
+            scheme: 'Bearer',
+            bearerFormat: 'JWT',
+            in: 'header',
+            name: 'Authorization',
+        }, 'Authorization')
         .build();
 
     const documentFactory = () => SwaggerModule.createDocument(app, config);

@@ -12,6 +12,7 @@ async function startServer() {
 
     await app.listen(+port);
     console.log(`server running on http://localhost:${port}`);
+    console.log(`api documentation on http://localhost:${port}/documentation`);
 }
 
 startServer();
