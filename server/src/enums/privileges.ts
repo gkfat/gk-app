@@ -1,5 +1,5 @@
 import { Permissions } from './permissions';
-import { Roles } from './roles.enum';
+import { EnumRoles } from './roles.enum';
 
 const {
     account, dashboard, privilege, portfolio,
@@ -12,7 +12,7 @@ const basicPermissions = [
 ];
 
 export const Privileges = {
-    [Roles.MEMBER]: [
+    [EnumRoles.MEMBER]: [
         ...basicPermissions,
 
         // Portfolio

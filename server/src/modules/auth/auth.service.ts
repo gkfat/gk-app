@@ -1,8 +1,12 @@
 import Redis from 'ioredis';
 import ms from 'ms';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
-import { LoginType } from 'src/enums/login-type.enum';
-import { Roles } from 'src/enums/roles.enum';
+import { EnumLoginType } from 'src/enums/login-type.enum';
+import { EnumRoles } from 'src/enums/roles.enum';
+import { CacheService } from 'src/middlewares/cache.service';
+import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
+import { Account } from 'src/modules/accounts/entities/account.entity';
+import { Role } from 'src/modules/privileges/entities/role.entity';
 import { verifyPasswordLogin } from 'src/utils/credential';
 import { getPermissionsByRoles } from 'src/utils/permissions';
 import { getBase64Uuid } from 'src/utils/uuid';
@@ -16,10 +20,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { CacheService } from '../../middlewares/cache.service';
-import { AccountAuth } from '../accounts/entities/account-auth.entity';
-import { Account } from '../accounts/entities/account.entity';
-import { Role } from '../roles/entities/role.entity';
 import { LoginOrCreateDto } from './dto/login-or-create.dto';
 import { OAuthService } from './oauth.service';
 
@@ -42,7 +42,7 @@ export class AuthService {
             type, email, 
         } = reqBody;
 
-        if (type === LoginType.PASSWORD) {
+        if (type === EnumLoginType.PASSWORD) {
             const findAuth = await this.entityManager.findOne(AccountAuth,
                 {
                     where: {
@@ -87,7 +87,7 @@ export class AuthService {
             // 找不到 auth data, 自動建立帳號
             if (!findAuth) {
                 const findMemberRole = await this.entityManager.findOne(Role, {
-                    where: { role: Roles.MEMBER },
+                    where: { role: EnumRoles.MEMBER },
                     withDeleted: false, 
                 });
 

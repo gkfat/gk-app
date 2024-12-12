@@ -1,4 +1,4 @@
-export const EnumTradeDirection = {
-    BUY: 'B',
-    SELL: 'S',
+export enum EnumTradeDirection {
+    BUY = 'buy',
+    SELL = 'sell',
 };

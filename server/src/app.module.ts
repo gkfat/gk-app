@@ -13,7 +13,7 @@ import { MiddlewaresModule } from './middlewares/middlewares.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PortfoliosModule } from './modules/portfolios/portfolios.module';
-import { RolesModule } from './modules/roles/roles.module';
+import { PrivilegesModule } from './modules/privileges/privileges.module';
 
 const envFilePath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env'; 
 
@@ -42,7 +42,7 @@ const envFilePath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.en
         DatabaseModule,
         AuthModule,
         AccountsModule,
-        RolesModule,
+        PrivilegesModule,
         PortfoliosModule,
     ],
 })

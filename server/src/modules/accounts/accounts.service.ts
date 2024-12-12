@@ -1,5 +1,6 @@
-import { LoginType } from 'src/enums/login-type.enum';
-import { Roles } from 'src/enums/roles.enum';
+import { EnumLoginType } from 'src/enums/login-type.enum';
+import { EnumRoles } from 'src/enums/roles.enum';
+import { Role } from 'src/modules/privileges/entities/role.entity';
 import { hashPassword } from 'src/utils/credential';
 import { getPermissionsByRoles } from 'src/utils/permissions';
 import {
@@ -12,7 +13,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { SignUpDto } from '../auth/dto/sign-up.dto';
-import { Role } from '../roles/entities/role.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountAuth } from './entities/account-auth.entity';
@@ -33,14 +33,14 @@ export class AccountsService {
             password,
         } = createAccountDto;
 
-        const findMemberRole = await this.entityManager.findOne(Role, { where: { role: Roles.MEMBER } });
+        const findMemberRole = await this.entityManager.findOne(Role, { where: { role: EnumRoles.MEMBER } });
 
         const newAccount = new Account({
             ...createAccountDto,
             roles: [findMemberRole],
             auths: [
                 new AccountAuth({
-                    type: LoginType.PASSWORD, identifier: email, credential: hashPassword(password), 
+                    type: EnumLoginType.PASSWORD, identifier: email, credential: hashPassword(password), 
                 }),
             ],
         });
@@ -65,7 +65,7 @@ export class AccountsService {
 
         account.name = name;
         
-        const findPasswordTypeAuth = account.auths.find((auth) => auth.type === LoginType.PASSWORD);
+        const findPasswordTypeAuth = account.auths.find((auth) => auth.type === EnumLoginType.PASSWORD);
 
         if (findPasswordTypeAuth) {
             findPasswordTypeAuth.credential = hashPassword(password);
@@ -109,7 +109,7 @@ export class AccountsService {
 
         account.roles = findRoles;
 
-        await this.accountRepository.save(account);
+        return await this.accountRepository.save(account);
     }
 
     async enableAccount(id: number) {
@@ -117,17 +117,17 @@ export class AccountsService {
 
         account.enabled = !account.enabled;
 
-        await this.accountRepository.save(account);
+        return await this.accountRepository.save(account);
     }
 
     async deleteAccount(id: number) {
-        await this.entityManager.transaction(async (trx) => {
+        return await this.entityManager.transaction(async (trx) => {
             const accountAuth = await trx.findBy(AccountAuth, { account_id: id });
             await trx.remove(accountAuth);
 
             const account = await trx.findOneBy(Account, { id });
 
-            await trx.remove(account);
+            return await trx.remove(account);
         });
     }
 

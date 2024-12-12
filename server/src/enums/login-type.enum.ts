@@ -1,4 +1,4 @@
-export const LoginType = {
-    PASSWORD: 'password',
-    GOOGLE: 'google',
+export enum EnumLoginType {
+    PASSWORD = 'password',
+    GOOGLE = 'google',
 };

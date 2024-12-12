@@ -1,5 +1,4 @@
-export const Roles = {
-    SUPER: 'super',
-
-    MEMBER: 'member',
+export enum EnumRoles {
+    SUPER = 'super',
+    MEMBER = 'member',
 };

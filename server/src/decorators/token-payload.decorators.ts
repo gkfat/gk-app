@@ -1,4 +1,4 @@
-import { Role } from 'src/modules/roles/entities/role.entity';
+import { Role } from 'src/modules/privileges/entities/role.entity';
 
 import {
     createParamDecorator,

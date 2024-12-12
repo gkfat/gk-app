@@ -10,7 +10,11 @@ import { ConfigService } from '@nestjs/config';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { CreateTradeRecordDto } from './dto/create-trade-record.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
-import { TickerDto } from './dto/ticker.dto';
+import { QuoteTicker } from './dto/quote-ticker.dto';
+import {
+    GetTickersResponse,
+    TickerDto,
+} from './dto/ticker.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import { TradeRecord } from './enities/trade-record.entity';
 
@@ -25,6 +29,13 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
         realized_profit_loss,
         total_cost,
     };
+}
+
+function toTickerDto(data: { symbol: string, name: string }): TickerDto {
+    return new TickerDto({
+        symbol: data.symbol,
+        name: data.name,
+    });
 }
 
 @Injectable()
@@ -46,14 +57,19 @@ export class PortfoliosService {
         return result.map(toPortfolioDto);
     }
 
-    async listTickers() {
+    async listTickers(): Promise<GetTickersResponse> {
         const res = await this.restClient.stock.intraday.tickers({
             type: 'EQUITY',
             exchange: 'TWSE',
             isNormal: true,
         });
 
-        return res;
+        return {
+            type: res.type,
+            exchange: res.exchange,
+            date: res.date,
+            tickers: res.data.map(toTickerDto),
+        };
     }
 
     async createPortfolio(accountId: number, createPortfolioDto: CreatePortfolioDto) {
@@ -63,9 +79,9 @@ export class PortfoliosService {
             initial_balance: createPortfolioDto.initialBalance,
         });
 
-        const res = await this.entityManager.save(newPortfolio);
+        const portfolio = await this.entityManager.save(newPortfolio);
 
-        return res;
+        return toPortfolioDto(portfolio);
     }
 
     async createTradeRecord(createTradeRecordDto: CreateTradeRecordDto) {
@@ -100,10 +116,11 @@ export class PortfoliosService {
     async quoteTicker(ticker: string) {
         const res = await this.restClient.stock.intraday.quote({ symbol: ticker });
 
-        return new TickerDto({
+        return new QuoteTicker({
             date: res.date,
             type: res.type,
             exchange: res.exchange,
+            symbol: res.symbol,
             name: res.name,
             openPrice: res.openPrice,
             closePrice: res.closePrice,

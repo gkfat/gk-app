@@ -9,14 +9,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 
 @Injectable()
-export class RolesService {
+export class PrivilegesService {
     constructor(
         @InjectRepository(Role)
         private rolesRepository: Repository<Role>,
         private readonly entityManager: EntityManager,
     ) {}
 
-    async findAll() {
+    async listRoles() {
         return await this.rolesRepository.find();
     }
 }

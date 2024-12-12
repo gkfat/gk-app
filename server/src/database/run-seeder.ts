@@ -3,7 +3,7 @@ import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
 import { Account } from 'src/modules/accounts/entities/account.entity';
 import { Portfolio } from 'src/modules/portfolios/enities/portfolio.entity';
 import { TradeRecord } from 'src/modules/portfolios/enities/trade-record.entity';
-import { Role } from 'src/modules/roles/entities/role.entity';
+import { Role } from 'src/modules/privileges/entities/role.entity';
 import {
     DataSource,
     DataSourceOptions,

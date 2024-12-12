@@ -1,8 +1,8 @@
-import { LoginType } from 'src/enums/login-type.enum';
-import { Roles } from 'src/enums/roles.enum';
+import { EnumLoginType } from 'src/enums/login-type.enum';
+import { EnumRoles } from 'src/enums/roles.enum';
 import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
 import { Account } from 'src/modules/accounts/entities/account.entity';
-import { Role } from 'src/modules/roles/entities/role.entity';
+import { Role } from 'src/modules/privileges/entities/role.entity';
 import { hashPassword } from 'src/utils/credential';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
@@ -12,7 +12,7 @@ export class AccountSeeder implements Seeder {
         dataSource: DataSource,
     ) {
         const roleRepository = dataSource.getRepository(Role);
-        const roles = Object.values(Roles);
+        const roles = Object.values(EnumRoles);
 
         for (const role of roles) {
             const newRole = new Role({ role });
@@ -27,10 +27,10 @@ export class AccountSeeder implements Seeder {
             ? hashPassword(process.env.SUPER_PASSWORD)
             : hashPassword('super');
 
-        const accountRole = await roleRepository.findOneBy({ role: Roles.SUPER });
+        const accountRole = await roleRepository.findOneBy({ role: EnumRoles.SUPER });
 
         const accountAuth = new AccountAuth({
-            type: LoginType.PASSWORD,
+            type: EnumLoginType.PASSWORD,
             identifier: email,
             credential: password,
         });

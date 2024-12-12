@@ -15,3 +15,9 @@ export class UpdateAccountDto {
     @ApiProperty()
         password: string;
 }
+
+@ApiSchema({ name: 'UpdateAccountResponse' })
+export class UpdateAccountResponseDto {
+    @ApiProperty()
+        token: string;
+}

@@ -8,6 +8,9 @@ async function initNest () {
 
     app.setGlobalPrefix('api/v1');
     app.useGlobalPipes(new ValidationPipe());
+
+    // graceful shutdown
+    app.enableShutdownHooks();
     
     return app;
 }

@@ -42,7 +42,11 @@ export class Portfolio {
     @Column({ type: 'bigint' })
         account_id: number;
 
-    @ApiProperty()
+    @ApiProperty({ description: '幣別' })
+    @Column()
+        currency: string;
+            
+    @ApiProperty({ description: '初始資金' })
     @Column()
         initial_balance: number;
 

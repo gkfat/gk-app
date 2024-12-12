@@ -3,12 +3,21 @@ import {
     ApiSchema,
 } from '@nestjs/swagger';
 
-@ApiSchema({ name: 'GetTickerResponse' })
+@ApiSchema({ name: 'TickerDto' })
 export class TickerDto {
     constructor(data: Partial<TickerDto>) {
         Object.assign(this, data);
     }
+    
+    @ApiProperty({ example: '2330' })
+        symbol: string;
 
+    @ApiProperty({ example: '台積電' })
+        name: string;
+}
+
+@ApiSchema({ name: 'GetTickersResponse' })
+export class GetTickersResponse {
     @ApiProperty({ example: '2024-12-11' })
         date: string;
 
@@ -17,19 +26,7 @@ export class TickerDto {
 
     @ApiProperty({ example: 'TWSE' })
         exchange: string;
-    
-    @ApiProperty()
-        name: string;
 
-    @ApiProperty({ name: '開盤價' })
-        openPrice: number;
-    
-    @ApiProperty({ name: '收盤價' })
-        closePrice: number;
-
-    @ApiProperty({ name: '現價' })
-        lastPrice: number;
-
-    @ApiProperty({ name: '最後更新時間' })
-        lastUpdated: number;
+    @ApiProperty({ type: [TickerDto] })
+        tickers: TickerDto[];
 }

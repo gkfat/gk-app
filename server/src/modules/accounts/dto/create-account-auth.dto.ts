@@ -1,7 +1,7 @@
-import { LoginType } from 'src/enums/login-type.enum';
+import { EnumLoginType } from 'src/enums/login-type.enum';
 
 export class CreateAccountAuthDto {
-    type: typeof LoginType[keyof typeof LoginType];
+    type: EnumLoginType;
 
     /** account email / oauth sub */
     identifier: string;

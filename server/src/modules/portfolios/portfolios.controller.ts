@@ -26,7 +26,8 @@ import {
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { CreateTradeRecordDto } from './dto/create-trade-record.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
-import { TickerDto } from './dto/ticker.dto';
+import { QuoteTicker } from './dto/quote-ticker.dto';
+import { GetTickersResponse } from './dto/ticker.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import { TradeRecord } from './enities/trade-record.entity';
 import { PortfoliosService } from './portfolios.service';
@@ -53,6 +54,7 @@ export class PortfoliosController {
     @Post('create')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.add)
+    @ApiOkResponse({ type: Portfolio })
     async createPortfolio(
         @$TokenPayload() payload: ITokenPayload | null,
         @Body() createPortfolioDto: CreatePortfolioDto,
@@ -68,6 +70,7 @@ export class PortfoliosController {
     @Post('trade-records/create')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.add)
+    @ApiOkResponse({ type: TradeRecord })
     async createTradeRecord(
         @$TokenPayload() payload: ITokenPayload | null,
         @Body() createTradeRecord: CreateTradeRecordDto,
@@ -91,7 +94,8 @@ export class PortfoliosController {
     @Get('tickers')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.get)
-    async listTickers(@Res() res: Response) {
+    @ApiOkResponse({ type: GetTickersResponse })
+    async listTickers(@Res() res: Response<GetTickersResponse>) {
         const result = await this.portfoliosService.listTickers();
 
         return res.json(result);
@@ -100,8 +104,9 @@ export class PortfoliosController {
     @Get('tickers/:ticker/quote')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.get)
-    async quoteTicler(@Param('ticker') id: string, @Res() res: Response<TickerDto>) {
-        const result = await this.portfoliosService.quoteTicker(id);
+    @ApiOkResponse({ type: QuoteTicker })
+    async quoteTicler(@Param('ticker') ticker: string, @Res() res: Response<QuoteTicker>) {
+        const result = await this.portfoliosService.quoteTicker(ticker);
 
         return res.json(result);
     }
