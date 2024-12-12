@@ -1,4 +1,4 @@
-export enum EnumRoles {
+export enum EnumRole {
     SUPER = 'super',
     MEMBER = 'member',
 };

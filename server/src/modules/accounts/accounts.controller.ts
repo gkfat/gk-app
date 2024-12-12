@@ -4,7 +4,7 @@ import {
     $TokenPayload,
     ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
-import { Permissions } from 'src/enums/permissions';
+import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
 import { CacheService } from 'src/middlewares/cache.service';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';

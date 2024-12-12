@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
-import { Permissions } from 'src/enums/permissions';
+import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 

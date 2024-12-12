@@ -4,7 +4,7 @@ import {
     IsNumber,
     IsString,
 } from 'class-validator';
-import { EnumTradeDirection } from 'src/enums/trade-direction';
+import { EnumTradeDirection } from 'src/enums';
 
 import {
     ApiProperty,

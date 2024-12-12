@@ -7,7 +7,7 @@ import {
     MinLength,
     ValidateIf,
 } from 'class-validator';
-import { EnumLoginType } from 'src/enums/login-type.enum';
+import { EnumLoginType } from 'src/enums';
 
 import {
     ApiProperty,

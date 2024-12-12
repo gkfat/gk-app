@@ -1,6 +1,8 @@
-import { Permissions } from 'src/enums/permissions';
-import { Privileges } from 'src/enums/privileges';
-import { EnumRoles } from 'src/enums/roles.enum';
+import {
+    EnumRole,
+    Permissions,
+    Privileges,
+} from 'src/enums';
 import { Role } from 'src/modules/privileges/entities/role.entity';
 
 import { flattenValues } from './object';
@@ -9,7 +11,7 @@ function getPermissionsByRoles(roles: Role[]) {
     const permissionsSet = new Set<string>();
 
     roles.forEach((role) => {
-        if (role.role === EnumRoles.SUPER) {
+        if (role.role === EnumRole.SUPER) {
             const permissions = flattenValues(Permissions);
             permissions.forEach((p) => permissionsSet.add(p));
         }

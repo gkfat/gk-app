@@ -1,4 +1,4 @@
-import { EnumRoles } from 'src/enums/roles.enum';
+import { EnumRole } from 'src/enums';
 import { Account } from 'src/modules/accounts/entities/account.entity';
 import {
     Column,
@@ -24,9 +24,9 @@ export class Role {
         id: number;
 
     @Column({
-        unique: true, enum: EnumRoles, 
+        unique: true, enum: EnumRole, 
     })
-    @ApiProperty({ enum: EnumRoles })
+    @ApiProperty({ enum: EnumRole })
         role: string;
 
     @ManyToMany(() => Account, (account) => account.roles)

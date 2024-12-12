@@ -1,5 +1,3 @@
-import { IsNumber } from 'class-validator';
-
 import {
     ApiProperty,
     ApiSchema,
@@ -9,16 +7,16 @@ import { Portfolio } from '../enities/portfolio.entity';
 
 @ApiSchema({ name: 'PortfolioDto' })
 export class PortfolioDto extends Portfolio {
-    @IsNumber()
-    @ApiProperty({ description: '未實現損益(市值加總-賣出成本加總)' })
-        unrealized_gain_loss: number;
+    @ApiProperty({ description: '投資標的的總市值' })
+        market_value: number;
 
-    @IsNumber()
+    @ApiProperty({ description: '投資標的總成本' })
+        cost_basis: number;
+
+    @ApiProperty({ description: '未實現損益(市值加總-賣出成本加總)' })
+        unrealized_profit_loss: number;
+
     @ApiProperty({ description: '已實現損益(賣出價加總-賣出成本加總)' })
         realized_profit_loss: number;
-
-    @IsNumber()
-    @ApiProperty({ description: '總成本(買入總價+手續費+賣出稅加總)' })
-        total_cost: number;
 }
 

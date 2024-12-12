@@ -46,9 +46,9 @@ export class Portfolio {
     @Column()
         currency: string;
             
-    @ApiProperty({ description: '初始資金' })
+    @ApiProperty({ description: '現金' })
     @Column()
-        initial_balance: number;
+        cash: number;
 
     @ManyToOne(() => Account, (account) => account.portfolios)
     @JoinColumn({ name: 'account_id' })

@@ -1,4 +1,7 @@
-import { EnumTradeDirection } from 'src/enums/trade-direction';
+import {
+    EnumAssetType,
+    EnumTradeDirection,
+} from 'src/enums';
 import {
     Column,
     CreateDateColumn,
@@ -36,6 +39,10 @@ export class TradeRecord {
     @ApiProperty()
     @PrimaryGeneratedColumn()
         id: number;
+
+    @ApiProperty({ description: '交易類型' })
+    @Column({ enum: EnumAssetType })
+        asset_type: EnumAssetType;
 
     @ApiProperty({ description: '股票代號' })
     @Column()

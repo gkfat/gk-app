@@ -1,4 +1,4 @@
-import { EnumLoginType } from 'src/enums/login-type.enum';
+import { EnumLoginType } from 'src/enums';
 
 export class CreateAccountAuthDto {
     type: EnumLoginType;

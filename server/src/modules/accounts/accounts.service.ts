@@ -1,5 +1,7 @@
-import { EnumLoginType } from 'src/enums/login-type.enum';
-import { EnumRoles } from 'src/enums/roles.enum';
+import {
+    EnumLoginType,
+    EnumRole,
+} from 'src/enums';
 import { Role } from 'src/modules/privileges/entities/role.entity';
 import { hashPassword } from 'src/utils/credential';
 import { getPermissionsByRoles } from 'src/utils/permissions';
@@ -33,7 +35,7 @@ export class AccountsService {
             password,
         } = createAccountDto;
 
-        const findMemberRole = await this.entityManager.findOne(Role, { where: { role: EnumRoles.MEMBER } });
+        const findMemberRole = await this.entityManager.findOne(Role, { where: { role: EnumRole.MEMBER } });
 
         const newAccount = new Account({
             ...createAccountDto,

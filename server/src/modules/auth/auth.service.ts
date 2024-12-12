@@ -1,8 +1,10 @@
 import Redis from 'ioredis';
 import ms from 'ms';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
-import { EnumLoginType } from 'src/enums/login-type.enum';
-import { EnumRoles } from 'src/enums/roles.enum';
+import {
+    EnumLoginType,
+    EnumRole,
+} from 'src/enums';
 import { CacheService } from 'src/middlewares/cache.service';
 import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
 import { Account } from 'src/modules/accounts/entities/account.entity';
@@ -87,7 +89,7 @@ export class AuthService {
             // 找不到 auth data, 自動建立帳號
             if (!findAuth) {
                 const findMemberRole = await this.entityManager.findOne(Role, {
-                    where: { role: EnumRoles.MEMBER },
+                    where: { role: EnumRole.MEMBER },
                     withDeleted: false, 
                 });
 

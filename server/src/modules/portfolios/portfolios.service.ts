@@ -19,15 +19,17 @@ import { Portfolio } from './enities/portfolio.entity';
 import { TradeRecord } from './enities/trade-record.entity';
 
 function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
-    const unrealized_gain_loss = 0;
+    const unrealized_profit_loss = 0;
     const realized_profit_loss = 0;
-    const total_cost = 0;
+    const cost_basis = 0;
+    const market_value = 0;
   
     return {
         ...portfolio,
-        unrealized_gain_loss,
+        unrealized_profit_loss,
         realized_profit_loss,
-        total_cost,
+        cost_basis,
+        market_value,
     };
 }
 
@@ -76,7 +78,7 @@ export class PortfoliosService {
         const newPortfolio = new Portfolio({
             account_id: accountId,
             title: createPortfolioDto.title,
-            initial_balance: createPortfolioDto.initialBalance,
+            cash: createPortfolioDto.initialBalance,
         });
 
         const portfolio = await this.entityManager.save(newPortfolio);
