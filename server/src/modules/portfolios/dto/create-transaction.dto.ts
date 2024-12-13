@@ -101,6 +101,7 @@ export class FXTransactionDto {
         targetQuantity: number;
 }
 
+@ApiExtraModels(StockTransactionDto, CashTransactionDto, FXTransactionDto)
 @ApiSchema({ name: 'CreateTransactionRequest' })
 export class CreateTransactionDto {
     @IsNumber()

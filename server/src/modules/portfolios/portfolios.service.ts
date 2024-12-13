@@ -1,35 +1,42 @@
+import {
+  EnumAssetType,
+  EnumCashFlow,
+  EnumTradeDirection,
+} from 'src/enums';
 import { EntityManager } from 'typeorm';
 
 import {
-    RestClient,
-    WebSocketClient,
+  RestClient,
+  WebSocketClient,
 } from '@fugle/marketdata';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import {
-    CashPositionDto, FXPositionDto, PortfolioDto, StockPositionDto, 
+  CashTransactionDto,
+  CreateTransactionDto,
+  FXTransactionDto,
+  StockTransactionDto,
+} from './dto/create-transaction.dto';
+import {
+  CashPositionDto,
+  FXPositionDto,
+  PortfolioDto,
+  StockPositionDto,
 } from './dto/portfolio.dto';
 import { QuoteTicker } from './dto/quote-ticker.dto';
 import {
-    GetTickersResponse,
-    TickerDto,
+  GetTickersResponse,
+  TickerDto,
 } from './dto/ticker.dto';
+import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-    CashTradeRecord,
-    FXTradeRecord, StockTradeRecord, 
+  CashTradeRecord,
+  FXTradeRecord,
+  StockTradeRecord,
 } from './enities/trade-record.entity';
-import {
-    CashTransactionDto,
-    CreateTransactionDto, FXTransactionDto, 
-    StockTransactionDto,
-} from './dto/create-transaction.dto';
-import {
-    EnumAssetType, EnumCashFlow, EnumTradeDirection, 
-} from 'src/enums';
-import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 
 function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
     const costBasis = 0;
@@ -127,11 +134,9 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
         ...portfolio,
         costBasis,
         realizedProfitLoss,
-        positions: [
-            ...cashPositions,
-            ...stockPositions,
-            ...fxPositions,
-        ],
+        cashPositions,
+        stockPositions,
+        fxPositions,
     };
 }
 

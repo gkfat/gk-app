@@ -1,14 +1,19 @@
+import { EnumAssetType } from 'src/enums';
+
 import {
-    ApiProperty,
-    ApiSchema,
-    getSchemaPath,
+  ApiProperty,
+  ApiSchema,
+  OmitType,
 } from '@nestjs/swagger';
 
 import { Portfolio } from '../enities/portfolio.entity';
-import { EnumAssetType } from 'src/enums';
 import {
-    CashTradeRecord, FXTradeRecord, StockTradeRecord, 
+  CashTradeRecord,
+  FXTradeRecord,
+  StockTradeRecord,
 } from '../enities/trade-record.entity';
+
+@ApiSchema({ name: 'PositionDto' })
 export class PositionDto {
     constructor(data: Partial<PositionDto>) {
         Object.assign(this, data);
@@ -30,7 +35,9 @@ export class CashPositionDto extends PositionDto {
     @ApiProperty({ description: '持有數量' })
         quantity: number;
 
-    @ApiProperty({ description: '交易紀錄' })
+    @ApiProperty({
+        description: '交易紀錄', type: [CashTradeRecord], 
+    })
         tradeRecords: CashTradeRecord[];
 }
 
@@ -56,7 +63,9 @@ export class StockPositionDto extends PositionDto {
     @ApiProperty({ description: '已實現損益' })
         realizedProfitLoss: number;
 
-    @ApiProperty({ description: '交易紀錄' })
+    @ApiProperty({
+        description: '交易紀錄', type: [StockTradeRecord], 
+    })
         tradeRecords: StockTradeRecord[];
 }
 
@@ -82,12 +91,18 @@ export class FXPositionDto extends PositionDto {
     @ApiProperty({ description: '已實現損益(本金幣別)' })
         realizedProfitLoss: number;
 
-    @ApiProperty({ description: '交易紀錄' })
+    @ApiProperty({
+        description: '交易紀錄', type: [FXTradeRecord],  
+    })
         tradeRecords: FXTradeRecord[];
 }
 
 @ApiSchema({ name: 'PortfolioDto' })
-export class PortfolioDto extends Portfolio {
+export class PortfolioDto extends OmitType(Portfolio, [
+    'stockTradeRecords',
+    'cashTradeRecords',
+    'fxTradeRecords',
+] as const) {
     @ApiProperty({ description: '總成本' })
         costBasis: number;
 
@@ -95,16 +110,18 @@ export class PortfolioDto extends Portfolio {
         realizedProfitLoss: number;
 
     @ApiProperty({
-        description: '持有部位',
-        type: 'array',
-        items: {
-            oneOf: [
-                { $ref: getSchemaPath(CashPositionDto) },
-                { $ref: getSchemaPath(StockPositionDto) },
-                { $ref: getSchemaPath(FXPositionDto) },
-            ],
-        },
+        description: '現金部位', type: [CashPositionDto], 
     })
-        positions: (CashPositionDto | StockPositionDto | FXPositionDto)[];
+        cashPositions: CashPositionDto[];
+        
+    @ApiProperty({
+        description: '股票部位', type: [StockPositionDto], 
+    })
+        stockPositions: StockPositionDto[];
+
+    @ApiProperty({
+        description: '外匯部位', type: [FXPositionDto], 
+    })
+        fxPositions: FXPositionDto[];
 }
 

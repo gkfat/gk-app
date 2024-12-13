@@ -1,30 +1,32 @@
 import { Response } from 'express';
-import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
-    $TokenPayload,
-    ITokenPayload,
+  RequirePermissions,
+} from 'src/decorators/require-permissions.decorators';
+import {
+  $TokenPayload,
+  ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 
 import {
-    Body,
-    Controller,
-    Delete,
-    ForbiddenException,
-    Get,
-    NotFoundException,
-    Param,
-    Post,
-    Put,
-    Res,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiOkResponse,
-    getSchemaPath,
+  ApiBearerAuth,
+  ApiOkResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
@@ -32,13 +34,14 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
 import { QuoteTicker } from './dto/quote-ticker.dto';
 import { GetTickersResponse } from './dto/ticker.dto';
-import { Portfolio } from './enities/portfolio.entity';
-import { PortfoliosService } from './portfolios.service';
-import {
-    CashTradeRecord,
-    FXTradeRecord, StockTradeRecord, 
-} from './enities/trade-record.entity';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
+import { Portfolio } from './enities/portfolio.entity';
+import {
+  CashTradeRecord,
+  FXTradeRecord,
+  StockTradeRecord,
+} from './enities/trade-record.entity';
+import { PortfoliosService } from './portfolios.service';
 
 @ApiBearerAuth('Authorization')
 @Controller('portfolios')
@@ -62,11 +65,11 @@ export class PortfoliosController {
     @Post('create')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.add)
-    @ApiOkResponse({ type: Portfolio })
+    @ApiOkResponse({ type: PortfolioDto })
     async createPortfolio(
         @$TokenPayload() payload: ITokenPayload | null,
         @Body() createPortfolioDto: CreatePortfolioDto,
-        @Res() res: Response<Portfolio>,
+        @Res() res: Response<PortfolioDto>,
     ) {
         const { scope: { sub } } = payload;
 
@@ -78,12 +81,12 @@ export class PortfoliosController {
     @Put(':id')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.update)
-    @ApiOkResponse({ type: Portfolio })
+    @ApiOkResponse({ type: PortfolioDto })
     async updatePortfolio(
         @$TokenPayload() payload: ITokenPayload | null,
         @Param('id') id: string, 
         @Body() updatePortfolioDto: UpdatePortfolioDto,
-        @Res() res: Response<Portfolio>,
+        @Res() res: Response<PortfolioDto>,
     ) {
         const { scope: { sub } } = payload;
 
