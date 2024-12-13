@@ -32,8 +32,8 @@
 
 <script lang="ts" setup>
 import {
-  computed,
-  ref,
+    computed,
+    ref,
 } from 'vue';
 
 import { useAppStore } from '@/store/app';

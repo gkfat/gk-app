@@ -23,3 +23,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Layout
   - Signup / login / logout / Google login
   - Accounts management
+  - Portfolios management

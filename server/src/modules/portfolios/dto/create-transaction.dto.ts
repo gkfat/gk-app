@@ -1,20 +1,21 @@
 import {
-    IsDateString,
-    IsEnum,
-    IsNotEmpty,
-    IsNumber,
-    IsString,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
 } from 'class-validator';
 import {
-    EnumAssetType,
-    EnumCashFlow,
-    EnumTradeDirection,
+  EnumAssetType,
+  EnumCashFlow,
+  EnumTradeDirection,
 } from 'src/enums';
 
 import {
-    ApiProperty,
-    ApiSchema,
-    getSchemaPath,
+  ApiExtraModels,
+  ApiProperty,
+  ApiSchema,
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 @ApiSchema({ name: 'CashTransactionDto' })

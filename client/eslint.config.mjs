@@ -65,6 +65,7 @@ export default [
                 },
             ],
             'array-element-newline': ['error', { minItems: 3 }],
+            '@typescript-eslint/no-namespace': 'off',
         },
     },
 

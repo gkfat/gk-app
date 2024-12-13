@@ -22,7 +22,10 @@
 
         <v-spacer class="mb-3" />
       
-        <v-card :loading="inProgress" flat>
+        <v-card
+            :loading="inProgress"
+            flat
+        >
             <v-card class="py-4">
                 <v-data-table
                     :headers="table.headers"
@@ -138,8 +141,8 @@
 
 <script lang="ts" setup>
 import {
-  onMounted,
-  ref,
+    onMounted,
+    ref,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
@@ -153,8 +156,8 @@ import { useNotifierStore } from '@/store/notifier';
 import { Account } from '@/types/account';
 import { Common } from '@/types/common';
 import {
-  createDate,
-  timeFormat,
+    createDate,
+    timeFormat,
 } from '@/utils/time';
 import { templateRef } from '@vueuse/core';
 
@@ -182,7 +185,7 @@ const havePermissionTo = ref({
 const inProgress = ref(false);
 const search = ref('');
 
-const isSelf = (id: number) => id === authStore.state.account.id
+const isSelf = (id: number) => id === authStore.state.account.id;
 
 const table = ref<{
     data: Account.Account[],

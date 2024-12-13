@@ -201,18 +201,18 @@
 
 <script lang="ts" setup>
 import {
-  onMounted,
-  ref,
+    onMounted,
+    ref,
 } from 'vue';
 
 import {
-  useField,
-  useForm,
+    useField,
+    useForm,
 } from 'vee-validate';
 import { useI18n } from 'vue-i18n';
 import {
-  useRoute,
-  useRouter,
+    useRoute,
+    useRouter,
 } from 'vue-router';
 import * as yup from 'yup';
 

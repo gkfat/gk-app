@@ -19,6 +19,14 @@ export class AccountsService {
         });
     }
 
+    static async create(data: Account.Create.Request): Promise<Account.Create.Response> {
+        return agent({
+            method: 'POST',
+            url: '/create',
+            data,
+        });
+    }
+
     static async enable(id: number) {
         return agent({
             method: 'PUT',
@@ -30,9 +38,7 @@ export class AccountsService {
         return agent({
             method: 'PUT',
             url: `/${id}/roles`,
-            data: {
-                roleIds
-            }
+            data: { roleIds },
         });
     }
 

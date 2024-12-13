@@ -103,6 +103,11 @@ export class PortfolioDto extends OmitType(Portfolio, [
     'cashTradeRecords',
     'fxTradeRecords',
 ] as const) {
+    constructor(data: Partial<PortfolioDto>) {
+        super(data);
+        Object.assign(this, data);
+    }
+
     @ApiProperty({ description: '總成本' })
         costBasis: number;
 

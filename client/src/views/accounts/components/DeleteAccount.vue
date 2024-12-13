@@ -19,7 +19,7 @@
             </v-card-subtitle>
 
             <v-card-text>
-               確認刪除？
+                確認刪除？
             </v-card-text>
            
             <v-divider />

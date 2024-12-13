@@ -14,7 +14,7 @@
                     {{ editable ? t('button.edit') : t('button.detail') }}
                 </v-card-title>
                 <v-btn
-                class="ml-auto"
+                    class="ml-auto"
                     icon="mdi-close"
                     @click="toggleDialog(false)"
                 />
@@ -113,8 +113,8 @@
 
 <script lang="ts" setup>
 import {
-  computed,
-  ref,
+    computed,
+    ref,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
@@ -131,9 +131,7 @@ const { t } = useI18n();
 const notifierStore = useNotifierStore();
 const authStore = useAuthStore();
 
-const havePermissionTo = ref({
-    update: authStore.havePermission(Permissions.account.accounts.update),
-});
+const havePermissionTo = ref({ update: authStore.havePermission(Permissions.account.accounts.update) });
 
 const data = ref<Account.Account>(null);
 const editable = ref(false);
@@ -149,9 +147,7 @@ const fetchRolesData = async () => {
         const res = await PrivilegesService.listRoles();
         rolesData.value = res.filter((role) => role.role !== 'super');
     } catch (error) {
-        notifierStore.error({
-            content: '取得角色列表失敗'
-        })
+        notifierStore.error({ content: '取得角色列表失敗' });
 
         throw error;
     }
@@ -177,13 +173,9 @@ const onSubmit = async () => {
         await AccountsService.updateRoles(id, roleIdList);
 
         emit('update:detail');
-        notifierStore.success({
-            content: '變更會員資訊成功',
-        });
+        notifierStore.success({ content: '變更會員資訊成功' });
     } catch (error) {
-        notifierStore.error({
-            content: '變更會員資訊失敗',
-        });
+        notifierStore.error({ content: '變更會員資訊失敗' });
     }
 
     inProgress.value = false;
@@ -204,8 +196,6 @@ const show = async (account: Account.Account, edit: boolean) => {
     toggleDialog(true);
 };
 
-defineExpose({
-    show,
-});
+defineExpose({ show });
 
 </script>

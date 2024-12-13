@@ -50,8 +50,10 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
             cashPositions.push(new CashPositionDto({
                 assetType: EnumAssetType.CASH,
                 quantity: record.quantity,
+                tradeRecords: [record],
             }));
         } else {
+            cashPositions[0].tradeRecords.push(record);
             cashPositions[0].quantity += record.quantity;
         }
     });
@@ -75,8 +77,11 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
                 totalCost: cost,
                 averageCost: 0,
                 realizedProfitLoss: realized_profit_loss,
+                tradeRecords: [record],
             }));
         } else {
+            findPosition.tradeRecords.push(record);
+
             // 買進
             if (direction === EnumTradeDirection.BUY) {
                 findPosition.totalQuantity += quantity;
@@ -115,8 +120,11 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
                 totalCost: cost,
                 averageCost: 0,
                 realizedProfitLoss: realized_profit_loss,
+                tradeRecords: [record],
             }));
         } else {
+            findPosition.tradeRecords.push(record);
+
             // 買進
             if (direction === EnumTradeDirection.BUY) {
                 findPosition.totalQuantity += target_quantity;
@@ -130,14 +138,14 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
         }
     });
   
-    return {
+    return new PortfolioDto({
         ...portfolio,
         costBasis,
         realizedProfitLoss,
         cashPositions,
         stockPositions,
         fxPositions,
-    };
+    });
 }
 
 function toTickerDto(data: { symbol: string, name: string }): TickerDto {

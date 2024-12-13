@@ -1,4 +1,9 @@
 {
+  "asset_type": {
+    "cash": "現金",
+    "fx": "外匯",
+    "stock": "股票"
+  },
   "button": {
     "cancel": "取消",
     "clear": "清除",
@@ -58,6 +63,7 @@
   "nav": {
     "accounts": "會員管理",
     "dashboard": "儀表板",
+    "portfolios": "投資組合",
     "profile": "帳號中心"
   },
   "profile": {

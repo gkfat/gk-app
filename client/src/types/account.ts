@@ -21,5 +21,15 @@ export namespace Account {
     export namespace List {
         export type Response = Account[];
     }
+
+    export namespace Create {
+        export interface Request {
+            email: string;
+            name: string;
+            password: string;
+        }
+
+        export type Response = Account;
+    }
   
 }
