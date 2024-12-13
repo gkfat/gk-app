@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Auth API: signup / login / Google login
   - Accounts API: CRUD / update roles
   - Privileges API: list roles
-  - Portfolios API: portfolio C / trade records C
+  - Portfolios API: portfolio CRUD / transactions C
 - Client
   - Layout
   - Signup / login / logout / Google login

@@ -1,7 +1,7 @@
 import {
     IsEmail,
+    IsEnum,
     IsNotEmpty,
-    IsString,
     Matches,
     MaxLength,
     MinLength,
@@ -16,7 +16,7 @@ import {
 
 @ApiSchema({ name: 'LoginRequest' })
 export class LoginOrCreateDto {
-    @IsString()
+    @IsEnum(EnumLoginType)
     @IsNotEmpty()
     @ApiProperty({
         type: 'string', enum: EnumLoginType, 

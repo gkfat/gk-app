@@ -6,7 +6,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Portfolio } from './enities/portfolio.entity';
-import { TradeRecord } from './enities/trade-record.entity';
+import {
+    CashTradeRecord,
+    FXTradeRecord, StockTradeRecord, 
+} from './enities/trade-record.entity';
 import { PortfoliosController } from './portfolios.controller';
 import { PortfoliosService } from './portfolios.service';
 
@@ -14,7 +17,12 @@ import { PortfoliosService } from './portfolios.service';
     imports: [
         JwtModule,
         MiddlewaresModule, 
-        TypeOrmModule.forFeature([Portfolio, TradeRecord]),
+        TypeOrmModule.forFeature([
+            Portfolio,
+            FXTradeRecord,
+            StockTradeRecord,
+            CashTradeRecord,
+        ]),
     ],
     controllers: [PortfoliosController],
     providers: [PortfoliosService, CacheService],

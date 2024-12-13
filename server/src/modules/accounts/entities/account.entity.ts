@@ -61,15 +61,21 @@ export class Account {
     @ApiProperty()
         update_at: Date;
 
-    @ManyToMany(() => Role, (role) => role.accounts, { cascade: true })
+    @ManyToMany(() => Role, (role) => role.accounts, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
     @JoinTable({ name: 'account_role' })
     @ApiProperty({ type: [Role] })
         roles: Role[];
 
-    @OneToMany(() => AccountAuth, (auth) => auth.account, { cascade: true })
+    @OneToMany(() => AccountAuth, (auth) => auth.account, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
         auths: AccountAuth[];
 
-    @OneToMany(() => Portfolio, (portfolio) => portfolio.account, { cascade: true })
+    @OneToMany(() => Portfolio, (portfolio) => portfolio.account, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
         portfolios: Portfolio[];
 }
 

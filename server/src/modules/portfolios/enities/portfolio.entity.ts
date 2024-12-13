@@ -12,7 +12,10 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 
-import { TradeRecord } from './trade-record.entity';
+import {
+    CashTradeRecord,
+    FXTradeRecord, StockTradeRecord, 
+} from './trade-record.entity';
 
 @Entity()
 export class Portfolio {
@@ -39,23 +42,37 @@ export class Portfolio {
         title: string;
 
     @ApiProperty()
+    @Column({ type: 'date' })
+        create_date: string;
+
+    @ApiProperty()
     @Column({ type: 'bigint' })
         account_id: number;
 
     @ApiProperty({ description: '幣別' })
     @Column()
         currency: string;
-            
-    @ApiProperty({ description: '現金' })
-    @Column()
-        cash: number;
 
     @ManyToOne(() => Account, (account) => account.portfolios)
     @JoinColumn({ name: 'account_id' })
         account: Account;
 
-    @ApiProperty({ type: [TradeRecord] })
-    @OneToMany(() => TradeRecord, (tradeRecord) => tradeRecord.portfolio, { cascade: true })
-        tradeRecords: TradeRecord[];
+    @ApiProperty({ type: [CashTradeRecord] })
+    @OneToMany(() => CashTradeRecord, (record) => record.portfolio, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
+        cashTradeRecords: CashTradeRecord[];
+
+    @ApiProperty({ type: [StockTradeRecord] })
+    @OneToMany(() => StockTradeRecord, (record) => record.portfolio, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
+        stockTradeRecords: StockTradeRecord[];
+
+    @ApiProperty({ type: [FXTradeRecord] })
+    @OneToMany(() => FXTradeRecord, (record) => record.portfolio, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
+        fxTradeRecords: FXTradeRecord[];
 }
 
