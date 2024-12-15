@@ -1,16 +1,16 @@
 import { EnumAssetType } from 'src/enums';
 
 import {
-  ApiProperty,
-  ApiSchema,
-  OmitType,
+    ApiProperty,
+    ApiSchema,
+    OmitType,
 } from '@nestjs/swagger';
 
 import { Portfolio } from '../enities/portfolio.entity';
 import {
-  CashTradeRecord,
-  FXTradeRecord,
-  StockTradeRecord,
+    CashTradeRecord,
+    FXTradeRecord,
+    StockTradeRecord,
 } from '../enities/trade-record.entity';
 
 @ApiSchema({ name: 'PositionDto' })
@@ -31,6 +31,9 @@ export class CashPositionDto extends PositionDto {
         super(data);
         Object.assign(this, data);
     }
+
+    @ApiProperty({ description: '初始資金' })
+        initialBalance: number;
 
     @ApiProperty({ description: '持有數量' })
         quantity: number;
@@ -62,6 +65,9 @@ export class StockPositionDto extends PositionDto {
 
     @ApiProperty({ description: '已實現損益' })
         realizedProfitLoss: number;
+
+    @ApiProperty({ description: '報酬率' })
+        returnRate: number;
 
     @ApiProperty({
         description: '交易紀錄', type: [StockTradeRecord], 
@@ -110,6 +116,9 @@ export class PortfolioDto extends OmitType(Portfolio, [
 
     @ApiProperty({ description: '總成本' })
         costBasis: number;
+
+    @ApiProperty({ description: '總損益 = 市值 - 初始資金 + 現金資產餘額' })
+        totalProfitLoss: number;
 
     @ApiProperty({ description: '已實現損益' })
         realizedProfitLoss: number;

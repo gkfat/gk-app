@@ -1,45 +1,41 @@
 import { Response } from 'express';
+import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
-  RequirePermissions,
-} from 'src/decorators/require-permissions.decorators';
-import {
-  $TokenPayload,
-  ITokenPayload,
+    $TokenPayload,
+    ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 
 import {
-  Body,
-  Controller,
-  Delete,
-  ForbiddenException,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-  Put,
-  Res,
-  UseGuards,
+    Body,
+    Controller,
+    Delete,
+    ForbiddenException,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+    Res,
+    UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  getSchemaPath,
+    ApiBearerAuth,
+    ApiOkResponse,
+    getSchemaPath,
 } from '@nestjs/swagger';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
-import { QuoteTicker } from './dto/quote-ticker.dto';
-import { GetTickersResponse } from './dto/ticker.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-  CashTradeRecord,
-  FXTradeRecord,
-  StockTradeRecord,
+    CashTradeRecord,
+    FXTradeRecord,
+    StockTradeRecord,
 } from './enities/trade-record.entity';
 import { PortfoliosService } from './portfolios.service';
 
@@ -163,23 +159,4 @@ export class PortfoliosController {
         return res.json(result);
     }
 
-    @Get('tickers')
-    @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.portfolio.portfolios.get)
-    @ApiOkResponse({ type: GetTickersResponse })
-    async listTickers(@Res() res: Response<GetTickersResponse>) {
-        const result = await this.portfoliosService.listTickers();
-
-        return res.json(result);
-    }
-
-    @Get('tickers/:ticker/quote')
-    @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.portfolio.portfolios.get)
-    @ApiOkResponse({ type: QuoteTicker })
-    async quoteTicler(@Param('ticker') ticker: string, @Res() res: Response<QuoteTicker>) {
-        const result = await this.portfoliosService.quoteTicker(ticker);
-
-        return res.json(result);
-    }
 }

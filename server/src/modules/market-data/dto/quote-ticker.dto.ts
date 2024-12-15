@@ -1,4 +1,9 @@
 import {
+    EnumMarketType,
+    EnumTickerType,
+} from 'src/enums/market-data.enum';
+
+import {
     ApiProperty,
     ApiSchema,
 } from '@nestjs/swagger';
@@ -12,11 +17,20 @@ export class QuoteTicker {
     @ApiProperty({ example: '2024-12-11' })
         date: string;
 
-    @ApiProperty({ example: 'EQUITY' })
-        type: string;
+    @ApiProperty({
+        description: 'Ticker 類型', example: EnumTickerType.EQUITY, 
+    })
+        type: EnumTickerType;
 
-    @ApiProperty({ example: 'TWSE' })
+    @ApiProperty({
+        description: '交易所', example: 'TWSE', 
+    })
         exchange: string;
+
+    @ApiProperty({
+        description: '市場別', example: EnumMarketType.TSE, 
+    })
+        market: EnumMarketType;
             
     @ApiProperty({
         description: '股票代號', example: '2330', 
@@ -28,14 +42,8 @@ export class QuoteTicker {
     })
         name: string;
 
-    @ApiProperty({ description: '開盤價' })
-        openPrice: number;
-    
-    @ApiProperty({ description: '收盤價' })
-        closePrice: number;
-
     @ApiProperty({ description: '現價' })
-        lastPrice: number;
+        lastPrice: string;
 
     @ApiProperty({ description: '最後更新時間' })
         lastUpdated: number;

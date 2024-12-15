@@ -2,7 +2,7 @@ import { Permissions } from './permissions.enum';
 import { EnumRole } from './role.enum';
 
 const {
-    account, dashboard, privilege, portfolio,
+    account, dashboard,  portfolio, marketData,
 } = Permissions;
 
 const basicPermissions = [
@@ -20,5 +20,8 @@ export const Privileges = {
         portfolio.portfolios.add,
         portfolio.portfolios.update,
         portfolio.portfolios.delete,
+
+        // Market
+        marketData.intraday.get,
     ], 
 };

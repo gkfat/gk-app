@@ -1,7 +1,7 @@
 import {
     EnumAssetType,
-    EnumTradeDirection,
     EnumCashFlow,
+    EnumTradeDirection,
 } from 'src/enums';
 import {
     Column,
@@ -19,6 +19,15 @@ import {
 } from '@nestjs/swagger';
 
 import { Portfolio } from './portfolio.entity';
+
+export class ColumnNumericTransformer {
+    to(data: number): number {
+        return data;
+    }
+    from(data: string): number {
+        return parseFloat(data);
+    }
+}
 
 @ApiSchema({ name: 'CashTradeRecordDto' })
 @Entity()
@@ -56,7 +65,9 @@ export class CashTradeRecord {
         direction: EnumCashFlow;
             
     @ApiProperty({ description: '手續費' })
-    @Column()
+    @Column({
+        type: 'numeric', nullable: true, transformer: new ColumnNumericTransformer(),
+    })
         commission: number;
 
     @ApiProperty({ description: '交易日期' })
@@ -64,7 +75,9 @@ export class CashTradeRecord {
         trade_date: string;
 
     @ApiProperty({ description: '交易數量' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         quantity: number;
 
     @ManyToOne(() => Portfolio, (portfolio) => portfolio.stockTradeRecords)
@@ -112,11 +125,15 @@ export class StockTradeRecord {
         trade_date: string;
 
     @ApiProperty({ description: '手續費' })
-    @Column()
+    @Column({
+        type: 'numeric', nullable: true, transformer: new ColumnNumericTransformer(),
+    })
         commission: number;
     
     @ApiProperty({ description: '稅' })
-    @Column()
+    @Column({
+        type: 'numeric', nullable: true, transformer: new ColumnNumericTransformer(),
+    })
         tax: number;
 
     @ApiProperty({ description: '股票代號' })
@@ -124,19 +141,25 @@ export class StockTradeRecord {
         symbol: string;
 
     @ApiProperty({ description: '交易價位' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         execution_price: number;
 
     @ApiProperty({ description: '交易數量(股)' })
-    @Column()
+    @Column({ type: 'int' })
         quantity: number;
 
     @ApiProperty({ description: '成本' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         cost: number;
 
     @ApiProperty({ description: '已實現損益' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         realized_profit_loss: number;
 
     @ManyToOne(() => Portfolio, (portfolio) => portfolio.stockTradeRecords)
@@ -184,11 +207,15 @@ export class FXTradeRecord {
         trade_date: string;
 
     @ApiProperty({ description: '手續費' })
-    @Column()
+    @Column({
+        type: 'numeric', nullable: true, transformer: new ColumnNumericTransformer(),
+    })
         commission: number;
     
     @ApiProperty({ description: '稅' })
-    @Column()
+    @Column({
+        type: 'numeric', nullable: true , transformer: new ColumnNumericTransformer(),
+    })
         tax: number;
 
     @ApiProperty({ description: '本金幣別' })
@@ -200,23 +227,33 @@ export class FXTradeRecord {
         target_currency: string;
 
     @ApiProperty({ description: '匯率' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         exchange_rate: number;
 
     @ApiProperty({ description: '本金幣別數量' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         base_quantity: number;
 
     @ApiProperty({ description: '目標幣別數量' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         target_quantity: number;
 
     @ApiProperty({ description: '成本(本金幣別)' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         cost: number;
 
     @ApiProperty({ description: '已實現損益' })
-    @Column()
+    @Column({
+        type: 'numeric', transformer: new ColumnNumericTransformer(), 
+    })
         realized_profit_loss: number;
 
     @ManyToOne(() => Portfolio, (portfolio) => portfolio.fxTradeRecords)
