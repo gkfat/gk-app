@@ -30,7 +30,7 @@
                         cols="auto"
                         class="text-h6"
                     >
-                        選擇日期區間
+                        選擇日期
                     </v-col>
                     <v-col
                         cols="auto"
@@ -62,6 +62,7 @@
                     locale="zh"
                     inline
                     :format="timeFormat"
+                    :enable-time-picker="false"
                     :enable-seconds="false"
                     :disabled-week-days="customProps.disabledWeekDays ?? undefined"
                     @update:model-value="handleDate"
@@ -76,7 +77,7 @@
                     md="8"
                     class="py-1"
                 >
-                    {{ timeFormat(date) }}
+                    {{ timeFormat(date, customProps.dateFormat) }}
                 </v-col>
                 <v-col
                     cols="auto"
@@ -110,13 +111,13 @@ import {
 import { Dayjs } from 'dayjs';
 import { useI18n } from 'vue-i18n';
 
-import VueDatePicker, { DatePickerInstance } from '@vuepic/vue-datepicker';
 import Btn from '@/components/common/Btn.vue';
 import { useAppStore } from '@/store/app';
 import {
     createDate,
     timeFormat,
 } from '@/utils/time';
+import VueDatePicker, { DatePickerInstance } from '@vuepic/vue-datepicker';
 
 const { t } = useI18n();
 const openDialog = ref(false);
@@ -132,6 +133,7 @@ const customProps = defineProps<{
     maxDate?: Date,
     minDate?: Date,
     label?: string;
+    dateFormat?: string;
     disabledWeekDays?: number[];
 }>();
 
@@ -146,7 +148,7 @@ const dateRangeTextFieldValue = ref('');
 
 /** 刷新日期區間文字欄 */
 const refreshDateRangeTextField = () => {
-    dateRangeTextFieldValue.value = timeFormat(date.value);
+    dateRangeTextFieldValue.value = timeFormat(date.value, customProps.dateFormat);
 };
 
 const toggleDialog = (open: boolean) => {

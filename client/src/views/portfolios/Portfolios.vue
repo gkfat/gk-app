@@ -9,8 +9,16 @@
             <template #controlPanel>
                 <v-row class="align-center">
                     <v-btn
-                        color="info"
+                        v-if="havePermissionTo.add"
+                        color="primary"
                         class="mr-3"
+                        append-icon="mdi-plus"
+                        @click="onCreatePortfolioClick"
+                    >
+                        {{ t('button.create') }}
+                    </v-btn>
+                    <v-btn
+                        color="info"
                         append-icon="mdi-reload"
                         @click="listPortfolios"
                     >
@@ -26,7 +34,7 @@
             v-model="currentPortfolio"
             mandatory
         >
-            <v-row class="ga-3">
+            <v-row class="px-3 ga-3">
                 <v-col
                     v-for="(item, i) in portfolios"
                     :key="i"
@@ -38,8 +46,9 @@
                     >
                         <v-card
                             :color="isSelected ? 'primary': ''"
-                            :title="`${item.title}`"
-                            :subtitle="`${item.currency} - ${item.create_date}`"
+                            rounded="lg"
+                            :max-width="200"
+                            :title="item.title"
                             @click="toggle"
                         />
                     </v-item>
@@ -47,16 +56,48 @@
             </v-row>
         </v-item-group>
 
-        <v-divider class="my-5" />
-        
-        <PortfolioCard :portfolio="currentPortfolio" />
+        <v-spacer class="my-5" />
+
+        <v-row
+            v-if="currentPortfolio"
+            class="px-3 mb-5 align-items-stretch"
+        >
+            <v-col cols="auto">
+                <PortfolioStatus
+                    :portfolio="currentPortfolio"
+                    :positions="currentPortfolio.cashPositions"
+                    @update:transaction="listPortfolios"
+                />
+            </v-col>
+            
+            <v-col cols="auto">
+                <CashPositionsCard
+                    :portfolio="currentPortfolio"
+                    :positions="currentPortfolio.cashPositions"
+                    @update:transaction="listPortfolios"
+                />
+            </v-col>
+
+            <v-col cols="auto">
+                <StockPositionsCard
+                    :portfolio="currentPortfolio"
+                    :positions="currentPortfolio.stockPositions"
+                    @update:transaction="listPortfolios"
+                />
+            </v-col>
+        </v-row>
     </PageContent>
+
+    <CreatePortfolio
+        ref="createPortfolioRef"
+        @submit="listPortfolios"
+    />
 </template>
 
 <script lang="ts" setup>
 import {
-  onMounted,
-  ref,
+    onMounted,
+    ref,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
@@ -68,12 +109,19 @@ import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Portfolio } from '@/types/portfolio';
+import { thousands } from '@/utils/number';
+import { templateRef } from '@vueuse/core';
 
-import PortfolioCard from './components/PortfolioCard.vue';
+import CashPositionsCard from './cash/CashPositionsCard.vue';
+import CreatePortfolio from './components/CreatePortfolio.vue';
+import PortfolioStatus from './status/PortfolioStatus.vue';
+import StockPositionsCard from './stock/StockPositionsCard.vue';
 
 const notifierStore = useNotifierStore();
 const authStore = useAuthStore();
 const { t } = useI18n();
+
+const createPortfolioRef = templateRef('createPortfolioRef');
 
 /**
  * 操作權限
@@ -98,6 +146,10 @@ const listPortfolios = async () => {
         notifierStore.error({ content: '取得投資組合失敗' });
     }
     inProgress.value = false;
+};
+
+const onCreatePortfolioClick = () => {
+    createPortfolioRef.value?.show();
 };
 
 onMounted(async () => {

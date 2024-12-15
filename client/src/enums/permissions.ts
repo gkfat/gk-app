@@ -33,4 +33,9 @@ export const Permissions = {
             delete: 'portfolio.portfolios.delete',
         },
     },
+
+    /**
+     * 市場相關
+     */
+    marketData: { intraday: { get: 'market_data.intraday.get' } },
 };

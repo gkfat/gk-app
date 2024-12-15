@@ -1,7 +1,7 @@
 import {
-  EnumAssetType,
-  EnumCashFlow,
-  EnumTradeDirection,
+    EnumAssetType,
+    EnumCashFlow,
+    EnumTradeDirection,
 } from '@/enums/transaction';
 
 export namespace Portfolio {
@@ -63,6 +63,7 @@ export namespace Portfolio {
     
     export interface CashPosition extends Position {
         quantity: number;
+        initialBalance: number;
         tradeRecords: CashTradeRecord[];
     }
 
@@ -77,6 +78,8 @@ export namespace Portfolio {
         averageCost: number;
         /** 已實現損益 */
         realizedProfitLoss: number;
+        /** 報酬率 */
+        returnRate: number;
         tradeRecords: StockTradeRecord[];
     }
 

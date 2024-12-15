@@ -7,9 +7,10 @@
         :error-messages="customProps.errorMessages"
         :clearable="customProps.multiple"
         :multiple="customProps.multiple"
+        :hint="customProps.hint"
         :chips="isCustomSelectionSlot ? false : customProps.multiple"
         hide-details="auto"
-        density="compact"
+        rounded="lg"
         variant="outlined"
         @update:model-value="onModelValueUpdate"
     >
@@ -93,20 +94,22 @@ const customProps = withDefaults(defineProps<{
     modelValue: CustomValue | CustomValue[] | null;
     items: CustomItem[];
     label: string;
-    multiple: boolean;
-    disabled: boolean;
-    disabledAllItem: boolean;
-    allItem: CustomItem | null;
-    errorMessages: string | null;
+    multiple?: boolean;
+    disabled?: boolean;
+    disabledAllItem?: boolean;
+    allItem?: CustomItem | null;
+    errorMessages?: string | null;
+    hint?: string;
 }>(), {
     modelValue: null,
     items: () => [],
     label: '',
     multiple: false,
     disabled: false,
-    disabledAllItem: false,
+    disabledAllItem: true,
     allItem: null,
     errorMessages: null,
+    hint: null,
 });
 
 const prependListSelected = ref<string[]>([]);

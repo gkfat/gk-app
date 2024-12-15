@@ -1,6 +1,6 @@
 {
   "asset_type": {
-    "cash": "現金",
+    "cash": "現金流",
     "fx": "外匯",
     "stock": "股票"
   },
@@ -17,6 +17,10 @@
     "parse": "解析",
     "refresh": "更新",
     "search": "查詢"
+  },
+  "cashflow_direction": {
+    "deposit": "存入",
+    "withdraw": "領回"
   },
   "common": {
     "all": "全部",
@@ -74,5 +78,9 @@
     "ADMIN": "管理員",
     "MEMBER": "會員",
     "SUPER": "超級管理員"
+  },
+  "trade_direction": {
+    "buy": "買進",
+    "sell": "賣出"
   }
 }

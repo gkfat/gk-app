@@ -29,3 +29,13 @@ export const sleepSeconds = (seconds: number) => new Promise(
         setTimeout(() => resolve(null), seconds * 1000);
     },
 );
+
+export const updownClass = (value: string | number) => {
+    const num = Number(value);
+
+    if (!Number.isFinite(num) || num === 0) {
+        return '';
+    }
+
+    return num > 0 ? 'error' : 'success';
+};

@@ -1,7 +1,7 @@
 import {
-  EnumAssetType,
-  EnumCashFlow,
-  EnumTradeDirection,
+    EnumAssetType,
+    EnumCashFlow,
+    EnumTradeDirection,
 } from '@/enums/transaction';
 
 import { Portfolio } from './portfolio';
