@@ -7,7 +7,7 @@ import { Auth } from '@/types/auth';
 import { useStorage } from '@vueuse/core';
 
 export const useAuthStore = defineStore('auth', () => {
-    const state = useStorage('got-todo-authstore', {
+    const state = useStorage('gkapp-authstore', {
         token: null as string | null,
         account: null as Account.Account | null,
     });

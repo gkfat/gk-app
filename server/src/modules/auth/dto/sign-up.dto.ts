@@ -17,7 +17,7 @@ export class SignUpDto {
     @IsNotEmpty()
     @IsEmail()
     @ApiProperty({
-        description: 'Unique key of account', example: 'super@got2do.com', 
+        description: 'Unique key of account', example: 'super@gkapp.com', 
     })
         email: string;
 

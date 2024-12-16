@@ -13,7 +13,7 @@ function createDefaultState() {
 }
 
 export const useAppStore = defineStore('app', () => {
-    const storage = useLocalStorage('got-todo-appstore', createDefaultState(), { mergeDefaults: true });
+    const storage = useLocalStorage('gkapp-appstore', createDefaultState(), { mergeDefaults: true });
 
     const state = ref({
         drawer: true,

@@ -46,7 +46,7 @@ watch(
 );
 
 const setEnvironmentVaraibles = async () => {
-    appStore.state.environmentVariables = { appTitle: import.meta.env.VITE_APP_TITLE ?? 'Got Todo' };
+    appStore.state.environmentVariables = { appTitle: import.meta.env.VITE_APP_TITLE ?? 'GkApp' };
 };
 
 const checkIsLoggedIn = () => {

@@ -6,7 +6,7 @@ import {
 
 const initSwagger = (app: INestApplication) => {
     const config = new DocumentBuilder()
-        .setTitle('Got2do API')
+        .setTitle('GkApp API')
         .setDescription('API documentation')
         .setVersion('1.0')
         .setBasePath('documentation')

@@ -1,7 +1,6 @@
-# Got2do App Client
+# GkApp Client
 
 ## How to run
-
 install packages
 
 ```shell

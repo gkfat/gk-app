@@ -28,7 +28,7 @@ export class LoginOrCreateDto {
     @IsNotEmpty()
     @ApiProperty({
         required: false, description: 'required when using password type',
-        example: 'super@got2do.com',
+        example: 'super@gkapp.com',
     })
         email?: string;
 

@@ -1,4 +1,4 @@
-# Got2do App Server
+# GkApp Server
 
 ## How to run
 
@@ -12,7 +12,7 @@ run database & redis
 
 ```shell
 # for local dev
-docker compose -p got2do up -d
+docker compose -p gkapp up -d
 ```
 
 migration

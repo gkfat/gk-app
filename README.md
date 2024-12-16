@@ -1,6 +1,6 @@
-# A Got2do App
+# A GkApp
 
-A todo app
+A app that contains what Gk wants.
 
 ## Tech stacks
 
