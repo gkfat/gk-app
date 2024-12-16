@@ -27,6 +27,12 @@
 
         <v-row class="mx-3 ga-3">
             <v-col
+                v-if="!positions.length"
+                cols="12"
+            >
+                無可用資料。
+            </v-col>
+            <v-col
                 v-for="(position, i) in positions"
                 :key="i"
                 cols="12"
@@ -44,10 +50,26 @@
                         </v-col>
                         <v-col
                             cols="auto"
-                            class="ml-auto me-3"
+                            class="ml-auto me-3 text-right"
                         >
-                            <span>{現價} </span>
-                            <span>{即時報酬率%}</span>
+                            <div class="d-flex align-center ga-1 text-caption text-darkgrey justify-end">
+                                <v-icon
+                                    size="16"
+                                    icon="mdi-clock-time-eight-outline"
+                                />
+                                <span>{{ timeFormat(symbolLastPriceList[position.symbol].lastUpdated, 'MM/DD HH:mm:ss') }}</span>
+                            </div>
+                            <span
+                                class="me-2"
+                                :class="`text-${updownClass(
+                                    symbolLastPriceList[position.symbol].lastPrice - position.averageCost
+                                )}`"
+                            >
+                                {{ thousands(symbolLastPriceList[position.symbol].lastPrice, 2) }}
+                            </span>
+                            <span :class="`text-${updownClass(symbolLastPriceList[position.symbol].instantReturnRate)}`">
+                                {{ thousands(symbolLastPriceList[position.symbol].instantReturnRate, 2) }} %
+                            </span>
                         </v-col>
                     </v-row>
 
@@ -64,7 +86,7 @@
                                 <p class="text-caption">
                                     市值
                                 </p>
-                                {{ 'N/A' }}
+                                {{ thousands(symbolLastPriceList[position.symbol].marketValue, 2) }}
                             </v-col>
                             <v-col
                                 cols="auto"
@@ -73,7 +95,7 @@
                                 <p class="text-caption">
                                     成本
                                 </p>
-                                {{ thousands(position.totalCost) }}
+                                {{ thousands(position.totalCost, 2) }}
                             </v-col>
                             <v-col
                                 cols="auto"
@@ -82,7 +104,18 @@
                                 <p class="text-caption">
                                     平均成本
                                 </p>
-                                {{ thousands(position.averageCost) }}
+                                {{ thousands(position.averageCost, 2) }}
+                            </v-col>
+                            <v-col
+                                cols="auto"
+                                class="text-nowrap"
+                            >
+                                <p class="text-caption">
+                                    未實現損益
+                                </p>
+                                <p :class="`text-${updownClass(symbolLastPriceList[position.symbol].unrealizedPorfitLoss)}`">
+                                    {{ thousands(symbolLastPriceList[position.symbol].unrealizedPorfitLoss, 2) }}
+                                </p>
                             </v-col>
                             <v-col
                                 cols="auto"
@@ -92,7 +125,7 @@
                                     已實現損益
                                 </p>
                                 <p :class="`text-${updownClass(position.realizedProfitLoss)}`">
-                                    {{ thousands(position.realizedProfitLoss) }}
+                                    {{ thousands(position.realizedProfitLoss, 2) }}
                                 </p>
                             </v-col>
                             <v-col
@@ -115,20 +148,29 @@
 
     <StockCreateTransaction
         ref="createTransactionRef"
-        @update:transaction="emit('update:transaction')"
+        @update:transaction="onTransactionUpdate"
     />
 </template>
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+} from 'vue';
 
 import { useI18n } from 'vue-i18n';
 
-import { EnumAssetType } from '@/enums/transaction';
+import {
+  EnumAssetType,
+  EnumTradeDirection,
+} from '@/enums/transaction';
 import { useMarketDataStore } from '@/store/market-data';
-import { Common } from '@/types/common';
 import { Portfolio } from '@/types/portfolio';
 import { updownClass } from '@/utils/common';
 import { thousands } from '@/utils/number';
+import { timeFormat } from '@/utils/time';
+import { transactionHelper } from '@/utils/transaction';
 import { templateRef } from '@vueuse/core';
 
 import StockCreateTransaction from './StockCreateTransaction.vue';
@@ -147,13 +189,6 @@ const {
 
 const emit = defineEmits(['update:transaction']);
 
-/** 即時報酬率 */
-const calcInstantReturnRate = (item: Portfolio.StockPosition) => {
-    // (市值 - 總成本) / 總成本
-    // return ((marketValue.value - item.totalCost) / item.totalCost) * 100;
-    return 'N/A';
-};
-
 const onCreateTransactionClick = () => {
     createTransactiorRef.value?.show({
         portfolio,
@@ -161,7 +196,88 @@ const onCreateTransactionClick = () => {
     });
 };
 
+const intervalId = ref<ReturnType<typeof setInterval>>();
+
+const symbolLastPriceList = computed(() => {
+    const result: { [key: string]: {
+        lastPrice: number;
+        lastUpdated: number;
+        marketValue: number;
+        unrealizedPorfitLoss: number;
+        instantReturnRate: number;
+    } } = {};
+
+    positions.forEach((p) => {
+        const findInfo =  marketDataStore.tickersLastPrices.find((v) => v.symbol === p.symbol);
+
+        result[p.symbol] = {
+            lastPrice:  NaN,
+            lastUpdated:  NaN,
+            marketValue:  NaN,
+            unrealizedPorfitLoss: NaN,
+            instantReturnRate: NaN,
+        };
+        
+        if (findInfo) {
+            const {
+                refTax,
+                refCommission,
+                subTotal: marketValue,
+            } = transactionHelper.calcStockSummary({
+                direction: EnumTradeDirection.SELL,
+                executionPrice: Number(findInfo.lastPrice),
+                quantity: p.totalQuantity,
+            });
+            
+            /** 未實現損益: (市值 – 賣出手續費 – 賣出證交稅) – (成本) */
+            const unrealizedPorfitLoss = marketValue - p.totalCost - refCommission - refTax;
+            /** 未實現損益 / 總成本 */
+            const instantReturnRate = (unrealizedPorfitLoss / p.totalCost) * 100;
+        
+            result[p.symbol] = {
+                lastPrice: Number(findInfo.lastPrice),
+                lastUpdated: findInfo.lastUpdated,
+                unrealizedPorfitLoss,
+                marketValue,
+                instantReturnRate,
+            };
+        }
+    });
+
+    return result;
+});
+
+const refreshAllTickers = async () => {
+    await Promise.all(
+        positions.map((v) => marketDataStore.refreshTickerLastPrice(v.symbol)),
+    );
+};
+
+const startListener = () => {
+    refreshAllTickers();
+
+    intervalId.value = setInterval(async () => {
+        await refreshAllTickers();
+    }, 5000);
+};
+
+const stopListener = () => {
+    if (intervalId.value) {
+        clearInterval(intervalId.value);
+    }
+};
+
+const onTransactionUpdate = () => {
+    stopListener();
+    startListener();
+    emit('update:transaction');
+};
+
 onMounted(() => {
-    
+    startListener();
+});
+
+onBeforeUnmount(() => {
+    stopListener();
 });
 </script>

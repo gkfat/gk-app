@@ -12,7 +12,8 @@
                 </v-card-title>
     
                 <v-card-subtitle class="mb-3">
-                    初始資金 $ {{ thousands(positions[0].initialBalance) }}
+                    <span>初始資金 $ {{ thousands(positions[0].initialBalance) }}</span><br>
+                    <span>起始於 {{ portfolio.create_date }}</span>
                 </v-card-subtitle>
             </v-col>
 
@@ -21,10 +22,17 @@
                 class="ml-auto me-3"
             >
                 <v-btn
-                    class="border"
+                    class="border me-3"
                     icon="mdi-pencil"
                     variant="text"
                     @click="onEditClick"
+                />
+                <v-btn
+                    class="border"
+                    icon="mdi-delete"
+                    variant="text"
+                    color="error"
+                    @click="onDeleteClick"
                 />
             </v-col>
         </v-row>
@@ -33,8 +41,11 @@
             <v-row class="align-center">
                 <v-col cols="auto">
                     <p>資金</p>
-                    <p class="text-h6">
-                        $ {{ thousands(positions[0].quantity) }}
+                    <p
+                        class="text-h6"
+                        :class="`text-${updownClass(positions[0].quantity)}`"
+                    >
+                        $ {{ thousands(positions[0].quantity, 2) }}
                     </p>
                 </v-col>
                 <v-col cols="auto">
@@ -43,12 +54,17 @@
                         class="text-h6"
                         :class="`text-${updownClass(portfolio.realizedProfitLoss)}`"
                     >
-                        $ {{ thousands(portfolio.realizedProfitLoss) }}
+                        $ {{ thousands(portfolio.realizedProfitLoss, 2) }}
                     </p>
                 </v-col>
             </v-row>
         </v-card-text>
     </v-card>
+
+    <DeletePortfolio
+        ref="deletePortfolioRef"
+        @update:delete="emit('update:portfolio')"
+    />
 </template>
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
@@ -59,7 +75,10 @@ import { updownClass } from '@/utils/common';
 import { thousands } from '@/utils/number';
 import { templateRef } from '@vueuse/core';
 
+import DeletePortfolio from './components/DeletePortfolio.vue';
+
 const { t } = useI18n();
+const deletePortfolioRef = templateRef('deletePortfolioRef');
 
 const {
     portfolio,
@@ -69,12 +88,16 @@ const {
     positions: Portfolio.CashPosition[]
 }>();
 
-const emit = defineEmits(['update:transaction']);
+const emit = defineEmits(['update:portfolio']);
 
 const onEditClick = () => {
-    createTransactiorRef.value?.show({
-        portfolio,
-        assetType: EnumAssetType.CASH,
-    });
+    // createTransactiorRef.value?.show({
+    //     portfolio,
+    //     assetType: EnumAssetType.CASH,
+    // });
+};
+
+const onDeleteClick = () => {
+    deletePortfolioRef.value?.show(portfolio);
 };
 </script>

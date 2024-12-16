@@ -34,7 +34,7 @@
             v-model="currentPortfolio"
             mandatory
         >
-            <v-row class="px-3 ga-3">
+            <v-row class="px-3">
                 <v-col
                     v-for="(item, i) in portfolios"
                     :key="i"
@@ -66,7 +66,7 @@
                 <PortfolioStatus
                     :portfolio="currentPortfolio"
                     :positions="currentPortfolio.cashPositions"
-                    @update:transaction="listPortfolios"
+                    @update:portfolio="listPortfolios"
                 />
             </v-col>
             
@@ -96,8 +96,8 @@
 
 <script lang="ts" setup>
 import {
-    onMounted,
-    ref,
+  onMounted,
+  ref,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';

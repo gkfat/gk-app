@@ -1,3 +1,5 @@
+import './charts';
+
 import type { App } from 'vue';
 
 import Vue3GoogleLogin from 'vue3-google-login';

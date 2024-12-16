@@ -108,6 +108,7 @@
                             :placeholder="'請輸入數量'"
                             hide-details="auto"
                             variant="outlined"
+                            @update:model-value="onQuantityChange"
                         />
                     </v-col>
                 </v-row>
@@ -140,17 +141,40 @@
                         />
                     </v-col>
                 </v-row>
+
+                <!-- 小計 -->
+                <v-table
+                    density="compact"
+                >
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                本次交易統計
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>小計</td>
+                            <td>{{ thousands(instantSummary.subTotal) }}</td>
+                        </tr>
+                        <tr>
+                            <td>總計</td>
+                            <td>{{ thousands(instantSummary.total) }}</td>
+                        </tr>
+                        <tr>
+                            <td>交易後帳戶餘額</td>
+                            <td :class="`text-${updownClass(instantSummary.cashAfterTransaction)}`">
+                                {{ thousands(instantSummary.cashAfterTransaction) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
             </v-card-text>
            
             <v-divider />
 
             <v-card-actions class="flex-wrap">
-                <v-col
-                    cols="12"
-                    sm="auto"
-                >
-                    小計（含手續費及交易稅）: {{ thousands(instantSummary.total) }}
-                </v-col>
                 <v-spacer />
                 <v-btn
                     color="success"
@@ -171,13 +195,13 @@
 
 <script lang="ts" setup>
 import {
-    computed,
-    ref,
+  computed,
+  ref,
 } from 'vue';
 
 import {
-    useField,
-    useForm,
+  useField,
+  useForm,
 } from 'vee-validate';
 import { useI18n } from 'vue-i18n';
 import * as yup from 'yup';
@@ -186,20 +210,22 @@ import { PortfoliosService } from '@/api/portfolios';
 import DatePicker from '@/components/date-picker/DatePicker.vue';
 import AutoCompleteEx from '@/components/selector/AutoCompleteEx.vue';
 import TradeDirectionSelector
-    from '@/components/selector/TradeDirectionSelector.vue';
+  from '@/components/selector/TradeDirectionSelector.vue';
 import {
-    EnumAssetType,
-    EnumTradeDirection,
+  EnumAssetType,
+  EnumTradeDirection,
 } from '@/enums/transaction';
 import { useMarketDataStore } from '@/store/market-data';
 import { useNotifierStore } from '@/store/notifier';
 import { Portfolio } from '@/types/portfolio';
 import { Transaction } from '@/types/transaction';
+import { updownClass } from '@/utils/common';
 import {
-    onInputNumberTypeCheck,
-    thousands,
+  onInputNumberTypeCheck,
+  thousands,
 } from '@/utils/number';
 import { timeFormat } from '@/utils/time';
+import { transactionHelper } from '@/utils/transaction';
 
 const { t } = useI18n();
 const notifierStore = useNotifierStore();
@@ -247,31 +273,55 @@ const form = {
     quantity: useField<number>('quantity'),
 };
 
-/** 取得即時報價 */
-const onSymbolChange = () => {
-    marketDataStore.quoteTicker(form.symbol.value.value);
-};
-
 /** 目前最新報價 */
 const currentSymbolLastPrice = computed(() => marketDataStore.tickersLastPrices.find((v) => v.symbol === form.symbol.value.value));
 
+/** 更新即時報價 */
+const onSymbolChange = async() => {
+    await marketDataStore.refreshTickerLastPrice(form.symbol.value.value);
+
+    if (currentSymbolLastPrice.value) {
+        setValues({
+            executionPrice: Number(currentSymbolLastPrice.value.lastPrice),
+            tax: instantSummary.value.refTax,
+            commission: instantSummary.value.refCommission,
+        });
+    }
+};
+
+const onQuantityChange = () => {
+    if (currentSymbolLastPrice.value) {
+        setValues({
+            tax: instantSummary.value.refTax,
+            commission: instantSummary.value.refCommission,
+        });
+    }
+};
+
 /** 即時試算 */
 const instantSummary = computed(() => {
-    const quantity = Number.isFinite(Number(form.quantity.value.value)) ? Number(form.quantity.value.value) : 0;
+    const remainCash = portfolio.value.cashPositions[0].quantity;
     const executionPrice = Number.isFinite(Number(form.executionPrice.value.value)) ? Number(form.executionPrice.value.value) : 0;
-    const commission = Number.isFinite(Number(form.commission.value.value)) ? Number(form.commission.value.value) : 0;
-    const tax = Number.isFinite(Number(form.tax.value.value)) ? Number(form.tax.value.value) : 0;
-
-    const subTotal = quantity * executionPrice;
-    const refCommission = Math.floor(subTotal * (0.1425 / 100));
-    const refTax = form.direction.value.value === EnumTradeDirection.SELL ? Math.floor(subTotal * (0.3 / 100)) : 0;
+    const quantity = Number.isFinite(Number(form.quantity.value.value)) ? Number(form.quantity.value.value) : 0;
+    
+    const {
+        refTax,
+        refCommission,
+        subTotal,
+        total,
+    } = transactionHelper.calcStockSummary({
+        direction: form.direction.value.value,
+        executionPrice,
+        quantity,
+    });
 
     return {
-        subTotal,
-        total: subTotal + commission + tax,
-        remainCash: portfolio.value.cashPositions[0].quantity,
         refCommission,
         refTax,
+        subTotal,
+        total,
+        remainCash,
+        cashAfterTransaction: remainCash - total,
     };
 });
 

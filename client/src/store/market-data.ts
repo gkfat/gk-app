@@ -1,6 +1,6 @@
 import {
-    computed,
-    ref,
+  computed,
+  ref,
 } from 'vue';
 
 import { defineStore } from 'pinia';
@@ -40,13 +40,21 @@ export const useMarketDataStore = defineStore('marketData', () => {
         }
     }
 
-    async function quoteTicker(symbol?: string) {
+    /**
+     * 取得 symbol 最新報價
+     */
+    async function refreshTickerLastPrice(symbol?: string) {
         if (!symbol) {
             return;
         }
         
         try {
             const data = await MarketDataService.intradayQquoteTicker(symbol);
+
+            if (!data.lastUpdated) {
+                return;
+            }
+
             const findLastPrice = tickersLastPrices.value.find((v) => v.symbol === symbol);
 
             if (!findLastPrice) {
@@ -67,6 +75,6 @@ export const useMarketDataStore = defineStore('marketData', () => {
     }
 
     return {
-        tickersInfo, tickers, tickersLastPrices, toReadableTicker, refreshTickers, quoteTicker,
+        tickersInfo, tickers, tickersLastPrices, toReadableTicker, refreshTickers, refreshTickerLastPrice,
     };
 });

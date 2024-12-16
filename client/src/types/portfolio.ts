@@ -1,7 +1,7 @@
 import {
-    EnumAssetType,
-    EnumCashFlow,
-    EnumTradeDirection,
+  EnumAssetType,
+  EnumCashFlow,
+  EnumTradeDirection,
 } from '@/enums/transaction';
 
 export namespace Portfolio {
@@ -64,6 +64,10 @@ export namespace Portfolio {
     export interface CashPosition extends Position {
         quantity: number;
         initialBalance: number;
+        cashFlow: {
+            flows: number[];
+            labels: string[];   
+        };
         tradeRecords: CashTradeRecord[];
     }
 
