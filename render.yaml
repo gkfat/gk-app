@@ -5,14 +5,14 @@ services:
     plan: free
     buildCommand: pnpm install && pnpm build
     startCommand: pnpm start
-    repo: https://github.com/gkfat/gk-app
+    repo: https://github.com/gkfat/gk-app/server
     branch: master
 
   - name: gk-app-client
     type: web
     plan: free
     runtime: docker
-    repo: https://github.com/gkfat/gk-app
+    repo: https://github.com/gkfat/gk-app/client
     branch: master
 
   - name: redis
