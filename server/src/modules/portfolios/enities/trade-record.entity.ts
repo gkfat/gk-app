@@ -80,7 +80,7 @@ export class CashTradeRecord {
     })
         quantity: number;
 
-    @ManyToOne(() => Portfolio, (portfolio) => portfolio.stockTradeRecords)
+    @ManyToOne(() => Portfolio, (portfolio) => portfolio.stockTradeRecords, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'portfolio_id' })
         portfolio: Portfolio;
 }
@@ -162,7 +162,7 @@ export class StockTradeRecord {
     })
         realized_profit_loss: number;
 
-    @ManyToOne(() => Portfolio, (portfolio) => portfolio.stockTradeRecords)
+    @ManyToOne(() => Portfolio, (portfolio) => portfolio.stockTradeRecords, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'portfolio_id' })
         portfolio: Portfolio;
 }
@@ -256,7 +256,7 @@ export class FXTradeRecord {
     })
         realized_profit_loss: number;
 
-    @ManyToOne(() => Portfolio, (portfolio) => portfolio.fxTradeRecords)
+    @ManyToOne(() => Portfolio, (portfolio) => portfolio.fxTradeRecords, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'portfolio_id' })
         portfolio: Portfolio;
 }

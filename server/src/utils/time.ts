@@ -1,7 +1,9 @@
 import dayjs, { ConfigType } from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
+dayjs.extend(isSameOrAfter);
 
 export default dayjs;
 

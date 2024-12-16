@@ -1,45 +1,62 @@
 import {
-    EnumAssetType,
-    EnumCashFlow,
-    EnumTradeDirection,
+  EnumAssetType,
+  EnumCashFlow,
+  EnumTradeDirection,
 } from 'src/enums';
-import { EntityManager } from 'typeorm';
+import { createDate } from 'src/utils/time';
+import {
+  EntityManager,
+  Repository,
+} from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import {
-    CashTransactionDto,
-    CreateTransactionDto,
-    FXTransactionDto,
-    StockTransactionDto,
+  CashTransactionDto,
+  CreateTransactionDto,
+  FXTransactionDto,
+  StockTransactionDto,
 } from './dto/create-transaction.dto';
 import {
-    CashPositionDto,
-    FXPositionDto,
-    PortfolioDto,
-    StockPositionDto,
+  CashPositionDto,
+  FXPositionDto,
+  PortfolioDto,
+  StockPositionDto,
 } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-    CashTradeRecord,
-    FXTradeRecord,
-    StockTradeRecord,
+  CashTradeRecord,
+  FXTradeRecord,
+  StockTradeRecord,
 } from './enities/trade-record.entity';
+
+function sumDayCashflow(tradeDate: string, records: CashTradeRecord[]) {
+    return records
+        .filter((record) => record.trade_date === tradeDate)
+        .reduce((acc, record) => record.direction ===  EnumCashFlow.DEPOSIT
+            ? acc + record.quantity
+            : acc - record.quantity, 0);
+}
 
 function calcCashPositions(records: CashTradeRecord[]): CashPositionDto[] {
     const result: CashPositionDto[] = [];
-    const initialBalance = records.sort((a, b) => Number(a.create_at) - Number(b.create_at))[0].quantity;
+    const initialBalance = records[0].quantity;
 
-    records.forEach((record) => {
+    records.forEach((record, i) => {
         const mutatedAmount = record.direction ===  EnumCashFlow.DEPOSIT ? +record.quantity : -record.quantity;
 
-        if (result.length === 0) {
+        if (i === 0) {
             result.push(new CashPositionDto({
                 assetType: EnumAssetType.CASH,
                 quantity: mutatedAmount,
                 initialBalance,
+                cashFlow: {
+                    flows: [],
+                    labels: [],
+                },
                 tradeRecords: [record],
             }));
         } else {
@@ -47,6 +64,30 @@ function calcCashPositions(records: CashTradeRecord[]): CashPositionDto[] {
             result[0].quantity += mutatedAmount;
         }
     });
+
+    if (createDate(records[0].trade_date).isSame(createDate(), 'day')) {
+        const tradeDate = createDate(records[0].trade_date).format('YYYY-MM-DD');
+        const dayCashflow = sumDayCashflow(tradeDate, records);
+            
+        result[0].cashFlow.flows.push(dayCashflow);
+        result[0].cashFlow.labels.push(tradeDate);
+    } else {
+        let currentDate = createDate(records[0].trade_date);
+
+        while (currentDate.isBefore(createDate(), 'day')) {
+            const tradeDate = currentDate.format('YYYY-MM-DD');
+            const dayCashflow = sumDayCashflow(tradeDate, records);
+            /** 最新一天現金流 */
+            const lastCashflow = result[0].cashFlow.flows[result[0].cashFlow.flows.length - 1] ?? 0;
+            /** 計算累計現金流 */
+            const accCashflow = lastCashflow + dayCashflow;
+    
+            result[0].cashFlow.flows.push(accCashflow);
+            result[0].cashFlow.labels.push(tradeDate);
+            
+            currentDate = currentDate.add(1, 'day');
+        }
+    }
 
     return result;
 }
@@ -158,16 +199,24 @@ function toPortfolioDto(portfolio: Portfolio): PortfolioDto {
 export class PortfoliosService {
 
     constructor(
+        @InjectRepository(Portfolio)
+        private readonly portfolioRepository: Repository<Portfolio>,
         private readonly entityManager: EntityManager,
     ) { }
 
     async listPortfoliosByAccountId(accountId: number) {
-        const result = await this.entityManager.find(Portfolio, {
+        const result = await this.portfolioRepository.find({
             where: { account_id: accountId },
             relations: {
                 cashTradeRecords: true,
                 stockTradeRecords: true,
                 fxTradeRecords: true,
+            },
+            order: {
+                cashTradeRecords: {
+                    trade_date: 'ASC',
+                    create_at: 'ASC', 
+                }, 
             },
         });
         

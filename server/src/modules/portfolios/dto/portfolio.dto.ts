@@ -25,6 +25,19 @@ export class PositionDto {
         assetType: EnumAssetType;
 }
 
+@ApiSchema({ name: 'CashFlowDto ' })
+export class CashFlowDto {
+    @ApiProperty({
+        type: [Number], description: '現金流數值', 
+    })
+        flows: number[];
+
+    @ApiProperty({
+        type: [String], description: '現金流標籤', 
+    })
+        labels: string[];
+}
+
 @ApiSchema({ name: 'CashPositionDto' })
 export class CashPositionDto extends PositionDto {
     constructor(data: Partial<CashPositionDto>) {
@@ -37,6 +50,14 @@ export class CashPositionDto extends PositionDto {
 
     @ApiProperty({ description: '持有數量' })
         quantity: number;
+
+    @ApiProperty({
+        description: '現金流', type: CashFlowDto, 
+    })
+        cashFlow: {
+            flows: number[];
+            labels: string[];  
+        };
 
     @ApiProperty({
         description: '交易紀錄', type: [CashTradeRecord], 

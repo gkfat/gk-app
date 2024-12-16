@@ -12,7 +12,10 @@ import { RestClient } from '@fugle/marketdata';
 import { InjectRestClient } from '@fugle/marketdata-nest';
 import { RestStockIntradayQuoteResponse } from '@fugle/marketdata/lib/rest/stock/intraday/quote';
 import { RestStockIntradayTickersResponse } from '@fugle/marketdata/lib/rest/stock/intraday/tickers';
-import { Injectable } from '@nestjs/common';
+import {
+    Injectable,
+    Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 
@@ -25,6 +28,8 @@ const cacheKey = {
 
 @Injectable()
 export class MarketDataService {
+    private readonly logger = new Logger('marketDataService');
+
     constructor(
         @InjectRestClient() private readonly client: RestClient,
         private readonly configService: ConfigService,
@@ -41,39 +46,29 @@ export class MarketDataService {
         const ttl = ms(expiresIn);
         
         const cacheTickers = await this.cacheService.getValue(cacheKey.DAILY_TICKERS);
-        console.log('daily ticker: has cache tickers');
 
         // 無資料，更新資料
         if (!cacheTickers) {
-            console.log('daily ticker: no data, update cache tickers');
-            const res = await this.client.stock.intraday.tickers({
-                type: EnumTickerType.EQUITY,
-                exchange: 'TWSE',
-                market: EnumMarketType.TSE,
-                isNormal: true,
-            });
+            this.logger.debug('daily tickers: no data, update cache tickers');
+            try {
+                const res = await this.client.stock.intraday.tickers({
+                    type: EnumTickerType.EQUITY,
+                    exchange: 'TWSE',
+                    market: EnumMarketType.TSE,
+                    isNormal: true,
+                });
 
-            await this.cacheService.setValue(cacheKey.DAILY_TICKERS, JSON.stringify(res), ttl);
-
-            return res;
+                await this.cacheService.setValue(cacheKey.DAILY_TICKERS, JSON.stringify(res), ttl);
+    
+                return res;
+            } catch (err) {
+                this.logger.error('daily tickers: ', err);
+            }
         }
+
+        this.logger.debug('daily ticker: use cache tickers');
 
         const parsedTickers: RestStockIntradayTickersResponse = JSON.parse(cacheTickers);
-
-        // 非同天，更新資料
-        if (createDate().isSame(createDate(parsedTickers.date), 'date')) {
-            console.log('daily ticker: not same date, update cache tickers');
-            const res = await this.client.stock.intraday.tickers({
-                type: EnumTickerType.EQUITY,
-                exchange: 'TWSE',
-                market: EnumMarketType.TSE,
-                isNormal: true,
-            });
-
-            await this.cacheService.setValue(cacheKey.DAILY_TICKERS, JSON.stringify(res), ttl);
-
-            return res;
-        }
        
         return parsedTickers;
     }
@@ -87,11 +82,9 @@ export class MarketDataService {
         const ttl = ms(expiresIn);
         
         const cacheTicker = await this.cacheService.getValue(redisKey);
-        console.log('quote ticker: has cache ticker quote');
 
         // 無資料，更新資料
         if (!cacheTicker) {
-            console.log('quote ticker: no data, update cache ticker quote');
             const res = await this.client.stock.intraday.quote({ symbol });
 
             await this.cacheService.setValue(redisKey, JSON.stringify({
@@ -109,7 +102,6 @@ export class MarketDataService {
 
         // 非同天，更新資料
         if (createDate().isSame(createDate(parsedTicker.date), 'date')) {
-            console.log('quote ticker: not same date, update cache tickers');
             const res = await this.client.stock.intraday.quote({ symbol });
 
             await this.cacheService.setValue(redisKey, JSON.stringify({
