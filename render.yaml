@@ -3,8 +3,10 @@ services:
     type: web
     runtime: node
     plan: free
-    buildCommand: cd server && pnpm install && pnpm build
-    startCommand: cd server && pnpm start && pnpm seed
+    rootDir: server
+    buildCommand: pnpm install && pnpm build
+    preDeployCommand: pnpm seed
+    startCommand: pnpm start
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /documentation
@@ -14,8 +16,9 @@ services:
   - name: gk-app-client
     type: web
     plan: free
+    rootDir: client
     runtime: docker
-    dockerfilePath: ./client/docker/Dockerfile
+    dockerfilePath: ./docker/Dockerfile
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /
