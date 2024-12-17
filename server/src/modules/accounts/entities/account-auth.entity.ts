@@ -1,9 +1,9 @@
 import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Account } from './account.entity';
@@ -31,7 +31,7 @@ export class AccountAuth {
     })
         credential?: string;
 
-    @ManyToOne(() => Account, (account) => account.auths)
+    @ManyToOne(() => Account, (account) => account.auths, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'account_id' })
         account: Account;
 }
