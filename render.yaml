@@ -17,7 +17,7 @@ services:
     plan: free
     rootDir: client
     runtime: docker
-    dockerfilePath: ./docker/Dockerfile
+    dockerfilePath: ./Dockerfile
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /
