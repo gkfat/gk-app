@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: cd server && pnpm install && pnpm build
-    startCommand: pnpm start
+    startCommand: cd server pnpm start
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /documentation
@@ -13,7 +13,7 @@ services:
     type: web
     plan: free
     runtime: docker
-    dockerfilePath: client/Dockerfile
+    dockerfilePath: ./client/Dockerfile
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /
