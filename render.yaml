@@ -4,19 +4,23 @@ services:
     runtime: node
     plan: free
     buildCommand: cd server && pnpm install && pnpm build
-    startCommand: cd server pnpm start
+    startCommand: cd server && pnpm start && pnpm seed
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /documentation
+    envVars:
+      - fromGroup: gk-app-env-group
 
   - name: gk-app-client
     type: web
     plan: free
     runtime: docker
-    dockerfilePath: ./client/Dockerfile
+    dockerfilePath: ./client/docker/Dockerfile
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /
+    envVars:
+      - fromGroup: gk-app-env-group
 
   - name: redis
     type: redis
