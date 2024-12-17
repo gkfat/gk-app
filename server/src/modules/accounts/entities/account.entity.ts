@@ -41,7 +41,7 @@ export class Account {
     @ApiProperty({ description: 'Account avatar image url' })
         avatar: string;
 
-    @Column({ default: true })
+    @Column({ default: false })
     @ApiProperty({ description: 'Account enable status' })
         enabled: boolean;
 

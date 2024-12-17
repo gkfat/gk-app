@@ -1,9 +1,8 @@
-import Redis from 'ioredis';
 import ms from 'ms';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import {
-    EnumLoginType,
-    EnumRole,
+  EnumLoginType,
+  EnumRole,
 } from 'src/enums';
 import { CacheService } from 'src/middlewares/cache.service';
 import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
@@ -15,9 +14,9 @@ import { getBase64Uuid } from 'src/utils/uuid';
 import { EntityManager } from 'typeorm';
 
 import {
-    BadRequestException,
-    Injectable,
-    UnauthorizedException,
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -27,8 +26,6 @@ import { OAuthService } from './oauth.service';
 
 @Injectable()
 export class AuthService {
-    private client: Redis;
-
     constructor(
         private readonly cacheService: CacheService,
         private readonly configService: ConfigService,
@@ -36,6 +33,21 @@ export class AuthService {
         private readonly entityManager: EntityManager,
         private readonly jwtService: JwtService,
     ) {}
+
+    generateVerificationCode() {
+        // 生成六位數字驗證碼
+        return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+
+    async activateAccount(email: string) {
+        return this.entityManager.transaction(async (trx) => {
+            const account = await trx.findOneBy(Account, { email });
+
+            account.enabled = true;
+
+            return await trx.save(account);
+        });
+    }
 
     async loginOrCreate(reqBody: LoginOrCreateDto) {
         let id: number | null = null;
@@ -97,6 +109,8 @@ export class AuthService {
                     email: oauthResult.email,
                     name: oauthResult.name,
                     avatar: oauthResult.avatar,
+                    // google auth 建立的帳號預設為啟用
+                    enabled: true,
                     auths: [
                         new AccountAuth({
                             type,
@@ -146,18 +160,6 @@ export class AuthService {
         await this.cacheService.setValue(`token:${account.id}`, jti, ttl);
 
         return token;
-    }
-
-    async setValue(key: string , value: string, ttl: string) {
-        return await this.client.set(key, value, 'PX', ttl);
-    }
-
-    async getValue(key: string) {
-        return await this.client.get(key);
-    }
-
-    async deleteValue(key: string) {
-        return await this.client.del(key);
     }
 }
 

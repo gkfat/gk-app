@@ -12,6 +12,31 @@ import {
     ApiSchema,
 } from '@nestjs/swagger';
 
+@ApiSchema({ name: 'SendVerificationCodeRequest' })
+export class SendVerificationCodeDto {
+    @IsNotEmpty()
+    @IsEmail()
+    @ApiProperty({
+        description: 'Unique key of account', example: 'super@gkapp.com', 
+    })
+        email: string;
+}
+
+@ApiSchema({ name: 'VerifyCodeRequest' })
+export class VerifyCodeDto {
+    @IsNotEmpty()
+    @IsEmail()
+    @ApiProperty({
+        description: 'Unique key of account', example: 'super@gkapp.com', 
+    })
+        email: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: 'verification code received from email' })
+        verificationCode: string;
+}
+
 @ApiSchema({ name: 'SignUpRequest' })
 export class SignUpDto {
     @IsNotEmpty()

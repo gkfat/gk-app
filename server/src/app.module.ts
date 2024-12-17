@@ -1,15 +1,15 @@
 import {
-  FugleMarketDataModule,
-  FugleMarketDataModuleOptions,
+    FugleMarketDataModule,
+    FugleMarketDataModuleOptions,
 } from '@fugle/marketdata-nest';
 import {
-  RedisModule,
-  RedisModuleOptions,
+    RedisModule,
+    RedisModuleOptions,
 } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
 import {
-  ConfigModule,
-  ConfigService,
+    ConfigModule,
+    ConfigService,
 } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 

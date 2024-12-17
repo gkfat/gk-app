@@ -9,6 +9,7 @@ import { AccountAuth } from '../accounts/entities/account-auth.entity';
 import { Account } from '../accounts/entities/account.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { EmailService } from './email.service';
 import { OAuthService } from './oauth.service';
 
 @Module({
@@ -23,6 +24,7 @@ import { OAuthService } from './oauth.service';
         OAuthService,
         AccountsService,
         CacheService,
+        EmailService,
     ],
 })
 export class AuthModule {}

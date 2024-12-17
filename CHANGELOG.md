@@ -10,18 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Server
-  - Swagger UI
-  - Database connection setting
-  - Seeds script
-  - JWT token validation & Auth guard
-  - RBAC guard
-  - Auth API: signup / login / Google login
-  - Accounts API: CRUD / update roles
-  - Privileges API: list roles
-  - Portfolios API: portfolio CRUD / transactions C
-  - MarketData API
+  - API documentation
+    - Swagger
+  - Auth policy
+    - Account registered with password must verify email with verificationCode to activate account
+    - JWT token validation & Auth guard
+    - RBAC guard
+  - APIs
+    - Auth
+    - Accounts
+    - Privileges
+    - MarketDatas
+    - Portfolios
 - Client
-  - Layout
-  - Signup / login / logout / Google login
-  - Accounts management
-  - Portfolios management
+  - RBAC views control
+  - Views
+    - Signup / login / Google login
+    - Accounts management
+    - Portfolios management

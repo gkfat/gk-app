@@ -1,12 +1,16 @@
 import { OAuth2Client } from 'google-auth-library';
 
-import { Injectable } from '@nestjs/common';
+import {
+    Injectable,
+    Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { LoginOrCreateDto } from './dto/login-or-create.dto';
 
 @Injectable()
 export class OAuthService {
+    private readonly logger = new Logger('OAuthService');
     private gAuth: OAuth2Client;
 
     constructor(
@@ -56,7 +60,7 @@ export class OAuthService {
             }
 
         } catch (err) {
-            console.error('Google login fail: ', err);
+            this.logger.error('Google login fail: ', err);
         }
 
         return null;
