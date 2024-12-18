@@ -12,8 +12,7 @@
         "start": "node dist/main.js",
         "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "test": "jest",
-        "test:watch": "jest --watch",
-        "test:cov": "jest --coverage",
+        "test:coverage": "jest --coverage",
         "test:e2e": "jest --config ./test/jest-e2e.json",
         "seed": "ts-node -r tsconfig-paths/register ./src/database/run-seeder.ts"
     },
@@ -58,7 +57,6 @@
         "@types/ms": "^0.7.34",
         "@types/node": "^20.3.1",
         "@types/numeral": "^2.0.5",
-        "@types/supertest": "^6.0.0",
         "@typescript-eslint/eslint-plugin": "^8.0.0",
         "@typescript-eslint/parser": "^8.0.0",
         "cross-env": "^7.0.3",
@@ -66,29 +64,11 @@
         "globals": "^15.12.0",
         "jest": "^29.5.0",
         "source-map-support": "^0.5.21",
-        "supertest": "^7.0.0",
         "ts-jest": "^29.1.0",
         "ts-loader": "^9.4.3",
         "ts-node": "^10.9.1",
         "tsconfig-paths": "^4.2.0",
         "typescript": "^5.7.2",
         "typescript-eslint": "^8.16.0"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": "src",
-        "testRegex": ".*\\.spec\\.ts$",
-        "transform": {
-            "^.+\\.(t|j)s$": "ts-jest"
-        },
-        "collectCoverageFrom": [
-            "**/*.(t|j)s"
-        ],
-        "coverageDirectory": "../coverage",
-        "testEnvironment": "node"
     }
 }

@@ -23,13 +23,6 @@ import {
 } from './dto/sign-up.dto';
 import { EmailService } from './email.service';
 
-async function generateVerificationCode(email: string) {
-    const code = this.authService.generateVerificationCode();
-    const ttl = ms('10m').toString();
-    await this.cacheService.setValue(`verification_code:${email}`, code, ttl);
-
-    return code;
-}
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -39,6 +32,14 @@ export class AuthController {
         private readonly cacheService: CacheService,
     ) {}
 
+    private async generateVerificationCode(email: string) {
+        const code = this.authService.generateVerificationCode();
+        const ttl = ms('10m').toString();
+        await this.cacheService.setValue(`verification_code:${email}`, code, ttl);
+    
+        return code;
+    }
+
     @Post('sign-up')
     async signUp(@Body() reqBody: SignUpDto, @Res() res: Response) {
         const findAccount = await this.accountsService.findOneByEmail(reqBody.email);
@@ -47,7 +48,7 @@ export class AuthController {
             throw new BadRequestException('Invalid email or password');
         }
 
-        const code = await generateVerificationCode(reqBody.email);
+        const code = await this.generateVerificationCode(reqBody.email);
 
         const account = await this.accountsService.create(reqBody);
 
@@ -64,7 +65,7 @@ export class AuthController {
             throw new BadRequestException('Reach rate limit, please retry after 10 minutes');
         }
         
-        const code = await generateVerificationCode(reqBody.email);
+        const code = await this.generateVerificationCode(reqBody.email);
 
         await this.emailService.sendVerificationCode(reqBody.email, code);
 
@@ -88,7 +89,7 @@ export class AuthController {
             throw new BadRequestException('Verification code incorrect');
         }
 
-        await this.authService.activateAccount(email);
+        await this.authService.verifyAccount(email);
 
         return res.json({ message: 'ok' });
     }
@@ -100,6 +101,10 @@ export class AuthController {
         const account = await this.accountsService.findOne(id);
 
         if (account) {
+            if (!account.email_verified) {
+                throw new ForbiddenException('Please verified email');
+            }
+
             if (!account.enabled) {
                 throw new ForbiddenException('Account has been freezed');
             }

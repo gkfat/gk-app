@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import {
     fileURLToPath,
     URL,
@@ -49,6 +51,16 @@ export default defineConfig(({ mode }) => {
                     target: env.VITE_API_URL,
                     changeOrigin: true,
                 },
+            },
+        },
+        test: {
+            global: true,
+            environment: 'jsdom',
+            alias: { '@test': fileURLToPath(new URL('./test', import.meta.url)) },
+            coverage: {
+                enabled: true,
+                reporter: ['html'],
+                reportsDirectory: './test/coverage', 
             },
         },
     };

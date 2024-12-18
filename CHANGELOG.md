@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - API documentation
     - Swagger
   - Auth policy
-    - Account registered with password must verify email with verificationCode to activate account
+    - Account registered with password must verify email
     - JWT token validation & Auth guard
     - RBAC guard
   - APIs
@@ -25,6 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Client
   - RBAC views control
   - Views
-    - Signup / login / Google login
+    - Signup / login / Google login / email verification
     - Accounts management
     - Portfolios management

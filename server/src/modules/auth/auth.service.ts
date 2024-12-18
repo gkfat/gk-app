@@ -1,8 +1,8 @@
 import ms from 'ms';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import {
-  EnumLoginType,
-  EnumRole,
+    EnumLoginType,
+    EnumRole,
 } from 'src/enums';
 import { CacheService } from 'src/middlewares/cache.service';
 import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
@@ -14,9 +14,9 @@ import { getBase64Uuid } from 'src/utils/uuid';
 import { EntityManager } from 'typeorm';
 
 import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
+    BadRequestException,
+    Injectable,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -34,16 +34,16 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
+    /** 生成六位數字驗證碼 */
     generateVerificationCode() {
-        // 生成六位數字驗證碼
         return Math.floor(100000 + Math.random() * 900000).toString();
     }
 
-    async activateAccount(email: string) {
+    async verifyAccount(email: string) {
         return this.entityManager.transaction(async (trx) => {
             const account = await trx.findOneBy(Account, { email });
 
-            account.enabled = true;
+            account.email_verified = true;
 
             return await trx.save(account);
         });
@@ -111,6 +111,7 @@ export class AuthService {
                     avatar: oauthResult.avatar,
                     // google auth 建立的帳號預設為啟用
                     enabled: true,
+                    email_verified: true,
                     auths: [
                         new AccountAuth({
                             type,

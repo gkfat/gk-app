@@ -45,6 +45,10 @@ export class Account {
     @ApiProperty({ description: 'Account enable status' })
         enabled: boolean;
 
+    @Column({ default: false })
+    @ApiProperty({ description: 'Status of account email is verified or not' })
+        email_verified: boolean;
+
     @Column({
         nullable: true, default: null, 
     })

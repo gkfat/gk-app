@@ -1,7 +1,7 @@
 import {
-  EnumAssetType,
-  EnumCashFlow,
-  EnumTradeDirection,
+    EnumAssetType,
+    EnumCashFlow,
+    EnumTradeDirection,
 } from '@/enums/transaction';
 
 export namespace Portfolio {

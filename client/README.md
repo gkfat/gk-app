@@ -22,7 +22,11 @@ pnpm lint:fix
 build dist
 
 ```shell
-# require .env file
-
 pnpm build
+```
+
+run test
+
+```shell
+pnpm test
 ```

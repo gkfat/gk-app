@@ -6,6 +6,7 @@ import {
     MaxLength,
     MinLength,
 } from 'class-validator';
+import { REGEX_PASSWORD } from 'src/utils/credential';
 
 import {
     ApiProperty,
@@ -39,6 +40,10 @@ export class VerifyCodeDto {
 
 @ApiSchema({ name: 'SignUpRequest' })
 export class SignUpDto {
+    constructor(auth: Partial<SignUpDto>) {
+        Object.assign(this, auth);
+    }
+    
     @IsNotEmpty()
     @IsEmail()
     @ApiProperty({
@@ -55,9 +60,7 @@ export class SignUpDto {
 
     @IsNotEmpty()
     @IsString()
-    @MinLength(4)
-    @MaxLength(10)
-    @Matches(/^[A-Za-z0-9]{4,10}$/, { message: 'Must use only a-z or 0-9' })
-    @ApiProperty({ description: 'At least 4, most 10 characters' })
+    @Matches(REGEX_PASSWORD, { message: 'Must use only a-z or 0-9' })
+    @ApiProperty({ description: 'At least 6, most 10 characters' })
         password: string;
 }

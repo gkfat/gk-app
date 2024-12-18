@@ -1,7 +1,10 @@
 import {
     IsEmail,
+    IsNotEmpty,
     IsString,
+    Matches,
 } from 'class-validator';
+import { REGEX_PASSWORD } from 'src/utils/credential';
 
 import {
     ApiProperty,
@@ -18,7 +21,9 @@ export class CreateAccountDto {
     @ApiProperty()
         name: string;
 
+    @IsNotEmpty()
     @IsString()
-    @ApiProperty()
+    @Matches(REGEX_PASSWORD, { message: 'Must use only a-z or 0-9' })
+    @ApiProperty({ description: 'At least 6, most 10 characters' })
         password: string;
 }
