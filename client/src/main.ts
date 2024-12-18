@@ -15,4 +15,4 @@ boot();
 
 app.mount('#app');
 
-console.log(`App running in ${import.meta.env.MODE} mode, api url setting: ${import.meta.env.VITE_API_URL}}`);
+console.log(`App running in ${import.meta.env.MODE} mode, api url setting: ${import.meta.env.VITE_API_URL}`);
