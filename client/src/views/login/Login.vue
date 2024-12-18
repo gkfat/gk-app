@@ -288,6 +288,7 @@ const doLogin = async (data: Auth.Login.Request) => {
 
         router.push(redirect);
     } catch (err) {
+        console.error(err);
         notifierStore.error({ content: t('login.message_login_fail') });
     }
 };
@@ -317,6 +318,7 @@ const onSubmit = handleSubmit(async (value) => {
 
             currentTab.value = 'login';
         } catch (err) {
+            console.error(err);
             notifierStore.error({ content: t('login.message_sugnup_fail') });
         }
     }

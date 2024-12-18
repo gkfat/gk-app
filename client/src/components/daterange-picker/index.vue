@@ -33,13 +33,12 @@
                         cols="auto"
                         class="ml-auto"
                     >
-                        <Btn
-                            :key="generateKey()"
-                            :color="'white'"
-                            :icon="'mdi-close'"
-                            :variant="'text'"
+                        <v-btn
+                            color="white"
+                            icon="mdi-close"
+                            variant="text"
                             :disabled="isSelecting"
-                            :exec-func="() => toggleDialog(false)"
+                            @click="toggleDialog(false)"
                         />
                     </v-col>
                 </v-row>
@@ -72,11 +71,11 @@
                                 class="px-0"
                                 variant="text"
                             >
-                                <Btn
+                                <v-btn
                                     block
                                     flat
-                                    :title="item.title"
-                                    :exec-func="() => setDateRange(item.value)"
+                                    :text="item.title"
+                                    @click="setDateRange(item.value)"
                                 />
                             </v-list-item>
                         </v-list>
@@ -99,22 +98,20 @@
                     cols="auto"
                     class="py-1"
                 >
-                    <Btn
-                        :key="generateKey()"
-                        :color="'success'"
-                        :variant="'text'"
-                        :exec-func="confirmDateRange"
+                    <v-btn
+                        color="success"
+                        variant="text"
                         :disabled="isSelecting"
-                        :title="t('button.confirm')"
+                        :text="t('button.confirm')"
+                        @click="confirmDateRange"
                     />
 
-                    <Btn
-                        :key="generateKey()"
-                        :color="'error'"
-                        :variant="'text'"
+                    <v-btn
+                        color="error"
+                        variant="text"
                         :disabled="isSelecting"
-                        :exec-func="() => toggleDialog(false)"
-                        :title="t('button.cancel')"
+                        :text="t('button.cancel')"
+                        @click="toggleDialog(false)"
                     />
                 </v-col>
             </v-card-actions>
@@ -131,17 +128,15 @@ import {
 
 import { useI18n } from 'vue-i18n';
 
-import VueDatePicker, { DatePickerInstance } from '@vuepic/vue-datepicker';
-import Btn from '@/components/common/Btn.vue';
 import { Range } from '@/enums/time';
 import { useAppStore } from '@/store/app';
-import { generateKey } from '@/utils/common';
 import {
     createDate,
     getRelativeRangeOfDay,
     rangeTimeFormat,
     timeFormat,
 } from '@/utils/time';
+import VueDatePicker, { DatePickerInstance } from '@vuepic/vue-datepicker';
 
 const { t } = useI18n();
 const openDialog = ref(false);

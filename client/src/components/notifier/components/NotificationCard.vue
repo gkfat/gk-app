@@ -15,11 +15,10 @@
                 v-text="content"
             />
             <v-spacer />
-            <Btn
-                :color="'white'"
-                :variant="'text'"
-                :icon="'mdi-close'"
-                :exec-func="() => dismissNotify(pKey)"
+            <v-btn
+                variant="text"
+                icon="mdi-close"
+                @click="dismissNotify(pKey)"
             />
         </v-card-actions>
     </v-card>
@@ -32,7 +31,6 @@ import {
     ref,
 } from 'vue';
 
-import Btn from '@/components/common/Btn.vue';
 import { useNotifierStore } from '@/store/notifier';
 
 const notifierStore = useNotifierStore();

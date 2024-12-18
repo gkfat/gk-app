@@ -12,8 +12,6 @@ export const checkNull = (value: string | null | undefined) => {
     return value;
 };
 
-export const generateKey = () => new Date().getTime();
-
 export const equals = (any1: any, any2: any) => {
     try {
         return JSON.stringify(any1) === JSON.stringify(any2);

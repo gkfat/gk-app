@@ -36,11 +36,10 @@
                         cols="auto"
                         class="ml-auto"
                     >
-                        <Btn
-                            :color="'white'"
-                            :icon="'mdi-close'"
-                            :variant="'text'"
-                            :exec-func="() => toggleDialog(false)"
+                        <v-btn
+                            icon="mdi-close"
+                            variant="text"
+                            @click="toggleDialog(false)"
                         />
                     </v-col>
                 </v-row>
@@ -83,18 +82,18 @@
                     cols="auto"
                     class="ml-auto py-1"
                 >
-                    <Btn
-                        :color="'success'"
-                        :variant="'text'"
-                        :exec-func="confirmDateRange"
-                        :title="t('button.confirm')"
+                    <v-btn
+                        color="success"
+                        variant="text"
+                        :text="t('button.confirm')"
+                        @click="confirmDateRange"
                     />
 
-                    <Btn
-                        :color="'error'"
-                        :variant="'text'"
-                        :exec-func="() => toggleDialog(false)"
-                        :title="t('button.cancel')"
+                    <v-btn
+                        color="error"
+                        variant="text"
+                        :text="t('button.cancel')"
+                        @click="toggleDialog(false)"
                     />
                 </v-col>
             </v-card-actions>
@@ -111,7 +110,6 @@ import {
 import { Dayjs } from 'dayjs';
 import { useI18n } from 'vue-i18n';
 
-import Btn from '@/components/common/Btn.vue';
 import { useAppStore } from '@/store/app';
 import {
     createDate,

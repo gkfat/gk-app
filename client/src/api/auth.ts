@@ -24,4 +24,24 @@ export class AuthService {
             data,
         });
     }
+
+    static async sendVerificationCode(
+        data: Auth.SendVerificationCode.Request,
+    ): Promise<void> {
+        return agent({
+            method: 'POST',
+            url: '/send-verification-code',
+            data,
+        });
+    }
+
+    static async verifyCode(
+        data: Auth.VerifyCode.Request,
+    ): Promise<void> {
+        return agent({
+            method: 'POST',
+            url: '/verify-code',
+            data,
+        });
+    }
 }

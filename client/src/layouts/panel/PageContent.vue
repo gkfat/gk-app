@@ -32,23 +32,21 @@
             </v-row>
         </v-container>
 
-        <Btn
+        <v-btn
             v-if="showGoToTop"
             v-show="passScrollToTopThreshold"
             v-scroll="onScroll"
-            :icon="'mdi-chevron-up'"
-            :exec-func="() => goTo(0)"
+            icon="mdi-chevron-up"
             class="ma-6"
             position="fixed"
             location="right bottom"
+            @click="goTo(0)"
         />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-
-import Btn from '@/components/common/Btn.vue';
 
 withDefaults(defineProps<{
     loading?: boolean;

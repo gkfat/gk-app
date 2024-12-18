@@ -37,4 +37,18 @@ export namespace Auth {
             account: Account.Account;
         }
     }
+    
+    export namespace SendVerificationCode {
+        export interface Request {
+            email: string;
+        }
+    }
+
+    export namespace VerifyCode {
+        export interface Request {
+            email: string;
+            verificationCode: string;
+        }
+    }
+
 }

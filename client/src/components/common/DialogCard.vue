@@ -8,24 +8,24 @@
             #activator="{ props }"
         >
             <!-- text -->
-            <Btn
+            <v-btn
                 v-if="!activatorConfig.useIconActivator"
                 v-bind="props"
-                :title="dialogConfig.title"
+                :text="dialogConfig.title"
                 :color="dialogConfig.color"
                 :append-icon="activatorConfig.appendIcon"
                 :block="activatorConfig.block"
-                :exec-func="onInit"
+                @click="onInit"
             />
 
             <!-- icon -->
-            <Btn
+            <v-btn
                 v-if="activatorConfig.useIconActivator"
                 v-bind="props"
                 variant="text"
                 :color="activatorConfig.color"
                 :icon="activatorConfig.activatorIcon"
-                :exec-func="onInit"
+                @click="onInit"
             />
         </template>
 
@@ -46,11 +46,11 @@
                         cols="auto"
                         class="ml-auto"
                     >
-                        <Btn
-                            :color="'white'"
-                            :icon="'mdi-close'"
-                            :variant="'text'"
-                            :exec-func="() => toggleDialog(false)"
+                        <v-btn
+                            color="white"
+                            icon="mdi-close"
+                            variant="text"
+                            @click="toggleDialog(false)"
                         />
                     </v-col>
                 </v-row>
@@ -71,27 +71,26 @@
                 <v-spacer />
                 <!-- 新增/編輯模式 -->
                 <template v-if="!dialogConfig.readonly">
-                    <Btn
-                        :color="'success'"
-                        :variant="'text'"
+                    <v-btn
+                        color="success"
+                        variant="text"
                         :disabled="disableSubmit"
-                        :exec-func="onSubmit"
-                        :title="t('button.confirm')"
+                        :text="t('button.confirm')"
+                        @click="onSubmit"
                     />
-                    <Btn
-                        :color="'error'"
-                        :variant="'text'"
-                        :exec-func="() => toggleDialog(false)"
-                        :title="t('button.cancel')"
+                    <v-btn
+                        color="error"
+                        variant="text"
+                        :text="t('button.cancel')"
+                        @click="toggleDialog(false)"
                     />
                 </template>
                 <!-- 預覽模式 -->
                 <template v-else>
-                    <Btn
-                        :variant="'text'"
-                        :color="'default'"
-                        :exec-func="() => toggleDialog(false)"
-                        :title="t('button.close')"
+                    <v-btn
+                        variant="text"
+                        :titexttle="t('button.close')"
+                        @click="toggleDialog(false)"
                     />
                 </template>
             </v-card-actions>
@@ -103,8 +102,6 @@
 import { ref } from 'vue';
 
 import { useI18n } from 'vue-i18n';
-
-import Btn from './Btn.vue';
 
 const { t } = useI18n();
 const openDialog = ref(false);

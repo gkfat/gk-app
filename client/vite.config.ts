@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
     
     return {
+        css: { preprocessorOptions: { sass: { api: 'modern' } } },
         plugins: [
             vue({ template: { transformAssetUrls } }), vuetify({
                 autoImport: true,
