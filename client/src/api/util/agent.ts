@@ -32,7 +32,7 @@ const errorHandler = async (error: AxiosError) => {
 axios.interceptors.request.use(beforeRequestInterceptor, (error) => Promise.reject(error));
 axios.interceptors.response.use((response) => response, errorHandler);
 
-export const request = (baseURL = '') => {
+export const request = (apiBase: string) => {
     const requestAsync = async (args: {
         method: 'GET'|'POST'|'DELETE'|'PUT',
         url: string,
@@ -40,6 +40,10 @@ export const request = (baseURL = '') => {
         data?: object
         customHeaders?: { [key: string]: string }
     }) => {
+
+        const appStore = context.get('appStore');
+        const baseURL: string = `${appStore.state.environmentVariables.apiUrl}${apiBase}`
+        || `${import.meta.env.VITE_API_URL}${apiBase}`;
 
         const req: AxiosRequestConfig = {
             baseURL,

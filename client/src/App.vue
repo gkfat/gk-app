@@ -8,9 +8,9 @@
 
 <script lang="ts" setup>
 import {
-    computed,
-    onMounted,
-    watch,
+  computed,
+  onMounted,
+  watch,
 } from 'vue';
 
 import { useRouter } from 'vue-router';
@@ -46,7 +46,10 @@ watch(
 );
 
 const setEnvironmentVaraibles = async () => {
-    appStore.state.environmentVariables = { appTitle: import.meta.env.VITE_APP_TITLE ?? 'GkApp' };
+    appStore.state.environmentVariables = {
+        appTitle: import.meta.env.VITE_APP_TITLE ?? 'GkApp', 
+        apiUrl: import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:3000/api/v1',
+    };
 };
 
 const checkIsLoggedIn = () => {

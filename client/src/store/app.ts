@@ -6,6 +6,7 @@ import { useLocalStorage } from '@vueuse/core';
 
 interface EnvironmentVariables {
     appTitle: string;
+    apiUrl: string;
 }
 
 function createDefaultState() {
@@ -19,7 +20,9 @@ export const useAppStore = defineStore('app', () => {
         drawer: true,
         settingDrawer: false,
         overlay: false,
-        environmentVariables: { appTitle: '' } as EnvironmentVariables,
+        environmentVariables: {
+            appTitle: '', apiUrl: '', 
+        } as EnvironmentVariables,
     });
 
     const toggleDrawer = () => {
