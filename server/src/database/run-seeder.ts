@@ -59,6 +59,7 @@ async function run() {
         app.close();
     } catch (err) {
         logger.error('Error running seeders: ', err);
+        throw err;
     }
 }
 
