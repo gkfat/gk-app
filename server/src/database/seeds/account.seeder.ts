@@ -51,7 +51,7 @@ export class AccountSeeder implements Seeder {
         if (!findConflict) {
             await accountRepository.save(superAccount);
         } else {
-            findConflict.auths = { ...superAccount.auths };
+            findConflict.auths[0].credential = password;
             findConflict.roles = superAccount.roles;
 
             await accountRepository.save(findConflict);
