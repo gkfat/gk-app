@@ -47,15 +47,7 @@ export default defineConfig(({ mode }) => {
             ],
         },
         envDir: './',
-        server: {
-            proxy: {
-                '/api': {
-                    target: env.VITE_API_URL,
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, ''),
-                },
-            },
-        },
+        server: { proxy: { '/api': env.VITE_API_URL } },
         test: {
             global: true,
             environment: 'jsdom',

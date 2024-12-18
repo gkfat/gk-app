@@ -16,13 +16,11 @@ services:
     type: web
     plan: free
     rootDir: client
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    runtime: static
+    buildCommand: pnpm install && pnpm prod
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /
-    envVars:
-      - fromGroup: gk-app-env-group
 
   - name: redis
     type: redis
