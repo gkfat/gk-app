@@ -1,14 +1,14 @@
 /// <reference types="vitest/config" />
 
 import {
-  fileURLToPath,
-  URL,
+    fileURLToPath,
+    URL,
 } from 'node:url';
 
 // Utilities
 import {
-  defineConfig,
-  loadEnv,
+    defineConfig,
+    loadEnv,
 } from 'vite';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
@@ -18,6 +18,8 @@ import vue from '@vitejs/plugin-vue';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
+
+    console.log(env.VITE_API_URL);
 
     return {
         css: { preprocessorOptions: { sass: { api: 'modern' } } },
@@ -50,6 +52,7 @@ export default defineConfig(({ mode }) => {
                 '/api': {
                     target: env.VITE_API_URL,
                     changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/api/, ''),
                 },
             },
         },

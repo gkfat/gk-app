@@ -27,7 +27,7 @@ export class AccountSeeder implements Seeder {
         const email = process.env.SUPER_EMAIL || 'super@gkapp.com';
         const password = process.env.SUPER_PASSWORD
             ? hashPassword(process.env.SUPER_PASSWORD)
-            : hashPassword('super');
+            : hashPassword('super123');
 
         const accountRole = await roleRepository.findOneBy({ role: EnumRole.SUPER });
 
@@ -41,6 +41,7 @@ export class AccountSeeder implements Seeder {
             name,
             email,
             enabled: true,
+            email_verified: true,
             auths: [accountAuth],
             roles: [accountRole],
         });
