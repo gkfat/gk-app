@@ -1,14 +1,14 @@
 /// <reference types="vitest/config" />
 
 import {
-    fileURLToPath,
-    URL,
+  fileURLToPath,
+  URL,
 } from 'node:url';
 
 // Utilities
 import {
-    defineConfig,
-    loadEnv,
+  defineConfig,
+  loadEnv,
 } from 'vite';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
@@ -47,7 +47,14 @@ export default defineConfig(({ mode }) => {
             ],
         },
         envDir: './',
-        server: { proxy: { '/api': env.VITE_API_URL } },
+        server: {
+            proxy: {
+                '/api': {
+                    target: env.VITE_API_URL,
+                    changeOrigin: true,
+                },
+            },
+        },
         test: {
             global: true,
             environment: 'jsdom',

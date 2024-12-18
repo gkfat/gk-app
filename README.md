@@ -33,3 +33,8 @@ A app that contains what Gk wants.
       - [x] Google login
     [x] Accounts management
     [x] Portfolios management
+
+
+## Todos
+
+- 因無法解決部署到 Render 上時 static site 的 request proxy 問題，因此 static site 改部署在 cloudflare 上
