@@ -1,14 +1,14 @@
 /// <reference types="vitest/config" />
 
 import {
-    fileURLToPath,
-    URL,
+  fileURLToPath,
+  URL,
 } from 'node:url';
 
 // Utilities
 import {
-    defineConfig,
-    loadEnv,
+  defineConfig,
+  loadEnv,
 } from 'vite';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
@@ -18,7 +18,7 @@ import vue from '@vitejs/plugin-vue';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
-    
+
     return {
         css: { preprocessorOptions: { sass: { api: 'modern' } } },
         plugins: [
