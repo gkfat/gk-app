@@ -27,9 +27,9 @@ services:
   - name: redis
     type: redis
     plan: free
-    ipAllowList: []
+    ipAllowList: [{ source: '0.0.0.0/0' }]
 
 databases:
   - name: db
     plan: free
-    ipAllowList: []
+    ipAllowList: [{ source: '0.0.0.0/0' }]
