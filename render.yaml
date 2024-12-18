@@ -12,16 +12,15 @@ services:
     envVars:
       - fromGroup: gk-app-env-group
 
-  - name: gk-app-client
-    type: web
-    runtime: static
-    plan: free
-    rootDir: client
-    staticPublishPath: ./dist
-    buildCommand: pnpm prod
-    repo: https://github.com/gkfat/gk-app.git
-    branch: master
-    healthCheckPath: /
+  # - name: gk-app-client
+  #   type: web
+  #   plan: free
+  #   rootDir: client
+  #   runtime: docker
+  #   dockerfilePath: ./Dockerfile
+  #   repo: https://github.com/gkfat/gk-app.git
+  #   branch: master
+  #   healthCheckPath: /
 
   - name: redis
     type: redis
