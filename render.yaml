@@ -14,10 +14,11 @@ services:
 
   - name: gk-app-client
     type: web
+    runtime: static
     plan: free
     rootDir: client
-    runtime: static
-    buildCommand: pnpm install && pnpm prod
+    staticPublishPath: ./dist
+    buildCommand: pnpm prod
     repo: https://github.com/gkfat/gk-app.git
     branch: master
     healthCheckPath: /
