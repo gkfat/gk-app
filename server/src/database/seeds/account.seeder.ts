@@ -46,7 +46,13 @@ export class AccountSeeder implements Seeder {
             roles: [accountRole],
         });
 
-        const findConflict = await accountRepository.findOneBy({ email });
+        const findConflict = await accountRepository.findOne({
+            where: { email },
+            relations: {
+                auths: true,
+                roles: true, 
+            }, 
+        });
 
         if (!findConflict) {
             await accountRepository.save(superAccount);
