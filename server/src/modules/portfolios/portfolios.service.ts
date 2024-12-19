@@ -76,7 +76,7 @@ function calcCashPositions(records: CashTradeRecord[]): CashPositionDto[] {
     } else {
         let currentDate = createDate(records[0].trade_date);
 
-        while (currentDate.isBefore(createDate(), 'day')) {
+        while (currentDate.isSameOrBefore(createDate(), 'day')) {
             const tradeDate = currentDate.format('YYYY-MM-DD');
             const dayCashflow = sumDayCashflow(tradeDate, records);
             /** 最新一天現金流 */
