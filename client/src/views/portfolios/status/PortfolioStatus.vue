@@ -7,11 +7,24 @@
     >
         <v-row class="py-3">
             <v-col cols="auto">
-                <v-card-title class="px-5">
-                    {{ portfolio.title }} <span class="text-caption">{{ portfolio.currency }}</span>
+                <v-card-title
+                    v-if="!isEditing"
+                    class="px-5"
+                >
+                    {{ form.title.value.value }}
+                </v-card-title>
+                <v-card-title v-else>
+                    <v-text-field
+                        v-model="form.title.value.value"
+                        variant="underlined"
+                        density="compact"
+                        hide-details="auto"
+                        :error-messages="form.title.errorMessage.value"
+                    />
                 </v-card-title>
     
                 <v-card-subtitle class="mb-3">
+                    <span>{{ portfolio.currency }}</span>
                     <span>初始資金 $ {{ thousands(positions[0].initialBalance) }}</span><br>
                     <span>起始於 {{ portfolio.create_date }}</span>
                 </v-card-subtitle>
@@ -23,8 +36,9 @@
             >
                 <v-btn
                     class="border me-3"
-                    icon="mdi-pencil"
+                    :icon="isEditing ? 'mdi-check' :'mdi-pencil'"
                     variant="text"
+                    color="primary"
                     @click="onEditClick"
                 />
                 <v-btn
@@ -67,9 +81,17 @@
     />
 </template>
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 
-import { EnumAssetType } from '@/enums/transaction';
+import {
+    useField,
+    useForm,
+} from 'vee-validate';
+import { useI18n } from 'vue-i18n';
+import * as yup from 'yup';
+
+import { PortfoliosService } from '@/api/portfolios';
+import { useNotifierStore } from '@/store/notifier';
 import { Portfolio } from '@/types/portfolio';
 import { updownClass } from '@/utils/common';
 import { thousands } from '@/utils/number';
@@ -79,6 +101,7 @@ import DeletePortfolio from './components/DeletePortfolio.vue';
 
 const { t } = useI18n();
 const deletePortfolioRef = templateRef('deletePortfolioRef');
+const notifierStore = useNotifierStore();
 
 const {
     portfolio,
@@ -90,11 +113,51 @@ const {
 
 const emit = defineEmits(['update:portfolio']);
 
+const isEditing = ref(false);
+const inProgress = ref(false);
+
+const {
+    handleSubmit, resetForm, setValues,
+} = useForm<Portfolio.Update.Request>({
+    initialValues: {
+        id: portfolio.id,
+        title: portfolio.title,
+    },
+    validationSchema: { title: yup.string().required(t('input.error_required')) },
+});
+
+const form = { title: useField<string>('title') };
+
+const onSubmit = handleSubmit(async (formValue) => {
+    inProgress.value = true;
+
+    try {
+        const params: Portfolio.Update.Request = {
+            id: formValue.id,
+            title: formValue.title,
+        };
+
+        const { title } = await PortfoliosService.update(params);
+        setValues({ title });
+        notifierStore.success({ content: '編輯投資組合成功' });
+        isEditing.value = false;
+    } catch (err) {
+        console.error(err);
+        notifierStore.error({ content: '編輯投資組合失敗' });
+    }
+
+    inProgress.value = false;
+});
+
 const onEditClick = () => {
-    // createTransactiorRef.value?.show({
-    //     portfolio,
-    //     assetType: EnumAssetType.CASH,
-    // });
+    if (!isEditing.value) {
+        resetForm();
+        isEditing.value = true;
+    } else {
+        if (form.title.value.value !== portfolio.title) {
+            onSubmit();
+        }
+    }
 };
 
 const onDeleteClick = () => {

@@ -2,8 +2,7 @@
     <v-container class="fill-height d-flex align-center">
         <v-row justify="center">
             <v-card
-                :min-width="320"
-                :max-width="500"
+                :width="!smAndUp ? '90%' : 450"
                 elevation="10"
                 rounded="xl"
                 class="pa-7 pb-3"
@@ -294,6 +293,7 @@ import {
     useRoute,
     useRouter,
 } from 'vue-router';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 import * as yup from 'yup';
 
 import { AuthService } from '@/api/auth';
@@ -307,6 +307,7 @@ import { REGEX_PASSWORD } from '@/utils/credential';
 import GoogleLogin from './components/GoogleLogin.vue';
 
 const { t } = useI18n();
+const { smAndUp } = useDisplay();
 const authStore = useAuthStore();
 const notifierStore = useNotifierStore();
 const router = useRouter();
