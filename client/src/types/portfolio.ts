@@ -136,4 +136,14 @@ export namespace Portfolio {
 
         export type Response = Portfolio;
     }
+
+    export namespace DeletePosition {
+        export interface Request {
+            id: number;
+            assetType: EnumAssetType;
+            symbol?: string;
+        }
+
+        export type Response = Portfolio;
+    }
 }

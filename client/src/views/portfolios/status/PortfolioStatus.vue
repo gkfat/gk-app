@@ -1,5 +1,7 @@
 <template>
     <v-card
+        :loading="inProgress"
+        :disabled="inProgress"
         rounded="lg"
         elevation="4"
         :min-width="300"
@@ -11,7 +13,7 @@
                     v-if="!isEditing"
                     class="px-5"
                 >
-                    {{ form.title.value.value }}
+                    {{ portfolio.title }}
                 </v-card-title>
                 <v-card-title v-else>
                     <v-text-field
@@ -34,24 +36,40 @@
                 cols="auto"
                 class="ml-auto me-3"
             >
-                <v-btn
-                    class="border me-3"
-                    :icon="isEditing ? 'mdi-check' :'mdi-pencil'"
-                    variant="text"
-                    color="primary"
-                    @click="onEditClick"
-                />
-                <v-btn
-                    class="border"
-                    icon="mdi-delete"
-                    variant="text"
-                    color="error"
-                    @click="onDeleteClick"
-                />
+                <template v-if="!isEditing">
+                    <v-btn
+                        class="border me-1"
+                        icon="mdi-pencil"
+                        variant="text"
+                        @click="onEditClick"
+                    />
+                    <v-btn
+                        class="border"
+                        icon="mdi-delete"
+                        variant="text"
+                        color="error"
+                        @click="onDeleteClick"
+                    />
+                </template>
+                <template v-else>
+                    <v-btn
+                        class="border me-1"
+                        icon="mdi-check"
+                        variant="text"
+                        color="primary"
+                        @click="onConfirmEdit"
+                    />
+                    <v-btn
+                        class="border"
+                        icon="mdi-close"
+                        variant="text"
+                        @click="onCancelEdit"
+                    />
+                </template>
             </v-col>
         </v-row>
 
-        <v-card-text class="bg-grey">
+        <v-card-text>
             <v-row class="align-center">
                 <v-col cols="auto">
                     <p>資金</p>
@@ -116,9 +134,7 @@ const emit = defineEmits(['update:portfolio']);
 const isEditing = ref(false);
 const inProgress = ref(false);
 
-const {
-    handleSubmit, resetForm, setValues,
-} = useForm<Portfolio.Update.Request>({
+const { handleSubmit } = useForm<Portfolio.Update.Request>({
     initialValues: {
         id: portfolio.id,
         title: portfolio.title,
@@ -137,10 +153,10 @@ const onSubmit = handleSubmit(async (formValue) => {
             title: formValue.title,
         };
 
-        const { title } = await PortfoliosService.update(params);
-        setValues({ title });
+        await PortfoliosService.update(params);
         notifierStore.success({ content: '編輯投資組合成功' });
-        isEditing.value = false;
+        emit('update:portfolio');
+        onCancelEdit();
     } catch (err) {
         console.error(err);
         notifierStore.error({ content: '編輯投資組合失敗' });
@@ -149,15 +165,20 @@ const onSubmit = handleSubmit(async (formValue) => {
     inProgress.value = false;
 });
 
-const onEditClick = () => {
-    if (!isEditing.value) {
-        resetForm();
-        isEditing.value = true;
+const onConfirmEdit = () => {
+    if (form.title.value.value !== portfolio.title) {
+        onSubmit();
     } else {
-        if (form.title.value.value !== portfolio.title) {
-            onSubmit();
-        }
+        onCancelEdit();
     }
+};
+
+const onEditClick = () => {
+    isEditing.value = true;
+};
+
+const onCancelEdit = () => {
+    isEditing.value = false;
 };
 
 const onDeleteClick = () => {

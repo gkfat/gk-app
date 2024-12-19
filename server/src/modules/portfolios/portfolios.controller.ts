@@ -1,41 +1,44 @@
 import { Response } from 'express';
-import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
-    $TokenPayload,
-    ITokenPayload,
+  RequirePermissions,
+} from 'src/decorators/require-permissions.decorators';
+import {
+  $TokenPayload,
+  ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 
 import {
-    Body,
-    Controller,
-    Delete,
-    ForbiddenException,
-    Get,
-    NotFoundException,
-    Param,
-    Post,
-    Put,
-    Res,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiOkResponse,
-    getSchemaPath,
+  ApiBearerAuth,
+  ApiOkResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { DeletePositionDto } from './dto/delete-position.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-    CashTradeRecord,
-    FXTradeRecord,
-    StockTradeRecord,
+  CashTradeRecord,
+  FXTradeRecord,
+  StockTradeRecord,
 } from './enities/trade-record.entity';
 import { PortfoliosService } from './portfolios.service';
 
@@ -107,7 +110,7 @@ export class PortfoliosController {
     @ApiOkResponse({ type: Portfolio })
     async deletePortfolio(
         @$TokenPayload() payload: ITokenPayload | null,
-        @Param('id') id: string, 
+        @Param('id') id: string,
         @Res() res: Response<Portfolio>,
     ) {
         const { scope: { sub } } = payload;
@@ -156,6 +159,33 @@ export class PortfoliosController {
 
         const result = await this.portfoliosService.createTransaction(createTransactionDto);
 
+        return res.json(result);
+    }
+
+    @Delete(':id/position')
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.portfolio.portfolios.delete)
+    @ApiOkResponse({ type: Portfolio })
+    async deletePosition(
+        @$TokenPayload() payload: ITokenPayload | null,
+        @Param('id') id: string, 
+        @Body() deletePositionDto: DeletePositionDto,
+        @Res() res: Response<PortfolioDto>,
+    ) {
+        const { scope: { sub } } = payload;
+
+        const findPortfolio = await this.portfoliosService.findOne(+id);
+
+        if (!findPortfolio) {
+            throw new NotFoundException(`Portfolio ${id} not found`);
+        }
+
+        if (findPortfolio.account_id !== +sub) {
+            throw new ForbiddenException('Invalid operation');
+        }
+
+        const result = await this.portfoliosService.deletePosition(+id, deletePositionDto);
+        
         return res.json(result);
     }
 

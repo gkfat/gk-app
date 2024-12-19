@@ -17,7 +17,7 @@
                 class="ml-auto me-3"
             >
                 <v-btn
-                    class="border"
+                    class="border me-1"
                     icon="mdi-plus"
                     variant="text"
                     @click="onCreateTransactionClick"
@@ -25,145 +25,164 @@
             </v-col>
         </v-row>
 
-        <v-row class="mx-3 ga-3">
-            <v-col
-                v-if="!positions.length"
-                cols="12"
-            >
-                無可用資料。
-            </v-col>
-            <v-col
-                v-for="(position, i) in positions"
-                :key="i"
-                cols="12"
-                class="pa-0"
-            >
-                <v-card
-                    flat
-                    class="border"
+        <v-card-text>
+            <v-row>
+                <v-col
+                    v-if="!positions.length"
+                    cols="12"
                 >
-                    <v-row class="align-center">
-                        <v-col cols="auto">
-                            <v-card-title>
-                                {{ marketDataStore.toReadableTicker(position.symbol) }}
-                            </v-card-title>
-                        </v-col>
-                        <v-col
-                            cols="auto"
-                            class="ml-auto me-3 text-right"
-                        >
-                            <div class="d-flex align-center ga-1 text-caption text-darkgrey justify-end">
-                                <v-icon
-                                    size="16"
-                                    icon="mdi-clock-time-eight-outline"
+                    無可用資料。
+                </v-col>
+                <v-col
+                    v-for="(position, i) in positions"
+                    :key="i"
+                    cols="12"
+                    md="6"
+                >
+                    <v-card
+                        flat
+                        class="border"
+                    >
+                        <v-row class="align-center">
+                            <v-col cols="auto">
+                                <v-card-title>
+                                    {{ marketDataStore.toReadableTicker(position.symbol) }}
+                                </v-card-title>
+                            </v-col>
+                            
+                            <v-spacer />
+    
+                            <v-col cols="auto">
+                                <div class="d-flex align-center ga-1 text-caption text-darkgrey justify-end">
+                                    <v-icon
+                                        size="16"
+                                        icon="mdi-clock-time-eight-outline"
+                                    />
+                                    <span>{{ timeFormat(symbolLastPriceList[position.symbol].lastUpdated, 'MM/DD HH:mm:ss') }}</span>
+                                </div>
+                                <span
+                                    class="me-2"
+                                    :class="`text-${updownClass(
+                                        symbolLastPriceList[position.symbol].lastPrice - position.averageCost
+                                    )}`"
+                                >
+                                    {{ thousands(symbolLastPriceList[position.symbol].lastPrice, 2) }}
+                                </span>
+                                <span :class="`text-${updownClass(symbolLastPriceList[position.symbol].instantReturnRate)}`">
+                                    {{ thousands(symbolLastPriceList[position.symbol].instantReturnRate, 2) }} %
+                                </span>
+                            </v-col>
+                                
+                            <v-col cols="auto">
+                                <v-btn
+                                    class="border ma-1"
+                                    icon="mdi-delete"
+                                    variant="text"
+                                    color="error"
+                                    @click="onDeleteClick(position)"
                                 />
-                                <span>{{ timeFormat(symbolLastPriceList[position.symbol].lastUpdated, 'MM/DD HH:mm:ss') }}</span>
-                            </div>
-                            <span
-                                class="me-2"
-                                :class="`text-${updownClass(
-                                    symbolLastPriceList[position.symbol].lastPrice - position.averageCost
-                                )}`"
-                            >
-                                {{ thousands(symbolLastPriceList[position.symbol].lastPrice, 2) }}
-                            </span>
-                            <span :class="`text-${updownClass(symbolLastPriceList[position.symbol].instantReturnRate)}`">
-                                {{ thousands(symbolLastPriceList[position.symbol].instantReturnRate, 2) }} %
-                            </span>
-                        </v-col>
-                    </v-row>
-
-                    <v-card-subtitle>
-                        {{ thousands(position.totalQuantity) }} 股
-                    </v-card-subtitle>
-
-                    <v-card-text>
-                        <v-row class="flex-nowrap ga-3">
-                            <v-col
-                                cols="auto"
-                                class="text-nowrap"
-                            >
-                                <p class="text-caption">
-                                    市值
-                                </p>
-                                {{ thousands(symbolLastPriceList[position.symbol].marketValue, 2) }}
-                            </v-col>
-                            <v-col
-                                cols="auto"
-                                class="text-nowrap"
-                            >
-                                <p class="text-caption">
-                                    成本
-                                </p>
-                                {{ thousands(position.totalCost, 2) }}
-                            </v-col>
-                            <v-col
-                                cols="auto"
-                                class="text-nowrap"
-                            >
-                                <p class="text-caption">
-                                    平均成本
-                                </p>
-                                {{ thousands(position.averageCost, 2) }}
-                            </v-col>
-                            <v-col
-                                cols="auto"
-                                class="text-nowrap"
-                            >
-                                <p class="text-caption">
-                                    未實現損益
-                                </p>
-                                <p :class="`text-${updownClass(symbolLastPriceList[position.symbol].unrealizedPorfitLoss)}`">
-                                    {{ thousands(symbolLastPriceList[position.symbol].unrealizedPorfitLoss, 2) }}
-                                </p>
-                            </v-col>
-                            <v-col
-                                cols="auto"
-                                class="text-nowrap"
-                            >
-                                <p class="text-caption">
-                                    已實現損益
-                                </p>
-                                <p :class="`text-${updownClass(position.realizedProfitLoss)}`">
-                                    {{ thousands(position.realizedProfitLoss, 2) }}
-                                </p>
-                            </v-col>
-                            <v-col
-                                cols="auto"
-                                class="text-nowrap"
-                            >
-                                <p class="text-caption">
-                                    報酬率
-                                </p>
-                                <p :class="`text-${updownClass(position.realizedProfitLoss)}`">
-                                    {{ thousands(position.returnRate * 100, 2) }} %
-                                </p>
                             </v-col>
                         </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+    
+                        <v-card-subtitle>
+                            {{ thousands(position.totalQuantity) }} 股
+                        </v-card-subtitle>
+    
+                        <v-card-text>
+                            <v-row class="flex-nowrap ga-3">
+                                <v-col
+                                    cols="4"
+                                    class="text-nowrap"
+                                >
+                                    <p class="text-caption">
+                                        市值
+                                    </p>
+                                    {{ thousands(symbolLastPriceList[position.symbol].marketValue) }}
+                                </v-col>
+                                <v-col
+                                    cols="4"
+                                    class="text-nowrap"
+                                >
+                                    <p class="text-caption">
+                                        成本
+                                    </p>
+                                    {{ thousands(position.totalCost, 2) }}
+                                </v-col>
+                                <v-col
+                                    cols="4"
+                                    class="text-nowrap"
+                                >
+                                    <p class="text-caption">
+                                        平均成本
+                                    </p>
+                                    {{ thousands(position.averageCost, 2) }}
+                                </v-col>
+                            </v-row>
+                            <v-row class="flex-nowrap ga-3">
+                                <v-col
+                                    cols="4"
+                                    class="text-nowrap"
+                                >
+                                    <p class="text-caption">
+                                        未實現損益
+                                    </p>
+                                    <p :class="`text-${updownClass(symbolLastPriceList[position.symbol].unrealizedPorfitLoss)}`">
+                                        {{ thousands(symbolLastPriceList[position.symbol].unrealizedPorfitLoss) }}
+                                    </p>
+                                </v-col>
+                                <v-col
+                                    cols="4"
+                                    class="text-nowrap"
+                                >
+                                    <p class="text-caption">
+                                        已實現損益
+                                    </p>
+                                    <p :class="`text-${updownClass(position.realizedProfitLoss)}`">
+                                        {{ thousands(position.realizedProfitLoss) }}
+                                    </p>
+                                </v-col>
+                                <v-col
+                                    cols="4"
+                                    class="text-nowrap"
+                                >
+                                    <p class="text-caption">
+                                        報酬率
+                                    </p>
+                                    <p :class="`text-${updownClass(position.realizedProfitLoss)}`">
+                                        {{ thousands(position.returnRate * 100, 2) }} %
+                                    </p>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-card-text>
     </v-card>
 
     <StockCreateTransaction
         ref="createTransactionRef"
         @update:transaction="onTransactionUpdate"
     />
+
+    <DeletePosition
+        ref="deletePositionRef"
+        @update:delete="emit('update:position')"
+    />
 </template>
 <script lang="ts" setup>
 import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
+    computed,
+    onBeforeUnmount,
+    onMounted,
+    ref,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 
 import {
-  EnumAssetType,
-  EnumTradeDirection,
+    EnumAssetType,
+    EnumTradeDirection,
 } from '@/enums/transaction';
 import { useMarketDataStore } from '@/store/market-data';
 import { Portfolio } from '@/types/portfolio';
@@ -173,11 +192,13 @@ import { timeFormat } from '@/utils/time';
 import { transactionHelper } from '@/utils/transaction';
 import { templateRef } from '@vueuse/core';
 
-import StockCreateTransaction from './StockCreateTransaction.vue';
+import DeletePosition from './components/DeletePosition.vue';
+import StockCreateTransaction from './components/StockCreateTransaction.vue';
 
 const { t } = useI18n();
 const marketDataStore = useMarketDataStore();
 const createTransactiorRef = templateRef('createTransactionRef');
+const deletePositionRef = templateRef('deletePositionRef');
 
 const {
     portfolio,
@@ -187,7 +208,7 @@ const {
     positions: Portfolio.StockPosition[]
 }>();
 
-const emit = defineEmits(['update:transaction']);
+const emit = defineEmits(['update:position']);
 
 const onCreateTransactionClick = () => {
     createTransactiorRef.value?.show({
@@ -270,7 +291,14 @@ const stopListener = () => {
 const onTransactionUpdate = () => {
     stopListener();
     startListener();
-    emit('update:transaction');
+    emit('update:position');
+};
+
+const onDeleteClick = (position: Portfolio.StockPosition) => {
+    deletePositionRef.value?.show({
+        portfolioId: portfolio.id,
+        symbol: position.symbol,
+    });
 };
 
 onMounted(() => {

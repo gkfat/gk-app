@@ -195,13 +195,13 @@
 
 <script lang="ts" setup>
 import {
-  computed,
-  ref,
+    computed,
+    ref,
 } from 'vue';
 
 import {
-  useField,
-  useForm,
+    useField,
+    useForm,
 } from 'vee-validate';
 import { useI18n } from 'vue-i18n';
 import * as yup from 'yup';
@@ -210,10 +210,10 @@ import { PortfoliosService } from '@/api/portfolios';
 import DatePicker from '@/components/date-picker/DatePicker.vue';
 import AutoCompleteEx from '@/components/selector/AutoCompleteEx.vue';
 import TradeDirectionSelector
-  from '@/components/selector/TradeDirectionSelector.vue';
+    from '@/components/selector/TradeDirectionSelector.vue';
 import {
-  EnumAssetType,
-  EnumTradeDirection,
+    EnumAssetType,
+    EnumTradeDirection,
 } from '@/enums/transaction';
 import { useMarketDataStore } from '@/store/market-data';
 import { useNotifierStore } from '@/store/notifier';
@@ -221,8 +221,8 @@ import { Portfolio } from '@/types/portfolio';
 import { Transaction } from '@/types/transaction';
 import { updownClass } from '@/utils/common';
 import {
-  onInputNumberTypeCheck,
-  thousands,
+    onInputNumberTypeCheck,
+    thousands,
 } from '@/utils/number';
 import { timeFormat } from '@/utils/time';
 import { transactionHelper } from '@/utils/transaction';

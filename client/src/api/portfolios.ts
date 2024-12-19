@@ -31,10 +31,11 @@ export class PortfoliosService {
         });
     }
 
-    static async delete(id: number) {
+    static async deleteStockPosition(data: Portfolio.DeletePosition.Request): Promise<Portfolio.DeletePosition.Response> {
         return agent({
             method: 'DELETE',
-            url: `/${id}`,
+            url: `/${data.id}/position`,
+            data: _.omit(data, ['id']),
         });
     }
 

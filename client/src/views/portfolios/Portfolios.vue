@@ -62,7 +62,10 @@
             v-if="currentPortfolio"
             class="px-3 mb-5 align-items-stretch"
         >
-            <v-col cols="auto">
+            <v-col
+                cols="12"
+                md="6"
+            >
                 <PortfolioStatus
                     :portfolio="currentPortfolio"
                     :positions="currentPortfolio.cashPositions"
@@ -70,7 +73,10 @@
                 />
             </v-col>
             
-            <v-col cols="auto">
+            <v-col
+                cols="12"
+                md="6"
+            >
                 <CashPositionsCard
                     :portfolio="currentPortfolio"
                     :positions="currentPortfolio.cashPositions"
@@ -78,11 +84,11 @@
                 />
             </v-col>
 
-            <v-col cols="auto">
+            <v-col cols="12">
                 <StockPositionsCard
                     :portfolio="currentPortfolio"
                     :positions="currentPortfolio.stockPositions"
-                    @update:transaction="listPortfolios"
+                    @update:position="listPortfolios"
                 />
             </v-col>
         </v-row>
@@ -96,8 +102,8 @@
 
 <script lang="ts" setup>
 import {
-  onMounted,
-  ref,
+    onMounted,
+    ref,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
@@ -109,7 +115,6 @@ import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Portfolio } from '@/types/portfolio';
-import { thousands } from '@/utils/number';
 import { templateRef } from '@vueuse/core';
 
 import CashPositionsCard from './cash/CashPositionsCard.vue';

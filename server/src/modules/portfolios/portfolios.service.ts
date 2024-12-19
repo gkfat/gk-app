@@ -1,12 +1,13 @@
 import {
-    EnumAssetType,
-    EnumCashFlow,
-    EnumTradeDirection,
+  EnumAssetType,
+  EnumCashFlow,
+  EnumTradeDirection,
 } from 'src/enums';
 import { createDate } from 'src/utils/time';
 import {
-    EntityManager,
-    Repository,
+  EntityManager,
+  In,
+  Repository,
 } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -14,23 +15,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import {
-    CashTransactionDto,
-    CreateTransactionDto,
-    FXTransactionDto,
-    StockTransactionDto,
+  CashTransactionDto,
+  CreateTransactionDto,
+  FXTransactionDto,
+  StockTransactionDto,
 } from './dto/create-transaction.dto';
+import { DeletePositionDto } from './dto/delete-position.dto';
 import {
-    CashPositionDto,
-    FXPositionDto,
-    PortfolioDto,
-    StockPositionDto,
+  CashPositionDto,
+  FXPositionDto,
+  PortfolioDto,
+  StockPositionDto,
 } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-    CashTradeRecord,
-    FXTradeRecord,
-    StockTradeRecord,
+  CashTradeRecord,
+  FXTradeRecord,
+  StockTradeRecord,
 } from './enities/trade-record.entity';
 
 function sumDayCashflow(tradeDate: string, records: CashTradeRecord[]) {
@@ -291,6 +293,48 @@ export class PortfoliosService {
 
             return await trx.remove(portfolio);
         });
+    }
+
+    async deletePosition(portfolioId: number, data: DeletePositionDto) {
+        await this.entityManager.transaction(async (trx) => {
+            // 股票
+            if (data.assetType === EnumAssetType.STOCK) {
+                const findRecords = await trx.find(StockTradeRecord, {
+                    where: {
+                        portfolio_id: portfolioId,
+                        symbol: data.symbol, 
+                    },
+                });
+
+                const recordIdList = findRecords.map((r) => r.id);
+
+                const sumCost = findRecords.reduce((acc, record) => acc + record.cost, 0);
+
+                const newCashTradeRecord = new CashTradeRecord({
+                    portfolio_id: portfolioId,
+                    trade_date: new Date().toISOString(),
+                    asset_type: EnumAssetType.CASH,
+                    commission: 0,
+                    direction: EnumCashFlow.DEPOSIT,
+                    quantity: sumCost,
+                });
+
+                await trx.save(newCashTradeRecord);
+
+                await trx.delete(StockTradeRecord, { id: In(recordIdList) });
+            }
+        });
+
+        const findPortfolio = await this.entityManager.findOne(Portfolio, {
+            where: { id: portfolioId },
+            relations: {
+                cashTradeRecords: true,
+                stockTradeRecords: true,
+                fxTradeRecords: true,
+            },
+        });
+
+        return toPortfolioDto(findPortfolio);
     }
 
     async createTransaction(createTransactionDto: CreateTransactionDto) {
