@@ -88,9 +88,11 @@
                         </v-card-subtitle>
     
                         <v-card-text>
-                            <v-row class="flex-nowrap ga-3">
+                            <v-row class="justify-between">
                                 <v-col
-                                    cols="4"
+                                    cols="6"
+                                    sm="4"
+                                    md="2"
                                     class="text-nowrap"
                                 >
                                     <p class="text-caption">
@@ -99,7 +101,9 @@
                                     {{ thousands(symbolLastPriceList[position.symbol].marketValue) }}
                                 </v-col>
                                 <v-col
-                                    cols="4"
+                                    cols="6"
+                                    sm="4"
+                                    md="2"
                                     class="text-nowrap"
                                 >
                                     <p class="text-caption">
@@ -108,7 +112,9 @@
                                     {{ thousands(position.totalCost, 2) }}
                                 </v-col>
                                 <v-col
-                                    cols="4"
+                                    cols="6"
+                                    sm="4"
+                                    md="2"
                                     class="text-nowrap"
                                 >
                                     <p class="text-caption">
@@ -116,10 +122,10 @@
                                     </p>
                                     {{ thousands(position.averageCost, 2) }}
                                 </v-col>
-                            </v-row>
-                            <v-row class="flex-nowrap ga-3">
                                 <v-col
-                                    cols="4"
+                                    cols="6"
+                                    sm="4"
+                                    md="2"
                                     class="text-nowrap"
                                 >
                                     <p class="text-caption">
@@ -130,7 +136,9 @@
                                     </p>
                                 </v-col>
                                 <v-col
-                                    cols="4"
+                                    cols="6"
+                                    sm="4"
+                                    md="2"
                                     class="text-nowrap"
                                 >
                                     <p class="text-caption">
@@ -141,7 +149,9 @@
                                     </p>
                                 </v-col>
                                 <v-col
-                                    cols="4"
+                                    cols="6"
+                                    sm="4"
+                                    md="2"
                                     class="text-nowrap"
                                 >
                                     <p class="text-caption">
@@ -317,54 +327,63 @@ const tradeRecordTableHeaders: Common.DataTableHeader<Portfolio.StockTradeRecord
     {
         key: 'trade_date',
         title: '交易日期',
+        sortable: false,
         value: (item) => item.trade_date,
         formatter: (v) => timeFormat(v, 'YYYY-MM-DD'),
     },
     {
         key: 'direction',
         title: '交易方向',
+        sortable: false,
         value: (item) => item.direction,
         formatter: (v) => t(`trade_direction.${v}`),
     },
     {
         key: 'execution_price',
         title: '成交價',
+        sortable: false,
         value: (item) => item.execution_price,
         formatter: (v) => thousands(v),
     },
     {
         key: 'quantity',
         title: '數量(股)',
+        sortable: false,
         value: (item) => item.quantity,
         formatter: (v) => thousands(v),
     },
     {
         key: 'sub_total',
         title: '小計',
+        sortable: false,
         value: (item) => item.execution_price * item.quantity,
         formatter: (v) => thousands(v),
     },
     {
         key: 'commission',
         title: '手續費',
+        sortable: false,
         value: (item) => item.commission,
         formatter: (v) => thousands(v),
     },
     {
         key: 'tax',
         title: '交易稅',
+        sortable: false,
         value: (item) => item.tax,
         formatter: (v) => thousands(v),
     },
     {
         key: 'cost',
         title: '交易成本',
+        sortable: false,
         value: (item) => item.cost,
         formatter: (v) => thousands(v),
     },
     {
         key: 'realized_profit_loss',
         title: '已實現損益',
+        sortable: false,
         value: (item) => item.realized_profit_loss,
         formatter: (v) => thousands(v),
         colorize: colorizeByValue,
@@ -372,6 +391,7 @@ const tradeRecordTableHeaders: Common.DataTableHeader<Portfolio.StockTradeRecord
     {
         key: 'unrealized_profit_loss',
         title: '未實現損益',
+        sortable: false,
         value: (item) => calcUnrealizePorfit(item).unrealizedPorfitLoss,
         formatter: (v) => thousands(v),
         colorize: colorizeByValue,
@@ -379,6 +399,7 @@ const tradeRecordTableHeaders: Common.DataTableHeader<Portfolio.StockTradeRecord
     {
         key: 'return_rate',
         title: '報酬率',
+        sortable: false,
         value: (item) => calcUnrealizePorfit(item).instantReturnRate,
         formatter: (v) => `${thousands(v, 2)} %`,
         colorize: colorizeByValue,
@@ -446,3 +467,8 @@ onBeforeUnmount(() => {
     stopListener();
 });
 </script>
+<style lang="scss" scoped>
+:deep(.v-data-table__th), :deep(.v-data-table__td) {
+    white-space: nowrap;
+}
+</style>
