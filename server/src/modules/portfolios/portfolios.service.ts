@@ -1,13 +1,13 @@
 import {
-  EnumAssetType,
-  EnumCashFlow,
-  EnumTradeDirection,
+    EnumAssetType,
+    EnumCashFlow,
+    EnumTradeDirection,
 } from 'src/enums';
 import { createDate } from 'src/utils/time';
 import {
-  EntityManager,
-  In,
-  Repository,
+    EntityManager,
+    In,
+    Repository,
 } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -15,24 +15,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import {
-  CashTransactionDto,
-  CreateTransactionDto,
-  FXTransactionDto,
-  StockTransactionDto,
+    CashTransactionDto,
+    CreateTransactionDto,
+    FXTransactionDto,
+    StockTransactionDto,
 } from './dto/create-transaction.dto';
 import { DeletePositionDto } from './dto/delete-position.dto';
 import {
-  CashPositionDto,
-  FXPositionDto,
-  PortfolioDto,
-  StockPositionDto,
+    CashPositionDto,
+    FXPositionDto,
+    PortfolioDto,
+    StockPositionDto,
 } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-  CashTradeRecord,
-  FXTradeRecord,
-  StockTradeRecord,
+    CashTradeRecord,
+    FXTradeRecord,
+    StockTradeRecord,
 } from './enities/trade-record.entity';
 
 function sumDayCashflow(tradeDate: string, records: CashTradeRecord[]) {

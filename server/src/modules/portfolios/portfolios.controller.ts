@@ -1,32 +1,30 @@
 import { Response } from 'express';
+import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
-  RequirePermissions,
-} from 'src/decorators/require-permissions.decorators';
-import {
-  $TokenPayload,
-  ITokenPayload,
+    $TokenPayload,
+    ITokenPayload,
 } from 'src/decorators/token-payload.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
 import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 
 import {
-  Body,
-  Controller,
-  Delete,
-  ForbiddenException,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-  Put,
-  Res,
-  UseGuards,
+    Body,
+    Controller,
+    Delete,
+    ForbiddenException,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+    Res,
+    UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  getSchemaPath,
+    ApiBearerAuth,
+    ApiOkResponse,
+    getSchemaPath,
 } from '@nestjs/swagger';
 
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
@@ -36,9 +34,9 @@ import { PortfolioDto } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { Portfolio } from './enities/portfolio.entity';
 import {
-  CashTradeRecord,
-  FXTradeRecord,
-  StockTradeRecord,
+    CashTradeRecord,
+    FXTradeRecord,
+    StockTradeRecord,
 } from './enities/trade-record.entity';
 import { PortfoliosService } from './portfolios.service';
 

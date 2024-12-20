@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { EnumAssetType } from 'src/enums';
 
 import {
@@ -48,7 +49,7 @@ export class CashPositionDto extends PositionDto {
     @ApiProperty({ description: '初始資金' })
         initialBalance: number;
 
-    @ApiProperty({ description: '持有數量' })
+    @ApiProperty({ description: '剩餘資金' })
         quantity: number;
 
     @ApiProperty({
@@ -131,8 +132,13 @@ export class PortfolioDto extends OmitType(Portfolio, [
     'fxTradeRecords',
 ] as const) {
     constructor(data: Partial<PortfolioDto>) {
-        super(data);
-        Object.assign(this, data);
+        super();
+
+        Object.assign(this, _.omit(data, [
+            'stockTradeRecords',
+            'cashTradeRecords',
+            'fxTradeRecords',
+        ]));
     }
 
     @ApiProperty({ description: '總成本' })

@@ -10,5 +10,7 @@ export namespace Common {
         minWidth?: string;
         maxWidth?: string;
         sortable?: boolean;
+        colorize?: (val: any) => string;
+        formatter?: (val: any) => string;
     }
 }

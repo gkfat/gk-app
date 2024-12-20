@@ -72,7 +72,13 @@
         <v-card-text>
             <v-row class="align-center">
                 <v-col cols="auto">
-                    <p>資金</p>
+                    <p>總支出</p>
+                    <p class="text-h6">
+                        $ {{ thousands(totalCost, 2) }}
+                    </p>
+                </v-col>
+                <v-col cols="auto">
+                    <p>剩餘現金</p>
                     <p
                         class="text-h6"
                         :class="`text-${updownClass(positions[0].quantity)}`"
@@ -99,7 +105,10 @@
     />
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {
+    computed,
+    ref,
+} from 'vue';
 
 import {
     useField,
@@ -133,6 +142,10 @@ const emit = defineEmits(['update:portfolio']);
 
 const isEditing = ref(false);
 const inProgress = ref(false);
+
+const totalCost = computed(() => {
+    return portfolio.stockPositions.reduce((acc, position) => acc + position.totalCost, 0);
+});
 
 const { handleSubmit } = useForm<Portfolio.Update.Request>({
     initialValues: {

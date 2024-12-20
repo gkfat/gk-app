@@ -37,7 +37,6 @@
                     v-for="(position, i) in positions"
                     :key="i"
                     cols="12"
-                    md="6"
                 >
                     <v-card
                         flat
@@ -154,6 +153,39 @@
                                 </v-col>
                             </v-row>
                         </v-card-text>
+
+                        <v-card-text>
+                            <v-expansion-panels
+                                v-model="isTradeRecordOpen"
+                                variant="accordion"
+                            >
+                                <v-expansion-panel
+                                    static
+                                    :value="true"
+                                    :title="'交易紀錄'"
+                                >
+                                    <v-expansion-panel-text>
+                                        <v-data-table
+                                            :items="position.tradeRecords"
+                                            :headers="tradeRecordTableHeaders"
+                                            hide-default-footer
+                                        >
+                                            <template
+                                                v-for="header in tradeRecordTableHeaders.filter(
+                                                    (h) => h.colorize || h.formatter
+                                                )"
+                                                :key="header.key"
+                                                #[`item.${header.key}`]="{ value }"
+                                            >
+                                                <span :class="header.colorize ? `text-${header.colorize(value)}` : ''">
+                                                    {{ header.formatter ? header.formatter(value) : value }}
+                                                </span>
+                                            </template>
+                                        </v-data-table>
+                                    </v-expansion-panel-text>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                        </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
@@ -185,6 +217,7 @@ import {
     EnumTradeDirection,
 } from '@/enums/transaction';
 import { useMarketDataStore } from '@/store/market-data';
+import { Common } from '@/types/common';
 import { Portfolio } from '@/types/portfolio';
 import { updownClass } from '@/utils/common';
 import { thousands } from '@/utils/number';
@@ -199,25 +232,7 @@ const { t } = useI18n();
 const marketDataStore = useMarketDataStore();
 const createTransactiorRef = templateRef('createTransactionRef');
 const deletePositionRef = templateRef('deletePositionRef');
-
-const {
-    portfolio,
-    positions,
-} = defineProps<{
-    portfolio: Portfolio.Portfolio;
-    positions: Portfolio.StockPosition[]
-}>();
-
-const emit = defineEmits(['update:position']);
-
-const onCreateTransactionClick = () => {
-    createTransactiorRef.value?.show({
-        portfolio,
-        assetType: EnumAssetType.STOCK,
-    });
-};
-
-const intervalId = ref<ReturnType<typeof setInterval>>();
+const isTradeRecordOpen = ref(true);
 
 const symbolLastPriceList = computed(() => {
     const result: { [key: string]: {
@@ -267,6 +282,128 @@ const symbolLastPriceList = computed(() => {
 
     return result;
 });
+
+const calcUnrealizePorfit = (record: Portfolio.StockTradeRecord) => {
+    const { lastPrice } = symbolLastPriceList.value[record.symbol];
+
+    const {
+        refTax,
+        refCommission,
+        subTotal: marketValue,
+    } = transactionHelper.calcStockSummary({
+        direction: EnumTradeDirection.SELL,
+        executionPrice: Number(lastPrice),
+        quantity: record.quantity,
+    });
+
+    /** 未實現損益: (市值 – 賣出手續費 – 賣出證交稅) – (成本) */
+    const unrealizedPorfitLoss = marketValue - record.cost - refCommission - refTax;
+    /** 未實現損益 / 總成本 */
+    const instantReturnRate = (unrealizedPorfitLoss / record.cost) * 100;
+
+    return {
+        lastPrice: Number(lastPrice),
+        unrealizedPorfitLoss,
+        marketValue,
+        instantReturnRate,
+    };
+};
+
+const colorizeByValue = (value: string) => {
+    return updownClass(value);
+};
+
+const tradeRecordTableHeaders: Common.DataTableHeader<Portfolio.StockTradeRecord>[] = [
+    {
+        key: 'trade_date',
+        title: '交易日期',
+        value: (item) => item.trade_date,
+        formatter: (v) => timeFormat(v, 'YYYY-MM-DD'),
+    },
+    {
+        key: 'direction',
+        title: '交易方向',
+        value: (item) => item.direction,
+        formatter: (v) => t(`trade_direction.${v}`),
+    },
+    {
+        key: 'execution_price',
+        title: '成交價',
+        value: (item) => item.execution_price,
+        formatter: (v) => thousands(v),
+    },
+    {
+        key: 'quantity',
+        title: '數量(股)',
+        value: (item) => item.quantity,
+        formatter: (v) => thousands(v),
+    },
+    {
+        key: 'sub_total',
+        title: '小計',
+        value: (item) => item.execution_price * item.quantity,
+        formatter: (v) => thousands(v),
+    },
+    {
+        key: 'commission',
+        title: '手續費',
+        value: (item) => item.commission,
+        formatter: (v) => thousands(v),
+    },
+    {
+        key: 'tax',
+        title: '交易稅',
+        value: (item) => item.tax,
+        formatter: (v) => thousands(v),
+    },
+    {
+        key: 'cost',
+        title: '交易成本',
+        value: (item) => item.cost,
+        formatter: (v) => thousands(v),
+    },
+    {
+        key: 'realized_profit_loss',
+        title: '已實現損益',
+        value: (item) => item.realized_profit_loss,
+        formatter: (v) => thousands(v),
+        colorize: colorizeByValue,
+    },
+    {
+        key: 'unrealized_profit_loss',
+        title: '未實現損益',
+        value: (item) => calcUnrealizePorfit(item).unrealizedPorfitLoss,
+        formatter: (v) => thousands(v),
+        colorize: colorizeByValue,
+    },
+    {
+        key: 'return_rate',
+        title: '報酬率',
+        value: (item) => calcUnrealizePorfit(item).instantReturnRate,
+        formatter: (v) => `${thousands(v, 2)} %`,
+        colorize: colorizeByValue,
+
+    },
+];
+
+const {
+    portfolio,
+    positions,
+} = defineProps<{
+    portfolio: Portfolio.Portfolio;
+    positions: Portfolio.StockPosition[]
+}>();
+
+const emit = defineEmits(['update:position']);
+
+const onCreateTransactionClick = () => {
+    createTransactiorRef.value?.show({
+        portfolio,
+        assetType: EnumAssetType.STOCK,
+    });
+};
+
+const intervalId = ref<ReturnType<typeof setInterval>>();
 
 const refreshAllTickers = async () => {
     await Promise.all(
