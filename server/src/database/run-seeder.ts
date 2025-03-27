@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { AppModule } from 'src/app.module';
 import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
 import { Account } from 'src/modules/accounts/entities/account.entity';
@@ -35,6 +37,10 @@ async function run() {
             username: configService.getOrThrow('DB_USERNAME'),
             password: configService.getOrThrow('DB_PASSWORD'),
             database: configService.getOrThrow('DB_NAME'),
+            ssl: {
+                rejectUnauthorized: true,
+                ca: fs.readFileSync('./ca.pem'),
+            },
             entities: [
                 Account,
                 AccountAuth,

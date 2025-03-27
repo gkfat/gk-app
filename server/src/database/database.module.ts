@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { Module } from '@nestjs/common';
 import {
     ConfigModule,
@@ -21,6 +23,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                     database: configService.getOrThrow('DB_NAME'),
                     synchronize: configService.getOrThrow('DB_SYNCHRONIZE'),
                     autoLoadEntities: true,
+                    ssl: {
+                        rejectUnauthorized: true,
+                        ca: fs.readFileSync('./ca.pem'),
+                    },
                 };
             },
         }),
