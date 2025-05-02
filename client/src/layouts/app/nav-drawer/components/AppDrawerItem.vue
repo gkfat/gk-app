@@ -1,5 +1,5 @@
 <template>
-    <v-list>
+    <v-list nav>
         <template
             v-for="item in menuItems"
             :key="item.path"
@@ -85,7 +85,7 @@ const toMenuItem = (routeConfig: RouteRecordRaw, parentPath: string): MenuItem |
         .map((child) => toMenuItem(child, `${parentPath + routeConfig.path}/`))
         .filter((item) => item !== null);
 
-    // @ts-ignore
+    // @ts-expect-error force return
     if (meta?.childAsRoot) return children;
 
     if (!meta || meta.hidden) return null;

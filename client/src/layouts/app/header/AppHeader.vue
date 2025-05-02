@@ -2,12 +2,13 @@
     <v-app-bar
         v-if="isLoggedIn"
         flat
-        class="pe-3"
     >
+        <AppBtnMobileDrawer v-if="!smAndUp" />
         <AppBreadcrumbs v-if="smAndUp" />
+
         <v-spacer />
 
-        <AppButtonSetting />
+        <AppBtnSetting />
     </v-app-bar>
 </template>
 
@@ -19,10 +20,11 @@ import { useDisplay } from 'vuetify';
 import { useAuthStore } from '@/store/auth';
 
 import AppBreadcrumbs from './components/AppBreadcrumbs.vue';
-import AppButtonSetting from './components/AppButtonSetting.vue';
+import AppBtnMobileDrawer from './components/AppBtnMobileDrawer.vue';
+import AppBtnSetting from './components/AppBtnSetting.vue';
 
-const { smAndUp } = useDisplay();
 const authStore = useAuthStore();
+const { smAndUp } = useDisplay();
 
 const isLoggedIn = computed(() => !!authStore.state?.token);
 </script>
