@@ -8,13 +8,13 @@
 import { ref } from 'vue';
 
 import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  Title,
-  Tooltip,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    LineElement,
+    Title,
+    Tooltip,
 } from 'chart.js';
 import { Line } from 'vue-chartjs';
 

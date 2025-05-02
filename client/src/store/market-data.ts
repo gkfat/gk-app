@@ -1,6 +1,6 @@
 import {
-  computed,
-  ref,
+    computed,
+    ref,
 } from 'vue';
 
 import { defineStore } from 'pinia';

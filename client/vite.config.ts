@@ -10,6 +10,7 @@ import {
   defineConfig,
   loadEnv,
 } from 'vite';
+import eslint from 'vite-plugin-eslint';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
 // Plugins
@@ -19,14 +20,21 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '');
 
-    console.log(env.VITE_API_URL);
+    console.log(`App mode: ${mode}, API url: ${env.VITE_API_URL}`);
 
     return {
         css: { preprocessorOptions: { sass: { api: 'modern' } } },
         plugins: [
-            vue({ template: { transformAssetUrls } }), vuetify({
+            vue({ template: { transformAssetUrls } }),
+            vuetify({
                 autoImport: true,
                 styles: { configFile: 'src/styles/index.scss' },
+            }),
+            eslint({
+                emitWarning: true,
+                emitError: false,
+                failOnError: false,
+                failOnWarning: false,
             }),
         ],
         build: { chunkSizeWarningLimit: 1600 },

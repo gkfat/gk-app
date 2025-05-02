@@ -8,9 +8,9 @@
 
 <script lang="ts" setup>
 import {
-  computed,
-  onMounted,
-  watch,
+    computed,
+    onMounted,
+    watch,
 } from 'vue';
 
 import { useRouter } from 'vue-router';

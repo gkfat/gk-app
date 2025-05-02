@@ -1,6 +1,6 @@
 import {
-  Chart,
-  registerables,
+    Chart,
+    registerables,
 } from 'chart.js';
 
 Chart.register(...registerables);

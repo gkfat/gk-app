@@ -7,9 +7,10 @@
         "node": ">= 20"
     },
     "scripts": {
-        "dev": "vite --mode development",
-        "prod": "pnpm i && vite --mode production",
-        "build": "vite build",
+        "generate-version": "node generateVersion.cjs",
+        "dev": "pnpm run generate-version && vite --mode development",
+        "prod": "pnpm i && pnpm run generate-version && vite --mode production",
+        "build": "pnpm run generate-version && vite build",
         "lint:fix": "eslint --fix",
         "test": "vitest --ui",
         "test:coverage": "vitest run --coverage"
@@ -53,6 +54,7 @@
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.31.1",
         "vite": "^5.4.19",
+        "vite-plugin-eslint": "^1.8.1",
         "vite-plugin-vuetify": "^2.1.1",
         "vitest": "^2.1.9",
         "vue-eslint-parser": "^9.4.3",
