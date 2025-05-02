@@ -29,6 +29,7 @@
         "@nestjs/terminus": "^10.2.3",
         "@nestjs/typeorm": "^10.0.2",
         "bcrypt": "^5.1.1",
+        "casbin": "^5.38.0",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "dayjs": "^1.11.13",
@@ -72,5 +73,6 @@
         "tsconfig-paths": "^4.2.0",
         "typescript": "^5.7.2",
         "typescript-eslint": "^8.16.0"
-    }
+    },
+    "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }

@@ -5,11 +5,12 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Portfolio } from './enities/portfolio.entity';
+import { Portfolio } from './entities/portfolio.entity';
 import {
     CashTradeRecord,
-    FXTradeRecord, StockTradeRecord, 
-} from './enities/trade-record.entity';
+    FXTradeRecord,
+    StockTradeRecord,
+} from './entities/trade-record.entity';
 import { PortfoliosController } from './portfolios.controller';
 import { PortfoliosService } from './portfolios.service';
 

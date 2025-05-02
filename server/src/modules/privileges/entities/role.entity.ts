@@ -27,7 +27,7 @@ export class Role {
         unique: true, enum: EnumRole, 
     })
     @ApiProperty({ enum: EnumRole })
-        role: string;
+        role: EnumRole;
 
     @ManyToMany(() => Account, (account) => account.roles)
         accounts: Account[];

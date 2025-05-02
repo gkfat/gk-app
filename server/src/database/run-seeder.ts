@@ -1,15 +1,6 @@
 import fs from 'node:fs';
 
 import { AppModule } from 'src/app.module';
-import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
-import { Account } from 'src/modules/accounts/entities/account.entity';
-import { Portfolio } from 'src/modules/portfolios/enities/portfolio.entity';
-import {
-    CashTradeRecord,
-    FXTradeRecord,
-    StockTradeRecord,
-} from 'src/modules/portfolios/enities/trade-record.entity';
-import { Role } from 'src/modules/privileges/entities/role.entity';
 import {
     DataSource,
     DataSourceOptions,
@@ -23,12 +14,16 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
+import { entities } from './entities';
+
 const logger = new Logger('seeder');
 
 async function run() {
     try {
         const app = await NestFactory.createApplicationContext(AppModule);
         const configService = app.get(ConfigService);
+
+        const isDev = process.env.NODE_ENV === 'dev';
     
         const options: DataSourceOptions & SeederOptions = {
             type: 'postgres',
@@ -37,19 +32,13 @@ async function run() {
             username: configService.getOrThrow('DB_USERNAME'),
             password: configService.getOrThrow('DB_PASSWORD'),
             database: configService.getOrThrow('DB_NAME'),
-            ssl: {
-                rejectUnauthorized: true,
-                ca: fs.readFileSync('./ca.pem'),
-            },
-            entities: [
-                Account,
-                AccountAuth,
-                Role,
-                Portfolio,
-                StockTradeRecord,
-                FXTradeRecord,
-                CashTradeRecord,
-            ],
+            ssl: isDev
+                ? false
+                : {
+                    rejectUnauthorized: true,
+                    ca: fs.readFileSync('./ca.pem'),
+                },
+            entities,
     
             seeds: ['src/database/seeds/**/*{.ts,.js}'],
         };

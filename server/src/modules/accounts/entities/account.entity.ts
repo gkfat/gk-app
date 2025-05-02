@@ -1,4 +1,4 @@
-import { Portfolio } from 'src/modules/portfolios/enities/portfolio.entity';
+import { Portfolio } from 'src/modules/portfolios/entities/portfolio.entity';
 import { Role } from 'src/modules/privileges/entities/role.entity';
 import {
     Column,

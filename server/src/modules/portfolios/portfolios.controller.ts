@@ -32,12 +32,12 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { DeletePositionDto } from './dto/delete-position.dto';
 import { PortfolioDto } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
-import { Portfolio } from './enities/portfolio.entity';
+import { Portfolio } from './entities/portfolio.entity';
 import {
     CashTradeRecord,
     FXTradeRecord,
     StockTradeRecord,
-} from './enities/trade-record.entity';
+} from './entities/trade-record.entity';
 import { PortfoliosService } from './portfolios.service';
 
 @ApiBearerAuth('Authorization')

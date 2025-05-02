@@ -7,12 +7,16 @@ import {
 } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { TypeOrmFeatureModule } from './typeorm-feature.module';
+
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
+
+                const isDev = process.env.NODE_ENV === 'dev';
               
                 return {
                     type: 'postgres',
@@ -23,13 +27,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                     database: configService.getOrThrow('DB_NAME'),
                     synchronize: configService.getOrThrow('DB_SYNCHRONIZE'),
                     autoLoadEntities: true,
-                    ssl: {
-                        rejectUnauthorized: true,
-                        ca: fs.readFileSync('./ca.pem'),
-                    },
+                    ssl: isDev
+                        ? false
+                        : {
+                            rejectUnauthorized: true,
+                            ca: fs.readFileSync('./ca.pem'),
+                        },
                 };
             },
-        }),
+        }), TypeOrmFeatureModule,
     ],
+    exports: [TypeOrmModule, TypeOrmFeatureModule],
 })
 export class DatabaseModule {}

@@ -28,12 +28,12 @@ import {
     StockPositionDto,
 } from './dto/portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
-import { Portfolio } from './enities/portfolio.entity';
+import { Portfolio } from './entities/portfolio.entity';
 import {
     CashTradeRecord,
     FXTradeRecord,
     StockTradeRecord,
-} from './enities/trade-record.entity';
+} from './entities/trade-record.entity';
 
 function sumDayCashflow(tradeDate: string, records: CashTradeRecord[]) {
     return records
