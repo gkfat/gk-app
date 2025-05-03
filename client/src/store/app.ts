@@ -25,8 +25,8 @@ export const useAppStore = defineStore('app', () => {
         } as EnvironmentVariables,
     });
 
-    const toggleDrawer = () => {
-        state.value.drawer = !state.value.drawer;
+    const toggleDrawer = (target: boolean = !state.value.drawer) => {
+        state.value.drawer = target;
     };
 
     const toggleSettingDrawer = () => {

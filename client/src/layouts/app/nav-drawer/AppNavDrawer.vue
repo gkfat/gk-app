@@ -40,7 +40,7 @@
                 <v-btn
                     class="mx-auto"
                     block
-                    @click="appStore.toggleDrawer"
+                    @click="appStore.toggleDrawer(false)"
                 >
                     <v-icon
                         size="x-large"
@@ -56,8 +56,10 @@
 import {
     computed,
     ref,
+    watch,
 } from 'vue';
 
+import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
 
 import { useAppStore } from '@/store/app';
@@ -69,8 +71,18 @@ import AppFooter from './components/AppFooter.vue';
 
 const appStore = useAppStore();
 const authStore = useAuthStore();
+const route = useRoute();
 const { smAndUp } = useDisplay();
 
 const isLoggedIn = computed(() => !!authStore.state?.token);
 const isRail = ref(false);
+
+watch(
+    () => route.fullPath,
+    () => {
+        if (!smAndUp.value) {
+            appStore.toggleDrawer(false);
+        }
+    },
+);
 </script>
