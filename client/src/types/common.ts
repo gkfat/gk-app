@@ -13,4 +13,9 @@ export namespace Common {
         colorize?: (val: any) => string;
         formatter?: (val: any) => string;
     }
+
+    export interface SortItem {
+        key: string;
+        order: 'desc' | 'asc';
+    }
 }

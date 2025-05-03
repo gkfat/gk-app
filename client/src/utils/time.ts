@@ -1,9 +1,12 @@
+import 'dayjs/locale/zh-tw'; // 或 zh-cn、en、ja 等
+
 import dayjs, { ConfigType } from 'dayjs';
 import isLeapYear from 'dayjs/plugin/isLeapYear';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
+dayjs.locale('zh-tw');
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isLeapYear);

@@ -87,9 +87,8 @@
     "title": "帳號中心"
   },
   "role": {
-    "ADMIN": "管理員",
-    "MEMBER": "會員",
-    "SUPER": "超級管理員"
+    "member": "會員",
+    "super": "超級管理員"
   },
   "trade_direction": {
     "buy": "買進",

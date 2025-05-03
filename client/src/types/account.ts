@@ -12,6 +12,7 @@ export namespace Account {
         update_at: string | null;
         roles: Role.Role[];
         permissions: string[];
+        email_verified: boolean;
     }
 
     export namespace Me {
