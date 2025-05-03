@@ -1,4 +1,8 @@
 {
+  "applications": {
+    "popcron": "PopCron",
+    "portfolio": "投資組合"
+  },
   "asset_type": {
     "cash": "現金流",
     "fx": "外匯",
