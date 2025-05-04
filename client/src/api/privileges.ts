@@ -11,4 +11,11 @@ export class PrivilegesService {
             url: '/roles',
         });
     }
+
+    static async listPermissions(): Promise<{ role: Role.Role; permissions: string[]; }[]> {
+        return agent({
+            method: 'GET',
+            url: '/permissions',
+        });
+    }
 }

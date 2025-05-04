@@ -169,6 +169,7 @@ import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
 
 import { AccountsService } from '@/api/accounts';
+import { OperationLogsService } from '@/api/operation-logs';
 import { Permissions } from '@/enums/permissions';
 import PageContent from '@/layouts/panel/PageContent.vue';
 import PageHeader from '@/layouts/panel/PageHeader.vue';
@@ -199,9 +200,9 @@ const deleteAccountRef = templateRef('deleteAccountRef');
  * 操作權限
  */
 const havePermissionTo = ref({
-    addAccount: authStore.havePermission(Permissions.account.accounts.add),
-    updateAccount: authStore.havePermission(Permissions.account.accounts.update),
-    deleteAccount: authStore.havePermission(Permissions.account.accounts.delete),
+    addAccount: authStore.havePermission(Permissions.iam.accounts.add),
+    updateAccount: authStore.havePermission(Permissions.iam.accounts.update),
+    deleteAccount: authStore.havePermission(Permissions.iam.accounts.delete),
 });
 
 const inProgress = ref(false);
@@ -267,6 +268,8 @@ const listAccounts = async () => {
     inProgress.value = true;
     try {
         table.value.data = await AccountsService.list();
+
+        const rs = await OperationLogsService.search({});
     } catch {
         notifierStore.error({ content: '取得帳號列表失敗' });
     }

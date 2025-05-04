@@ -131,7 +131,7 @@ const { t } = useI18n();
 const notifierStore = useNotifierStore();
 const authStore = useAuthStore();
 
-const havePermissionTo = ref({ update: authStore.havePermission(Permissions.account.accounts.update) });
+const havePermissionTo = ref({ update: authStore.havePermission(Permissions.iam.accounts.update) });
 
 const data = ref<Account.Account>(null);
 const editable = ref(false);

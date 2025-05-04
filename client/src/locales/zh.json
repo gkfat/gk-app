@@ -79,6 +79,7 @@
   "nav": {
     "accounts": "會員管理",
     "dashboard": "儀表板",
+    "iam": "IAM",
     "portfolios": "投資組合",
     "profile": "帳號中心"
   },

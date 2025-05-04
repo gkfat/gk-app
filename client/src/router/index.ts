@@ -5,11 +5,22 @@ import {
 } from 'vue-router';
 
 import { installGuard } from './guard';
-import { appRoutes } from './routes';
-import { loginRoutes } from './routes/login';
+import { dashboardRoutes } from './routes/dashboard';
+import { errorsRoutes } from './routes/errors';
+import { iamRoutes } from './routes/iam';
+import { portfoliosRoutes } from './routes/portfolios';
 
 const routes: RouteRecordRaw[] = [
-    ...loginRoutes,
+    {
+        path: '/login',
+        name: 'Login',
+        meta: {
+            requireLoggedIn: false,
+            hidden: true,
+            title: '',
+        },
+        component: () => import('@/views/login/Login.vue'),
+    },
     {
         path: '',
         redirect: '/dashboard',
@@ -20,7 +31,12 @@ const routes: RouteRecordRaw[] = [
             title: '',
             hidden: false,
         },
-        children: appRoutes,
+        children: [
+            ...dashboardRoutes,
+            ...portfoliosRoutes,
+            ...iamRoutes,
+            ...errorsRoutes,
+        ],
     },
     {
         path: '/:catchAll(.*)',
