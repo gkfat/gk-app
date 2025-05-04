@@ -1,4 +1,8 @@
 import {
+    EnumRole,
+    Privileges,
+} from 'src/enums';
+import {
     EntityManager,
     Repository,
 } from 'typeorm';
@@ -18,6 +22,13 @@ export class PrivilegesService {
 
     async listRoles() {
         return await this.rolesRepository.find();
+    }
+
+    async listPermissions() {
+        return Object.entries(Privileges).map(([role, permissions]) => ({
+            role: role as EnumRole,
+            permissions,
+        }));
     }
 }
 

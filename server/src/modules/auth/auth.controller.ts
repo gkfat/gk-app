@@ -1,13 +1,14 @@
 import { Response } from 'express';
 import ms from 'ms';
+import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { CacheService } from 'src/middlewares/cache.service';
+import { LoggerService } from 'src/middlewares/logger.service';
 
 import {
     BadRequestException,
     Body,
     Controller,
     ForbiddenException,
-    HttpStatus,
     InternalServerErrorException,
     Post,
     Res,
@@ -30,6 +31,7 @@ export class AuthController {
         private readonly authService: AuthService,
         private readonly emailService: EmailService,
         private readonly cacheService: CacheService,
+        private readonly loggerService: LoggerService,
     ) {}
 
     private async generateVerificationCode(email: string) {
@@ -94,29 +96,30 @@ export class AuthController {
         return res.json({ message: 'ok' });
     }
 
+    @OperationLog()
     @Post('login')
     async login(@Body() reqBody: LoginOrCreateDto, @Res() res: Response) {
         const { id } = await this.authService.loginOrCreate(reqBody);
 
         const account = await this.accountsService.findOne(id);
 
-        if (account) {
-            if (!account.email_verified) {
-                throw new ForbiddenException('Please verified email');
-            }
-
-            if (!account.enabled) {
-                throw new ForbiddenException('Account has been freezed');
-            }
-
-            const token = await this.authService.generateJwt(account);
-
-            return res.status(HttpStatus.OK).json({
-                account,
-                token,
-            });
+        if (!account) {
+            throw new InternalServerErrorException('Login success but something failed');
         }
 
-        throw new InternalServerErrorException('Login success but something failed');
+        if (!account.email_verified) {
+            throw new ForbiddenException('Please verified email');
+        }
+
+        if (!account.enabled) {
+            throw new ForbiddenException('Account has been freezed');
+        }
+
+        const token = await this.authService.generateJwt(account);
+
+        return res.json({
+            account,
+            token,
+        });
     }
 }

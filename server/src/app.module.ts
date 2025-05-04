@@ -11,14 +11,17 @@ import {
     ConfigModule,
     ConfigService,
 } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { DatabaseModule } from './database/database.module';
+import { OperationLogInterceptor } from './interceptors/operation-log.interceptor';
 import { MiddlewaresModule } from './middlewares/middlewares.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { MarketDataModule } from './modules/market-data/market-data.module';
+import { OperationLogsModule } from './modules/operation-logs/operation-logs.module';
 import { PortfoliosModule } from './modules/portfolios/portfolios.module';
 import { PrivilegesModule } from './modules/privileges/privileges.module';
 
@@ -62,6 +65,13 @@ const envFilePath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.en
         PrivilegesModule,
         PortfoliosModule,
         MarketDataModule,
+        OperationLogsModule,
+    ],
+    providers: [
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: OperationLogInterceptor,
+        },
     ],
 })
 export class AppModule {}

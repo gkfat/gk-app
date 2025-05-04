@@ -15,6 +15,7 @@ import {
     ApiOkResponse,
 } from '@nestjs/swagger';
 
+import { GetPermissionsResponseDto } from './dto/get-permissions.dto';
 import { Role } from './entities/role.entity';
 import { PrivilegesService } from './privileges.service';
 
@@ -33,5 +34,15 @@ export class PrivilegesController {
         const roles = await this.privilegesService.listRoles();
 
         return res.json(roles);
+    }
+
+    @Get('permissions')
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.privilege.permissions.get)
+    @ApiOkResponse({ type: [GetPermissionsResponseDto] })
+    async listPermissions(@Res() res: Response<GetPermissionsResponseDto[]>) {
+        const result = await this.privilegesService.listPermissions();
+
+        return res.json(result);
     }
 }

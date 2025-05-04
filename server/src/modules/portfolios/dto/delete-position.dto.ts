@@ -1,14 +1,14 @@
 import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  ValidateIf,
+    IsEnum,
+    IsNotEmpty,
+    IsString,
+    ValidateIf,
 } from 'class-validator';
 import { EnumAssetType } from 'src/enums';
 
 import {
-  ApiProperty,
-  ApiSchema,
+    ApiProperty,
+    ApiSchema,
 } from '@nestjs/swagger';
 
 @ApiSchema({ name: 'DeletePositionDto' })

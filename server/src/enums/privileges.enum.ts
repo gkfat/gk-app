@@ -2,12 +2,12 @@ import { Permissions } from './permissions.enum';
 import { EnumRole } from './role.enum';
 
 const {
-    account, dashboard,  portfolio, marketData,
+    iam, dashboard,  portfolio, marketData,
 } = Permissions;
 
 const basicPermissions = [
-    account.me.get,
-    account.me.update,
+    iam.me.get,
+    iam.me.update,
     dashboard.dashboard.get,
 ];
 
