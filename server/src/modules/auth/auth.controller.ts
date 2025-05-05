@@ -11,6 +11,7 @@ import {
     ForbiddenException,
     InternalServerErrorException,
     Post,
+    Req,
     Res,
 } from '@nestjs/common';
 
@@ -98,7 +99,7 @@ export class AuthController {
 
     @OperationLog()
     @Post('login')
-    async login(@Body() reqBody: LoginOrCreateDto, @Res() res: Response) {
+    async login(@Body() reqBody: LoginOrCreateDto, @Req() req: Request) {
         const { id } = await this.authService.loginOrCreate(reqBody);
 
         const account = await this.accountsService.findOne(id);
@@ -117,9 +118,19 @@ export class AuthController {
 
         const token = await this.authService.generateJwt(account);
 
-        return res.json({
+        const tokenPayload = {
+            scopes: {
+                sub: account.id,
+                email: account.email,
+            },
+        };
+
+        // 紀錄在 req 給 operationLog 使用
+        (req as any).$tokenPayload = tokenPayload;
+
+        return {
             account,
             token,
-        });
+        };
     }
 }

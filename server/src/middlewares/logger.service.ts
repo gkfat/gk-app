@@ -22,10 +22,10 @@ export class LoggerService {
             action,
             resultCode,
             user,
+            duration,
             request,
             result,
-            duration,
-        
+            
             level = 'info',
         } = data;
 

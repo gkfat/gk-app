@@ -25,7 +25,7 @@ export class OperationLogsController {
 
     @Post('search')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.operationLogs.get)
+    @RequirePermissions(Permissions.auditing.operationLogs.get)
     async search(@Body() reqBody: SearchLogsRequestDto, @Res() res: Response<any>) {
         const result = await this.operationLogsService.searchLogs(reqBody);
 

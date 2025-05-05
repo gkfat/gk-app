@@ -3,7 +3,9 @@ import {
     tap,
 } from 'rxjs';
 import { OPERATION_LOG_KEY } from 'src/decorators/operation-log.decorators';
+import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import { LoggerService } from 'src/middlewares/logger.service';
+import { redactHelper } from 'src/utils/redact-helper';
 
 import {
     CallHandler,
@@ -29,46 +31,51 @@ export class OperationLogInterceptor implements NestInterceptor {
         if (!shouldLog) return next.handle();
     
         const ctx = context.switchToHttp();
-        const request = ctx.getRequest();
+        const request = ctx.getRequest<Request & { $tokenPayload?: ITokenPayload }>();
         const response = ctx.getResponse();
+
         const startTime = new Date();
-        const startTimestamp = startTime.getTime();
 
-        let user: string | null = null;
-    
-        if (request?.$tokenPayload) {
-            user = `(${request.$tokenPayload.account.id}) ${request.$tokenPayload.account.email}`;
-        }
+        const userPayload = request.$tokenPayload?.scope;
+        const user = userPayload
+            ? `(${userPayload.sub}} ${userPayload.email}`
+            : null;
+            
+        const requestBody = request.body
+            ? redactHelper.redactValue({
+                cfg: { serialize: true }, content: request.body, 
+            })
+            : null;
 
-        // 攔截 response.send
-        let responseBody: any = null;
-        const originalSend = response.send.bind(response);
-        response.send = (body: any): any => {
-            responseBody = body;
-            return originalSend(body);
-        };
-    
         return next.handle().pipe(
-            tap(async () => {
-                const endTime = new Date();
-                const duration = endTime.getTime() - startTimestamp;
+            tap({
+                next: async (responseBody: any) => {
+                    const endTime = new Date();
+                    const duration = endTime.getTime() - startTime.getTime();
+                        
+                    const responseBodyStr = redactHelper.redactValue({
+                        cfg: { serialize: true }, content: responseBody, 
+                    });
 
-                await this.loggerService.operationLog({
-                    startDate: startTime.toISOString(),
-                    endDate: endTime.toISOString(),
-                    path: request.url,
-                    action: request.method,
-                    resultCode: context.getArgs()[1]?.statusCode || 200,
-                    user,
-                    request: request.body ? JSON.stringify(request.body) : null,
-                    result: typeof responseBody === 'object'
-                        ? JSON.stringify(responseBody)
-                        : String(responseBody),
-                    duration,
-                
-                    level: 'info',
-                });
+                    try {
+                        await this.loggerService.operationLog({
+                            startDate: startTime.toISOString(),
+                            endDate: endTime.toISOString(),
+                            path: request.url,
+                            action: request.method,
+                            resultCode: response.statusCode || 200,
+                            user,
+                            request: requestBody,
+                            result: responseBodyStr,
+                            duration,
+                            level: 'info',
+                        });
+                    } catch (err) {
+                        console.error('[OperationLogInterceptor] Logging failed', err);
+                    }
+                },
             }),
+         
         );
     }
 }

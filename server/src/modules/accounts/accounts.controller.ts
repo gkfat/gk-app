@@ -49,7 +49,7 @@ export class AccountsController {
 
     @Get()
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.accounts.get)
+    @RequirePermissions(Permissions.account.accounts.get)
     @ApiOkResponse({ type: [Account] })
     async list(@Res() res: Response<Account[]>) {
         const accounts = await this.accountsService.findAll();
@@ -59,7 +59,7 @@ export class AccountsController {
 
     @Get('me')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.me.get)
+    @RequirePermissions(Permissions.account.me.get)
     @ApiOkResponse({ type: Account })
     async getAccount(@$TokenPayload() payload: ITokenPayload | null, @Res() res: Response) {
         const { scope: { sub } } = payload;
@@ -75,7 +75,7 @@ export class AccountsController {
 
     @Post('create')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.accounts.add)
+    @RequirePermissions(Permissions.account.accounts.add)
     @ApiOkResponse({ type: Account })
     async createAccount(@Body() createAccountDto: CreateAccountDto, @Res() res: Response<Account>) {
         const account =  await this.accountsService.create(createAccountDto);
@@ -85,7 +85,7 @@ export class AccountsController {
 
     @Put(':id/enable')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.accounts.update)
+    @RequirePermissions(Permissions.account.accounts.update)
     @ApiOkResponse({ type: Account })
     async enableAccount(@Param('id') id: string, @Res() res: Response<Account>) {
         const findAccount = await this.accountsService.findOne(+id);
@@ -101,7 +101,7 @@ export class AccountsController {
 
     @Put(':id/roles')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.accounts.update)
+    @RequirePermissions(Permissions.account.accounts.update)
     @ApiOkResponse({ type: Account })
     async updateRoles(@Param('id') id: string, @Body() reqBody: UpdateAccountRolesDto, @Res() res: Response<Account>) {
         const findAccount = await this.accountsService.findOne(+id);
@@ -119,7 +119,7 @@ export class AccountsController {
 
     @Put(':id/update')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.me.update)
+    @RequirePermissions(Permissions.account.me.update)
     @ApiOkResponse({ type: UpdateAccountResponseDto })
     async update(
         @$TokenPayload() payload: ITokenPayload, @Param('id') id: string,
@@ -141,7 +141,7 @@ export class AccountsController {
 
     @Delete(':id')
     @UseGuards(AuthGuard, PermissionsGuard)
-    @RequirePermissions(Permissions.iam.accounts.delete)
+    @RequirePermissions(Permissions.account.accounts.delete)
     @ApiOkResponse({ type: Account })
     async deleteAccount(@$TokenPayload() payload: ITokenPayload, @Param('id') id: string, @Res() res: Response<Account>) {
         const { scope: { sub } } = payload;
