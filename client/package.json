@@ -4,7 +4,7 @@
     "private": true,
     "license": "UNLICENSED",
     "engines": {
-        "node": ">= 20"
+        "node": ">= 22"
     },
     "scripts": {
         "generate-version": "node generateVersion.cjs",
@@ -37,7 +37,7 @@
     },
     "devDependencies": {
         "@babel/types": "^7.27.1",
-        "@eslint/js": "^9.25.1",
+        "@eslint/js": "^9.26.0",
         "@types/lodash": "^4.17.16",
         "@types/node": "^22.15.3",
         "@vitejs/plugin-vue": "^5.2.3",
@@ -45,7 +45,7 @@
         "@vitest/ui": "^2.1.9",
         "@vue/eslint-config-typescript": "^14.5.0",
         "@vue/typescript": "^1.8.20",
-        "eslint": "^9.25.1",
+        "eslint": "^9.26.0",
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-vue": "^9.33.0",
         "globals": "^15.15.0",
