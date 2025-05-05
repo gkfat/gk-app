@@ -1,14 +1,14 @@
 /// <reference types="vitest/config" />
 
 import {
-  fileURLToPath,
-  URL,
+    fileURLToPath,
+    URL,
 } from 'node:url';
 
 // Utilities
 import {
-  defineConfig,
-  loadEnv,
+    defineConfig,
+    loadEnv,
 } from 'vite';
 import eslint from 'vite-plugin-eslint';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';

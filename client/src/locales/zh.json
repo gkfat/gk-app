@@ -78,8 +78,10 @@
   },
   "nav": {
     "accounts": "會員管理",
+    "auditing": "Auditing",
     "dashboard": "儀表板",
     "iam": "IAM",
+    "operation_log": "操作紀錄",
     "portfolios": "投資組合",
     "profile": "帳號中心"
   },

@@ -1,4 +1,17 @@
 export const Permissions = {
+    account: {
+        me: {
+            get: 'account.me.get',
+            update: 'account.me.update',
+        },
+        accounts: {
+            get: 'account.accounts.get',
+            add: 'account.accounts.add',
+            update: 'account.accounts.update',
+            delete: 'account.accounts.delete',
+        },
+    },
+
     dashboard: { dashboard: { get: 'dashboard.dashboard.get' } },
 
     /**
@@ -27,16 +40,6 @@ export const Permissions = {
      * 存取與權限相關
      */
     iam: {
-        me: {
-            get: 'iam.me.get',
-            update: 'iam.me.update',
-        },
-        accounts: {
-            get: 'iam.accounts.get',
-            add: 'iam.accounts.add',
-            update: 'iam.accounts.update',
-            delete: 'iam.accounts.delete',
-        },
         roles: {
             get: 'iam.roles.get',
             add: 'iam.roles.add',
@@ -44,5 +47,13 @@ export const Permissions = {
             delete: 'iam.roles.delete',
         },
         permissions: { get: 'iam.permissions.get' },
+    },
+
+    /**
+     * 審計相關
+     */
+    auditing: {
+        /** 操作紀錄 */
+        operationLogs: { get: 'auditing.operation_logs.get' },
     },
 };

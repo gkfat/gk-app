@@ -5,6 +5,8 @@ import {
 } from 'vue-router';
 
 import { installGuard } from './guard';
+import { accountsRoutes } from './routes/accounts';
+import { auditingRoutes } from './routes/auditing';
 import { dashboardRoutes } from './routes/dashboard';
 import { errorsRoutes } from './routes/errors';
 import { iamRoutes } from './routes/iam';
@@ -33,7 +35,9 @@ const routes: RouteRecordRaw[] = [
         },
         children: [
             ...dashboardRoutes,
+            ...accountsRoutes,
             ...portfoliosRoutes,
+            ...auditingRoutes,
             ...iamRoutes,
             ...errorsRoutes,
         ],

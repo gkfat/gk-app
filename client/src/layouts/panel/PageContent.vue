@@ -5,12 +5,6 @@
             'mb-md-0': showGoToTop,
         }"
     >
-        <v-progress-linear
-            :active="loading"
-            indeterminate
-            fixed
-        />
-
         <v-container
             class="pt-0"
             fluid

@@ -112,10 +112,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    computed,
-    ref,
-} from 'vue';
+import { ref } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 
@@ -131,7 +128,7 @@ const { t } = useI18n();
 const notifierStore = useNotifierStore();
 const authStore = useAuthStore();
 
-const havePermissionTo = ref({ update: authStore.havePermission(Permissions.iam.accounts.update) });
+const havePermissionTo = ref({ update: authStore.havePermission(Permissions.account.accounts.update) });
 
 const data = ref<Account.Account>(null);
 const editable = ref(false);

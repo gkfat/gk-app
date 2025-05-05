@@ -1,5 +1,5 @@
 import { createI18n } from 'vue-i18n';
-import { zhHant } from 'vuetify/lib/locale/index.mjs';
+import { zhHant } from 'vuetify/lib/locale/index';
 
 const loadLocaleMessages = () => {
     const messages: {[key: string]: any } = {};
