@@ -5,7 +5,7 @@ import {
     FXTradeRecord,
     StockTradeRecord,
 } from 'src/modules/portfolios/entities/trade-record.entity';
-import { RolePermission } from 'src/modules/privileges/entities/role-permission.entity';
+import { Permission } from 'src/modules/privileges/entities/permission.entity';
 import { Role } from 'src/modules/privileges/entities/role.entity';
 
 import { Account } from '../modules/accounts/entities/account.entity';
@@ -14,7 +14,7 @@ export const entities = [
     Account,
     AccountAuth,
     Role,
-    RolePermission,
+    Permission,
     Portfolio,
     StockTradeRecord,
     FXTradeRecord,

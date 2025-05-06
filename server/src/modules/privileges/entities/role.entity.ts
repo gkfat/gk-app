@@ -3,14 +3,12 @@ import { Account } from 'src/modules/accounts/entities/account.entity';
 import {
     Column,
     Entity,
+    JoinTable,
     ManyToMany,
-    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { ApiProperty } from '@nestjs/swagger';
-
-import { RolePermission } from './role-permission.entity';
+import { Permission } from './permission.entity';
 
 @Entity()
 export class Role {
@@ -19,20 +17,19 @@ export class Role {
     }
 
     @PrimaryGeneratedColumn()
-    @ApiProperty()
         id: number;
 
     @Column({
         unique: true, enum: EnumRole, 
     })
-    @ApiProperty({ enum: EnumRole })
         role: EnumRole;
 
     @ManyToMany(() => Account, (account) => account.roles)
         accounts: Account[];
 
-    @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role, {
+    @ManyToMany(() => Permission, (permission) => permission.roles, {
         cascade: true, onDelete: 'CASCADE', 
     })
-        permissions: RolePermission[];
+    @JoinTable({ name: 'role_permission' })
+        permissions: Permission[];
 }

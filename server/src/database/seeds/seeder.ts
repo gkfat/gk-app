@@ -1,44 +1,66 @@
 import {
     EnumLoginType,
     EnumRole,
+    Privileges,
 } from 'src/enums';
-import { Privileges } from 'src/enums/privileges.enum';
 import { AccountAuth } from 'src/modules/accounts/entities/account-auth.entity';
 import { Account } from 'src/modules/accounts/entities/account.entity';
-import { RolePermission } from 'src/modules/privileges/entities/role-permission.entity';
+import { Permission } from 'src/modules/privileges/entities/permission.entity';
 import { Role } from 'src/modules/privileges/entities/role.entity';
 import { hashPassword } from 'src/utils/credential';
+import { flattenPermissions } from 'src/utils/permissions';
 import {
     DataSource,
     Repository,
 } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
-const seedRoles = async (roleRepository: Repository<Role>) => {
+// 寫入角色與權限
+const seedRoles = async (roleRepository: Repository<Role>, permissionRepository: Repository<Permission>) => {
     const roles = Object.values(EnumRole);
 
     for (const role of roles) {
-        const newRole = new Role({ role });
-        await roleRepository.upsert(newRole, ['role']);
+        const rolePermissions: string[] = role !== EnumRole.SUPER ? Privileges[role] : [];
+        
+        const findPermissions = await permissionRepository.find({ where: rolePermissions.map((p) => ({ permission: p })) });
+    
+        const existingRole = await roleRepository.findOne({
+            where: { role },
+            relations: { permissions: true }, 
+        });
+
+        if (!existingRole) {
+            const newRole = new Role({
+                role,
+                permissions: findPermissions,
+            });
+    
+            await roleRepository.save(newRole);
+        }
+
+        // 若已存在的角色但沒有權限則更新權限(排除 Super)
+        if (!existingRole.permissions?.length && role !== EnumRole.SUPER) {
+            existingRole.permissions = findPermissions;
+            await roleRepository.save(existingRole);
+        }
     }
 };
 
-const seedPermissions = async (roleRepository: Repository<Role>) => {
-    const findMemberRole = await roleRepository.findOne({
-        where: { role: EnumRole.MEMBER },
-        relations: { permissions: true }, 
-    });
+// 寫入所有權限
+const seedPermissions = async (permissionRepository: Repository<Permission>) => {
+    const allPermissions = flattenPermissions();
 
-    // 若已有權限就跳過以避免重置覆蓋
-    if (findMemberRole.permissions.length) {
-        return;
+    const existing = await permissionRepository.find();
+    const existingSet = new Set(existing.map((p) => p.permission));
+
+    const toInsert = allPermissions
+        .filter((p) => !existingSet.has(p))
+        .map((permission) => new Permission({ permission }));
+    
+    if (toInsert.length > 0) {
+        await permissionRepository.save(toInsert);
     }
 
-    const memberPermissions = Privileges[EnumRole.MEMBER].map((permission) => new RolePermission({ permission }));
-
-    findMemberRole.permissions = memberPermissions;
-
-    await roleRepository.save(findMemberRole);
 };
 
 interface SeedAccountOptions {
@@ -99,10 +121,12 @@ export class AppSeeder implements Seeder {
         dataSource: DataSource,
     ) {
         const roleRepository = dataSource.getRepository(Role);
+        const permissionRepository = dataSource.getRepository(Permission);
         const accountRepository = dataSource.getRepository(Account);
 
-        await seedRoles(roleRepository);
-        await seedPermissions(roleRepository);
+        await seedPermissions(permissionRepository);
+        
+        await seedRoles(roleRepository, permissionRepository);
 
         const accountsData: SeedAccountOptions[] = [
             {

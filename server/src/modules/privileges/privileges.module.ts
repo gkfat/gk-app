@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Permission } from './entities/permission.entity';
 import { Role } from './entities/role.entity';
 import { PrivilegesController } from './privileges.controller';
 import { PrivilegesService } from './privileges.service';
@@ -13,7 +14,7 @@ import { PrivilegesService } from './privileges.service';
     imports: [
         JwtModule,
         MiddlewaresModule,
-        TypeOrmModule.forFeature([Role]),
+        TypeOrmModule.forFeature([Role, Permission]),
     ],
     controllers: [PrivilegesController],
     providers: [PrivilegesService, CacheService],

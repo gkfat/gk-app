@@ -5,6 +5,8 @@ import {
     ApiSchema,
 } from '@nestjs/swagger';
 
+import { PermissionDto } from './permission.dto';
+
 @ApiSchema({ name: 'RoleDto' })
 export class RoleDto {
     @ApiProperty()
@@ -13,6 +15,6 @@ export class RoleDto {
     @ApiProperty({ enum: EnumRole })
         role: EnumRole;
 
-    @ApiProperty({ type: [String] })
-        permissions: string[];
+    @ApiProperty({ type: [PermissionDto] })
+        permissions: PermissionDto[];
 }
