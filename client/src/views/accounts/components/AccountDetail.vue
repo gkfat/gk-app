@@ -118,11 +118,12 @@ import { useI18n } from 'vue-i18n';
 
 import { AccountsService } from '@/api/accounts';
 import { PrivilegesService } from '@/api/privileges';
+import { EnumRoles } from '@/enums/auth';
 import { Permissions } from '@/enums/permissions';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Account } from '@/types/account';
-import { Role } from '@/types/role';
+import { Privilege } from '@/types/privilege';
 
 const { t } = useI18n();
 const notifierStore = useNotifierStore();
@@ -135,14 +136,15 @@ const editable = ref(false);
 const inProgress = ref(false);
 const openDialog = ref(false);
 
-const rolesData = ref<Role.Role[]>([]);
+const rolesData = ref<Privilege.Role[]>([]);
 
 const fetchRolesData = async () => {
     if (rolesData.value.length) return;
 
     try {
         const res = await PrivilegesService.listRoles();
-        rolesData.value = res.filter((role) => role.role !== 'super');
+        
+        rolesData.value = res;
     } catch (error) {
         notifierStore.error({ content: '取得角色列表失敗' });
 

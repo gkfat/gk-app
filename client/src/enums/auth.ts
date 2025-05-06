@@ -1,6 +1,6 @@
 
 export enum EnumRoles {
     ANYONE = '*',
-    SUPER = 'SUPER',
-    MEMBER = 'MEMBER',
+    SUPER = 'super',
+    MEMBER = 'member',
 }

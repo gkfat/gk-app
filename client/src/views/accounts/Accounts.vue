@@ -127,6 +127,7 @@
                     <template v-if="havePermissionTo.updateAccount && !isSelf(item.id)">
                         <v-btn
                             variant="text"
+                            color="darkgrey"
                             icon="mdi-pencil"
                             @click="showDetail(item, true)"
                         />
@@ -153,15 +154,15 @@
 
     <AccountDetail
         ref="accountDetailRef"
-        @update:detail="listAccounts"
+        @update:detail="onSubmit"
     />
     <EnableAccount
         ref="enableAccountRef"
-        @update:enabled="listAccounts"
+        @update:enabled="onSubmit"
     />
     <DeleteAccount
         ref="deleteAccountRef"
-        @update:delete="listAccounts"
+        @update:delete="onSubmit"
     />
 </template>
 
@@ -297,7 +298,5 @@ const showDelete = (data: Account.Account) => {
     }
 };
 
-onMounted(async () => {
-    await onSubmit();
-});
+onMounted(() => onSubmit());
 </script>

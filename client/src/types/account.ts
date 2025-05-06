@@ -1,4 +1,4 @@
-import { Role } from './role';
+import { Privilege } from './privilege';
 
 export namespace Account {
     export interface Account {
@@ -10,7 +10,7 @@ export namespace Account {
         last_login_at: string;
         create_at: string;
         update_at: string | null;
-        roles: Role.Role[];
+        roles: Privilege.Role[];
         permissions: string[];
         email_verified: boolean;
     }
