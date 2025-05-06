@@ -3,30 +3,36 @@
         :loading="inProgress"
         show-go-to-top
     >
-        <PageHeader
-            :title="'投資組合'"
-        >
-            <template #controlPanel>
+        <v-card elevation="2">
+            <v-card-title>
+                {{ '投資組合' }}
+            </v-card-title>
+            <v-card-text>
                 <v-row class="align-center">
-                    <v-btn
-                        v-if="havePermissionTo.add"
-                        color="primary"
-                        class="mr-3"
-                        append-icon="mdi-plus"
-                        @click="onCreatePortfolioClick"
+                    <v-col
+                        cols="auto"
+                        class="ml-auto"
                     >
-                        {{ t('button.create') }}
-                    </v-btn>
-                    <v-btn
-                        color="info"
-                        append-icon="mdi-reload"
-                        @click="listPortfolios"
-                    >
-                        {{ t('button.refresh') }}
-                    </v-btn>
+                        <v-btn
+                            v-if="havePermissionTo.add"
+                            color="primary"
+                            class="mr-3"
+                            append-icon="mdi-plus"
+                            @click="onCreatePortfolioClick"
+                        >
+                            {{ t('button.create') }}
+                        </v-btn>
+                        <v-btn
+                            color="info"
+                            append-icon="mdi-reload"
+                            @click="listPortfolios"
+                        >
+                            {{ t('button.refresh') }}
+                        </v-btn>
+                    </v-col>
                 </v-row>
-            </template>
-        </PageHeader>
+            </v-card-text>
+        </v-card>
 
         <v-spacer class="mb-3" />
 
@@ -111,7 +117,6 @@ import { useI18n } from 'vue-i18n';
 import { PortfoliosService } from '@/api/portfolios';
 import { Permissions } from '@/enums/permissions';
 import PageContent from '@/layouts/panel/PageContent.vue';
-import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Portfolio } from '@/types/portfolio';

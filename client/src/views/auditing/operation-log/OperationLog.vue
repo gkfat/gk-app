@@ -1,36 +1,53 @@
 <template>
     <PageContent
+        :loading="inProgress"
         show-go-to-top
     >
-        <PageHeader
-            :title="t('nav.operation_log')"
-        >
-            <template #controlPanel>
+        <v-card elevation="2">
+            <v-card-title>
+                {{ t('nav.operation_log') }}
+            </v-card-title>
+            <v-card-text>
                 <v-row class="align-center">
-                    <v-btn
-                        color="info"
-                        class="mr-3"
-                        append-icon="mdi-reload"
-                        @click="onSubmit"
+                    <v-col
+                        cols="12"
+                        md="6"
                     >
-                        {{ t('button.refresh') }}
-                    </v-btn>
+                        <DateRangePicker v-model="form.dateRange.value.value" />
+                    </v-col>
                 </v-row>
-            </template>
-        </PageHeader>
+        
+                <v-row class="align-center">
+                    <v-col
+                        cols="auto"
+                        class="ml-auto"
+                    >
+                        <v-btn
+                            color="info"
+                            append-icon="mdi-reload"
+                            @click="onSubmit"
+                        >
+                            {{ t('button.refresh') }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
 
         <v-spacer class="mb-3" />
       
         <v-card
             :loading="inProgress"
+            elevation="2"
         >
             <v-data-table
                 :headers="table.headers"
                 :items="table.data"
-                :search="search"
+                :search="table.search"
                 :items-per-page="-1"
                 :no-data-text="t('common.no_data')"
                 class="text-no-wrap"
+                item-value="endDate"
                 show-expand
                 :sort-by="sortOptions"
                 :mobile="smAndDown"
@@ -47,7 +64,7 @@
                             class="ml-auto"
                         >
                             <v-text-field
-                                v-model="search"
+                                v-model="table.search"
                                 prepend-inner-icon="mdi-magnify"
                                 :placeholder="t('button.search')"
                                 type="search"
@@ -81,21 +98,25 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    onMounted,
-    ref,
-} from 'vue';
+import { ref } from 'vue';
 
+import {
+    useField,
+    useForm,
+} from 'vee-validate';
 import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
 
 import { OperationLogsService } from '@/api/operation-logs';
+import DateRangePicker from '@/components/date-picker/DateRangePicker.vue';
 import JsonViewer from '@/components/json-viewer/JsonViewer.vue';
 import PageContent from '@/layouts/panel/PageContent.vue';
-import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useNotifierStore } from '@/store/notifier';
 import { Common } from '@/types/common';
-import { timeFormat } from '@/utils/time';
+import {
+    getRelativeRangeOfDay,
+    timeFormat,
+} from '@/utils/time';
 
 import { OperationLog } from '../../../types/operation-log';
 
@@ -104,7 +125,6 @@ const { t } = useI18n();
 const { smAndDown } = useDisplay();
 
 const inProgress = ref(false);
-const search = ref('');
 
 const sortOptions: Common.SortItem[] = [
     {
@@ -112,10 +132,20 @@ const sortOptions: Common.SortItem[] = [
     },
 ];
 
+type FormValues = {
+    dateRange: [Date, Date]
+}
+
+const { handleSubmit } = useForm<FormValues>({ initialValues: { dateRange: [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay().to.toDate()] } });
+
+const form = { dateRange: useField<FormValues['dateRange']>('dateRange') };
+
 const table = ref<{
-    data: OperationLog.OperationLog[],
-    headers: Common.DataTableHeader<OperationLog.OperationLog>[],
+    search: string;
+    data: OperationLog.OperationLog[];
+    headers: Common.DataTableHeader<OperationLog.OperationLog>[];
 }>({
+    search: '',
     data: [],
     headers:[
         {
@@ -146,19 +176,22 @@ const table = ref<{
     ],
 });
 
-const onSubmit = async () => {
+const onSubmit = handleSubmit(async (formValue) => {
     inProgress.value = true;
+
     try {
-        const rs = await OperationLogsService.search({});
+        const params: OperationLog.Search.Request = {
+            startDate: formValue.dateRange[0].toISOString(),
+            endDate: formValue.dateRange[1].toISOString(),
+        };
+        
+        const rs = await OperationLogsService.search(params);
 
         table.value.data = rs;
     } catch {
         notifierStore.error({ content: '取得帳號列表失敗' });
     }
-    inProgress.value = false;
-};
 
-onMounted(async () => {
-    await onSubmit();
+    inProgress.value = false;
 });
 </script>

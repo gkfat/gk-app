@@ -10,7 +10,6 @@
                 :label="customProps.label ?? '選擇日期'"
                 :placeholder="customProps.label ?? '選擇日期'"
                 readonly
-                rounded="lg"
                 hide-details="auto"
                 density="compact"
                 variant="outlined"
@@ -47,7 +46,7 @@
             <v-card-text class="pa-0 overflow-y-auto">
                 <vue-date-picker
                     ref="datePickerRef"
-                    :model-value="dateRange"
+                    :model-value="model"
                     :dark="appStore.storage.darkTheme"
                     range
                     auto-apply
@@ -87,16 +86,8 @@
 
             <v-card-actions class="flex-wrap">
                 <v-col
-                    cols="12"
-                    md="8"
-                    class="py-1"
-                >
-                    {{ rangeTimeFormat(dateRange) }}
-                </v-col>
-                <v-spacer />
-                <v-col
                     cols="auto"
-                    class="py-1"
+                    class="py-1 ml-auto"
                 >
                     <v-btn
                         color="success"
@@ -120,7 +111,6 @@
 </template>
 <script setup lang="ts">
 import {
-    onMounted,
     ref,
     toRaw,
     watch,
@@ -133,7 +123,6 @@ import { useAppStore } from '@/store/app';
 import {
     createDate,
     getRelativeRangeOfDay,
-    rangeTimeFormat,
     timeFormat,
 } from '@/utils/time';
 import VueDatePicker, { DatePickerInstance } from '@vuepic/vue-datepicker';
@@ -144,16 +133,13 @@ const appStore = useAppStore();
 
 const datePickerRef = ref<DatePickerInstance>();
 
-const emit = defineEmits(['update:modelValue']);
-
 const customProps = defineProps<{
-    modelValue: Date[],
     errorMessages?: string,
     maxDate?: Date,
     label?: string
 }>();
 
-const dateRange = ref<Date[]>([]);
+const model = defineModel<[Date, Date]>();
 
 const dateRangeSelection = [
     {
@@ -186,13 +172,12 @@ const handleDate = (dates: [Date, Date]) => {
     const startDate = new Date(dates[0]);
     const endDate = new Date(dates[1]);
 
-    startDate.setSeconds(0);
-    endDate.setSeconds(59);
+    startDate.setSeconds(0, 0);
+    endDate.setSeconds(59, 999);
 
-    startDate.setMilliseconds(0);
-    endDate.setMilliseconds(999);
+    model.value = [startDate, endDate];
 
-    dateRange.value = [startDate, endDate];
+    refreshDateRangeTextField();
 };
 
 /** 日期區間文字欄的值 */
@@ -200,7 +185,13 @@ const dateRangeTextFieldValue = ref('');
 
 /** 刷新日期區間文字欄 */
 const refreshDateRangeTextField = () => {
-    dateRangeTextFieldValue.value = datePickerFormatter(dateRange.value);
+    const [startDate, endDate] = model.value || [];
+
+    if (startDate && endDate) {
+        dateRangeTextFieldValue.value = datePickerFormatter([startDate, endDate]);
+    } else {
+        dateRangeTextFieldValue.value = '';
+    }
 };
 
 /** 是否正在選擇日期 */
@@ -220,19 +211,19 @@ const setDateRange = (type: Range) => {
 
     switch (type) {
     case Range.HOUR_AGO:
-        dateRange.value = [now.add(-1, 'hour').toDate(), now.toDate()];
+        model.value = [now.add(-1, 'hour').toDate(), now.toDate()];
         break;
     case Range.TODAY:
-        dateRange.value = [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay().to.toDate()];
+        model.value = [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay().to.toDate()];
         break;
     case Range.YESTERDAY:
-        dateRange.value = [getRelativeRangeOfDay(-1).from.toDate(), getRelativeRangeOfDay(-1).to.toDate()];
+        model.value = [getRelativeRangeOfDay(-1).from.toDate(), getRelativeRangeOfDay(-1).to.toDate()];
         break;
     case Range.LAST_7_DAYS:
-        dateRange.value = [getRelativeRangeOfDay(-7).from.toDate(), getRelativeRangeOfDay().to.toDate()];
+        model.value = [getRelativeRangeOfDay(-7).from.toDate(), getRelativeRangeOfDay().to.toDate()];
         break;
     case Range.NEXT_30_DAYS:
-        dateRange.value = [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay(30).to.toDate()];
+        model.value = [getRelativeRangeOfDay().from.toDate(), getRelativeRangeOfDay(30).to.toDate()];
         break;
     default: break;
     }
@@ -245,19 +236,22 @@ const toggleDialog = (open: boolean) => {
 
 const confirmDateRange = () => {
     refreshDateRangeTextField();
-    emit('update:modelValue', dateRange.value);
     toggleDialog(false);
 };
 
-watch(() => customProps.modelValue, () => {
-    dateRange.value = customProps.modelValue;
-    refreshDateRangeTextField();
-});
-
-onMounted(() => {
-    dateRange.value = customProps.modelValue;
-    refreshDateRangeTextField();
-});
+// 同步父層值
+watch(
+    () => model.value,
+    (value) => {
+        if (value) {
+            refreshDateRangeTextField();
+        }
+    },
+    {
+        immediate: true,
+        deep: true,
+    },
+);
 
 </script>
 

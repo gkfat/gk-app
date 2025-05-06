@@ -5,26 +5,15 @@
             'mb-md-0': showGoToTop,
         }"
     >
-        <v-container
-            class="pt-0"
-            fluid
+        <v-card
+            :disabled="loading"
+            flat
+            color="transparent"
+            class="mt-3 px-3 pb-5"
         >
-            <v-row class="ma-0">
-                <v-col
-                    cols="12"
-                    class="pa-0"
-                >
-                    <v-card
-                        :disabled="loading"
-                        flat
-                        color="transparent"
-                    >
-                        <!-- page content goes here -->
-                        <slot />
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+            <!-- page content goes here -->
+            <slot />
+        </v-card>
 
         <v-btn
             v-if="showGoToTop"

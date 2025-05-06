@@ -3,9 +3,11 @@
         :loading="inProgress"
         show-go-to-top
     >
-        <PageHeader
-            :title="t('profile.title')"
-        />
+        <v-card elevation="2">
+            <v-card-title>
+                {{ t('profile.title') }}
+            </v-card-title>
+        </v-card>
 
         <v-spacer />
 
@@ -143,10 +145,8 @@ import {
 import { useI18n } from 'vue-i18n';
 
 import PageContent from '@/layouts/panel/PageContent.vue';
-import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
-import { permissionChecker } from '@/utils/permission';
 import {
     createDate,
     timeFormat,

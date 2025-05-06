@@ -3,9 +3,11 @@
         show-go-to-top
         :loading="inProgress"
     >
-        <PageHeader
-            :title="t('dashboard.title')"
-        />
+        <v-card elevation="2">
+            <v-card-title>
+                {{ t('dashboard.title') }}
+            </v-card-title>
+        </v-card>
 
         <!-- <v-row class="pb-10">
             <v-col cols="auto">
@@ -20,7 +22,6 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import PageContent from '@/layouts/panel/PageContent.vue';
-import PageHeader from '@/layouts/panel/PageHeader.vue';
 
 // import ActivatedAppsCard from './components/ActivatedAppsCard.vue';
 

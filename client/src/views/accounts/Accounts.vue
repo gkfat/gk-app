@@ -3,27 +3,33 @@
         :loading="inProgress"
         show-go-to-top
     >
-        <PageHeader
-            :title="t('nav.accounts')"
-        >
-            <template #controlPanel>
+        <v-card elevation="2">
+            <v-card-title>
+                {{ t('nav.accounts') }}
+            </v-card-title>
+            <v-card-text>
                 <v-row class="align-center">
-                    <v-btn
-                        color="info"
-                        class="mr-3"
-                        append-icon="mdi-reload"
-                        @click="listAccounts"
+                    <v-col
+                        cols="auto"
+                        class="ml-auto"
                     >
-                        {{ t('button.refresh') }}
-                    </v-btn>
+                        <v-btn
+                            color="info"
+                            append-icon="mdi-reload"
+                            @click="onSubmit"
+                        >
+                            {{ t('button.refresh') }}
+                        </v-btn>
+                    </v-col>
                 </v-row>
-            </template>
-        </PageHeader>
+            </v-card-text>
+        </v-card>
 
         <v-spacer class="mb-3" />
       
         <v-card
             :loading="inProgress"
+            elevation="2"
         >
             <v-data-table
                 :headers="table.headers"
@@ -171,7 +177,6 @@ import { useDisplay } from 'vuetify';
 import { AccountsService } from '@/api/accounts';
 import { Permissions } from '@/enums/permissions';
 import PageContent from '@/layouts/panel/PageContent.vue';
-import PageHeader from '@/layouts/panel/PageHeader.vue';
 import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Account } from '@/types/account';
@@ -263,7 +268,7 @@ const table = ref<{
     ],
 });
 
-const listAccounts = async () => {
+const onSubmit = async () => {
     inProgress.value = true;
     try {
         table.value.data = await AccountsService.list();
@@ -293,6 +298,6 @@ const showDelete = (data: Account.Account) => {
 };
 
 onMounted(async () => {
-    await listAccounts();
+    await onSubmit();
 });
 </script>
