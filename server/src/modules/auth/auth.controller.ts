@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import ms from 'ms';
 import { OperationLog } from 'src/decorators/operation-log.decorators';
+import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import { CacheService } from 'src/middlewares/cache.service';
 import { LoggerService } from 'src/middlewares/logger.service';
 
@@ -118,10 +119,13 @@ export class AuthController {
 
         const token = await this.authService.generateJwt(account);
 
-        const tokenPayload = {
-            scopes: {
+        const tokenPayload: ITokenPayload = {
+            scope: {
                 sub: account.id,
                 email: account.email,
+                name: account.name,
+                roles: account.roles,
+                permissions: account.permissions,
             },
         };
 
