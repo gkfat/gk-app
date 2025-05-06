@@ -61,9 +61,8 @@
                     <v-row>
                         <v-col>
                             <v-autocomplete
-                                v-model="data.roles"
-                                :items="rolesData"
-                                item-title="role"
+                                v-model="accountRoles"
+                                :items="rolesSelection"
                                 :readonly="!editable || !havePermissionTo.update"
                                 label="角色"
                                 :clearable="editable"
@@ -112,7 +111,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {
+    computed,
+    ref,
+} from 'vue';
 
 import { useI18n } from 'vue-i18n';
 
@@ -137,6 +139,13 @@ const inProgress = ref(false);
 const openDialog = ref(false);
 
 const rolesData = ref<Privilege.Role[]>([]);
+const rolesSelection = computed(() => rolesData.value
+    .map((v) => ({
+        title: t(`role.${v.role}`),
+        value: v.id,
+    })),
+);
+const accountRoles = ref<{ title: string; value: number }[]>([]);
 
 const fetchRolesData = async () => {
     if (rolesData.value.length) return;
@@ -153,7 +162,7 @@ const fetchRolesData = async () => {
 };
 
 const setReadonlyData = () => {
-    rolesData.value = data.value?.roles || [];
+    rolesData.value = data.value?.roles.filter((v)=> v.role !== EnumRoles.SUPER) || [];
 };
 
 const toggleDialog = (open: boolean) => {
@@ -169,6 +178,7 @@ const onSubmit = async () => {
 
     try {
         const roleIdList = data.value.roles.map((r) => r.id);
+
         await AccountsService.updateRoles(id, roleIdList);
 
         emit('update:detail');
@@ -183,6 +193,10 @@ const onSubmit = async () => {
 
 const show = async (account: Account.Account, edit: boolean) => {
     data.value = JSON.parse(JSON.stringify(account));
+    accountRoles.value = data.value.roles.map((v) => ({
+        title: t(`role.${v.role}`),
+        value: v.id,
+    }));
     editable.value = edit;
 
     // 有編輯權限才須 fetch all roles data

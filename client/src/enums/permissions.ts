@@ -17,7 +17,17 @@ export const Permissions = {
     /**
      * 權限相關
      */
-    privilege: { roles: { get: 'privilege.roles.get' } },
+    privilege: {
+        roles: { get: 'privilege.roles.get' },
+        permissions: {
+            get: 'privilege.permissions.get',
+            update: 'privilege.permissions.update', 
+        },
+        privileges: {
+            get: 'privilege.privileges.get',
+            update: 'privilege.privileges.update',
+        },
+    },
 
     /**
      * Portfolio 相關
@@ -40,13 +50,15 @@ export const Permissions = {
      * 存取與權限相關
      */
     iam: {
-        roles: {
-            get: 'iam.roles.get',
-            add: 'iam.roles.add',
-            update: 'iam.roles.update',
-            delete: 'iam.roles.delete',
+        roles: { get: 'iam.roles.get' },
+        permissions: {
+            get: 'privilege.permissions.get',
+            update: 'privilege.permissions.update', 
         },
-        permissions: { get: 'iam.permissions.get' },
+        privileges: {
+            get: 'privilege.privileges.get',
+            update: 'privilege.privileges.update',
+        },
     },
 
     /**

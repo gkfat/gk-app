@@ -35,7 +35,7 @@
                 :headers="table.headers"
                 :items="table.data"
                 :search="search"
-                :items-per-page="-1"
+                :items-per-page="10"
                 :no-data-text="t('common.no_data')"
                 item-key="id"
                 class="text-no-wrap"

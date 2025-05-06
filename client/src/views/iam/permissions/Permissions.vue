@@ -5,7 +5,7 @@
     >
         <v-card elevation="2">
             <v-card-title>
-                {{ '角色權責管理' }}
+                {{ '權限管理' }}
             </v-card-title>
             <v-card-text>
                 <v-row class="align-center">
@@ -65,73 +65,93 @@
                     <v-divider />
                 </template>
 
-                <template #item.permissions="{item}">
-                    <div>
-                        <p
-                            v-for="(p, i) in item.permissions"
-                            :key="i"
-                        >
-                            {{ p.permission }}
-                            <span v-if="p.description">({{ p.description }})</span>
-                        </p>
-                    </div>
+                <!-- actions -->
+                <template #item.actions="{ item }">
+                    <template v-if="havePermissionTo.update">
+                        <v-btn
+                            variant="text"
+                            color="darkgrey"
+                            icon="mdi-pencil"
+                            @click="openEditDescription(item)"
+                        />
+                    </template>
                 </template>
             </v-data-table>
         </v-card>
     </PageContent>
+
+    <EditDescription
+        ref="editDescriptionRef"
+        @update="onSubmit"
+    />
 </template>
 
 <script lang="ts" setup>
 import {
     onMounted,
     ref,
+    useTemplateRef,
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
 
 import { PrivilegesService } from '@/api/privileges';
+import { Permissions } from '@/enums/permissions';
 import PageContent from '@/layouts/panel/PageContent.vue';
+import { useAuthStore } from '@/store/auth';
 import { useNotifierStore } from '@/store/notifier';
 import { Common } from '@/types/common';
 import { Privilege } from '@/types/privilege';
 
+import EditDescription from './components/EditDescription.vue';
+
 const notifierStore = useNotifierStore();
 const { t } = useI18n();
+const authStore = useAuthStore();
 const { smAndDown } = useDisplay();
+
+const editDescriptionRef = useTemplateRef('editDescriptionRef');
 
 const inProgress = ref(false);
 
+const havePermissionTo = ref({ update: authStore.havePermission(Permissions.iam.permissions.update) });
+
 const table = ref<{
     search: string;
-    data: Privilege.Role[];
-    headers: Common.DataTableHeader<Privilege.Role>[];
+    data: Privilege.Permission[];
+    headers: Common.DataTableHeader<Privilege.Permission>[];
 }>({
     search: '',
     data: [],
     headers:[
         {
-            title: '角色',
-            key: 'role',
-            value: (item) => t(`role.${item.role}`),
+            title: '權限',
+            key: 'permission',
+            sortable: false,
         },
         {
-            title: '權限',
-            key: 'permissions',
+            title: '描述',
+            key: 'description',
+            sortable: false,
         },
         {
             title: '',
-            key: 'action',
+            key: 'actions',
             sortable: false,
         },
     ],
 });
 
+const openEditDescription = (item: Privilege.Permission) => {
+    editDescriptionRef.value?.show(item);
+};
+
 const onSubmit = async () => {
     inProgress.value = true;
 
     try {
-        const rs = await PrivilegesService.listPrivileges();
+        const rs = await PrivilegesService.listPermissions();
 
         table.value.data = rs;
     } catch {

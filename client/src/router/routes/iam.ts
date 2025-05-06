@@ -9,7 +9,7 @@ export const iamRoutes: RouteRecordRaw[] = [
         redirect: '/iam/privileges',
         meta: {
             requireLoggedIn: true,
-            permissions: [Permissions.iam.roles.get, Permissions.iam.permissions.get],
+            permissions: [Permissions.iam.privileges.get, Permissions.iam.permissions.get],
             permissionsMode: 'oneof',
             hidden: false,
             icon: 'mdi-lock',
@@ -21,12 +21,23 @@ export const iamRoutes: RouteRecordRaw[] = [
                 name: 'Privileges',
                 meta: {
                     requireLoggedIn: true,
-                    permissions: [Permissions.iam.permissions.get],
+                    permissions: [Permissions.iam.privileges.get],
                     permissionsMode: 'allof',
                     hidden: false,
                     title: 'nav.privileges',
                 },
                 component: () => import('@/views/iam/privileges/Privileges.vue'),
+            }, {
+                path: 'permissions',
+                name: 'Permissions',
+                meta: {
+                    requireLoggedIn: true,
+                    permissions: [Permissions.iam.permissions.get],
+                    permissionsMode: 'allof',
+                    hidden: false,
+                    title: 'nav.permissions',
+                },
+                component: () => import('@/views/iam/permissions/Permissions.vue'),
             },
         ],
     },

@@ -82,8 +82,9 @@
     "dashboard": "儀表板",
     "iam": "IAM",
     "operation_log": "操作紀錄",
+    "permissions": "權限列表",
     "portfolios": "投資組合",
-    "privileges": "權限管理",
+    "privileges": "角色權責管理",
     "profile": "帳號中心"
   },
   "profile": {
