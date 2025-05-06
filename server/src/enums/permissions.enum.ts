@@ -32,7 +32,10 @@ export const Permissions = {
      */
     privilege: {
         roles: { get: 'privilege.roles.get' },
-        permissions: { get: 'privilege.permissions.get' }, 
+        permissions: {
+            get: 'privilege.permissions.get',
+            update: 'privilege.permissions.update', 
+        }, 
     },
 
     /**

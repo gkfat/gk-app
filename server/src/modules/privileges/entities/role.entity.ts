@@ -4,15 +4,14 @@ import {
     Column,
     Entity,
     ManyToMany,
+    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import {
-    ApiProperty,
-    ApiSchema,
-} from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
-@ApiSchema({ name: 'RoleDto' })
+import { RolePermission } from './role-permission.entity';
+
 @Entity()
 export class Role {
     constructor(role: Partial<Role>) {
@@ -31,4 +30,9 @@ export class Role {
 
     @ManyToMany(() => Account, (account) => account.roles)
         accounts: Account[];
+
+    @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role, {
+        cascade: true, onDelete: 'CASCADE', 
+    })
+        permissions: RolePermission[];
 }

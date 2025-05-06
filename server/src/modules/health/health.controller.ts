@@ -1,10 +1,12 @@
+import { OperationLog } from 'src/decorators/operation-log.decorators';
+
 import {
-  Controller,
-  Get,
+    Controller,
+    Get,
 } from '@nestjs/common';
 import {
-  HealthCheck,
-  HealthCheckService,
+    HealthCheck,
+    HealthCheckService,
 } from '@nestjs/terminus';
 
 @Controller('health')
@@ -14,6 +16,7 @@ export class HealthController {
     ) {}
 
     @Get()
+    @OperationLog()
     @HealthCheck()
     async check() {
         return this.healthService.check([]);

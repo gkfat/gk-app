@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
     $TokenPayload,
@@ -59,6 +60,7 @@ export class PortfoliosController {
         return res.json(result);
     }
 
+    @OperationLog()
     @Post('create')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.add)
@@ -75,6 +77,7 @@ export class PortfoliosController {
         return res.json(result);
     }
 
+    @OperationLog()
     @Put(':id')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.update)
@@ -102,6 +105,7 @@ export class PortfoliosController {
         return res.json(result);
     }
     
+    @OperationLog()
     @Delete(':id')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.delete)
@@ -128,6 +132,7 @@ export class PortfoliosController {
         return res.json(result);
     }
 
+    @OperationLog()
     @Post('transactions/create')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.add)
@@ -160,6 +165,7 @@ export class PortfoliosController {
         return res.json(result);
     }
 
+    @OperationLog()
     @Delete(':id/position')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.delete)

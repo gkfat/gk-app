@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
@@ -27,6 +28,7 @@ export class MarketDataController {
         private readonly marketDataService: MarketDataService,
     ) {}
 
+    @OperationLog()
     @Get('intraday/tickers')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.marketData.intraday.get)
@@ -37,6 +39,7 @@ export class MarketDataController {
         return res.json(result);
     }
 
+    @OperationLog()
     @Get('intraday/quote/:ticker')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.marketData.intraday.get)

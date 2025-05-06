@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
@@ -7,6 +8,10 @@ import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 import {
     Controller,
     Get,
+    NotFoundException,
+    Param,
+    Put,
+    Req,
     Res,
     UseGuards,
 } from '@nestjs/common';
@@ -15,8 +20,8 @@ import {
     ApiOkResponse,
 } from '@nestjs/swagger';
 
-import { GetPermissionsResponseDto } from './dto/get-permissions.dto';
-import { Role } from './entities/role.entity';
+import { RoleDto } from './dto/role.dto';
+import { UpdatePermissionsRequestDto } from './dto/update-permissions.dto';
 import { PrivilegesService } from './privileges.service';
 
 @ApiBearerAuth('Authorization')
@@ -29,20 +34,46 @@ export class PrivilegesController {
     @Get('roles')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.privilege.roles.get)
-    @ApiOkResponse({ type: [Role] })
-    async listRoles(@Res() res: Response<Role[]>) {
-        const roles = await this.privilegesService.listRoles();
+    @ApiOkResponse({ type: [RoleDto] })
+    async listRoles(@Res() res: Response<RoleDto[]>) {
+        const result = await this.privilegesService.listRoles();
 
-        return res.json(roles);
+        return res.json(result);
     }
 
     @Get('permissions')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.privilege.permissions.get)
-    @ApiOkResponse({ type: [GetPermissionsResponseDto] })
-    async listPermissions(@Res() res: Response<GetPermissionsResponseDto[]>) {
+    @ApiOkResponse({ type: [RoleDto] })
+    async listPermissions(@Res() res: Response<RoleDto[]>) {
         const result = await this.privilegesService.listPermissions();
 
         return res.json(result);
     }
+
+    @OperationLog()
+    @Put(':roleId/permissions')
+    @UseGuards(AuthGuard, PermissionsGuard)
+    @RequirePermissions(Permissions.privilege.permissions.update)
+    @ApiOkResponse({ type: RoleDto })
+    @UseGuards(AuthGuard, PermissionsGuard)
+    async updatePermissions(
+        @Param('roleId') roleId: string,
+        @Req() req: UpdatePermissionsRequestDto,
+        @Res() res: Response<RoleDto>,
+    ) {
+        const findRole = await this.privilegesService.findRole(+roleId);
+
+        if (!findRole) {
+            throw new NotFoundException('Role not found');
+        }
+
+        const result = await this.privilegesService.updatePermissions({
+            roleId: +roleId,
+            permissions: req.permissions,
+        });
+
+        return res.json(result);
+    }
+
 }

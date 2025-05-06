@@ -3,7 +3,6 @@ import ms from 'ms';
 import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
 import { CacheService } from 'src/middlewares/cache.service';
-import { LoggerService } from 'src/middlewares/logger.service';
 
 import {
     BadRequestException,
@@ -33,7 +32,6 @@ export class AuthController {
         private readonly authService: AuthService,
         private readonly emailService: EmailService,
         private readonly cacheService: CacheService,
-        private readonly loggerService: LoggerService,
     ) {}
 
     private async generateVerificationCode(email: string) {
@@ -44,6 +42,7 @@ export class AuthController {
         return code;
     }
 
+    @OperationLog()
     @Post('sign-up')
     async signUp(@Body() reqBody: SignUpDto, @Res() res: Response) {
         const findAccount = await this.accountsService.findOneByEmail(reqBody.email);
@@ -61,6 +60,7 @@ export class AuthController {
         return res.json({ account });
     }
 
+    @OperationLog()
     @Post('send-verification-code')
     async sendVerificationCode(@Body() reqBody: SendVerificationCodeDto, @Res() res: Response) {
         const verifier = await this.cacheService.getValue(`verification_code:${reqBody.email}`);
@@ -76,6 +76,7 @@ export class AuthController {
         return res.json({ message: 'ok' });
     }
 
+    @OperationLog()
     @Post('verify-code')
     async verifyCode(@Body() reqBody: VerifyCodeDto, @Res() res: Response) {
         const {
