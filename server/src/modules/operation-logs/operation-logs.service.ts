@@ -12,7 +12,7 @@ export class OperationLogsService {
     private readonly lokiToken = process.env.LOKI_TOKEN;
 
     formatter(data: [string, string][]): OperationLogCfg[] {
-        return data.map(([ , log ]) => {
+        return data.map(([ , log]) => {
             return JSON.parse(log) as OperationLogCfg;
         });
     }

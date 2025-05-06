@@ -1,5 +1,3 @@
-import { OperationLog } from 'src/decorators/operation-log.decorators';
-
 import {
     Controller,
     Get,
@@ -16,7 +14,6 @@ export class HealthController {
     ) {}
 
     @Get()
-    @OperationLog()
     @HealthCheck()
     async check() {
         return this.healthService.check([]);
