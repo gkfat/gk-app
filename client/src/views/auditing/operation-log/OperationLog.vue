@@ -47,7 +47,7 @@
                 :items-per-page="10"
                 :no-data-text="t('common.no_data')"
                 class="text-no-wrap"
-                item-value="endDate"
+                item-value="_uid"
                 show-expand
                 :sort-by="sortOptions"
                 :mobile="smAndDown"
@@ -84,8 +84,8 @@
                     >
                         <JsonViewer
                             :value="{
-                                request: item.request ?? null,
-                                result: item.result ?? null,
+                                request: item.request ?? 'null',
+                                result: item.result ?? 'null',
                             }"
                             :expand-depth="2"
                             copyable
@@ -107,18 +107,17 @@ import {
 import { useI18n } from 'vue-i18n';
 import { useDisplay } from 'vuetify';
 
-import { OperationLogsService } from '@/api/operation-logs';
+import { AuditingService } from '@/api/auditing';
 import DateRangePicker from '@/components/date-picker/DateRangePicker.vue';
 import JsonViewer from '@/components/json-viewer/JsonViewer.vue';
 import PageContent from '@/layouts/panel/PageContent.vue';
 import { useNotifierStore } from '@/store/notifier';
 import { Common } from '@/types/common';
+import { OperationLog } from '@/types/operation-log';
 import {
     getRelativeRangeOfDay,
     timeFormat,
 } from '@/utils/time';
-
-import { OperationLog } from '../../../types/operation-log';
 
 const notifierStore = useNotifierStore();
 const { t } = useI18n();
@@ -128,7 +127,7 @@ const inProgress = ref(false);
 
 const sortOptions: Common.SortItem[] = [
     {
-        key: 'endDate', order: 'desc', 
+        key: 'logTime', order: 'desc', 
     },
 ];
 
@@ -150,13 +149,8 @@ const table = ref<{
     headers:[
         {
             title: '時間',
-            key: 'endDate',
-            value: (item) => timeFormat(item.endDate),
-        },
-        {
-            title: 'Action',
-            key: 'action',
-            sortable: false,
+            key: 'logTime',
+            value: (item) => timeFormat(item.logTime, 'YYYY-MM-DD HH:mm:ss'),
         },
         {
             title: '使用者',
@@ -166,6 +160,11 @@ const table = ref<{
         {
             title: '路徑',
             key: 'path',
+            sortable: false,
+        },
+        {
+            title: '操作',
+            key: 'action',
             sortable: false,
         },
         {
@@ -185,11 +184,15 @@ const onSubmit = handleSubmit(async (formValue) => {
             endDate: formValue.dateRange[1].toISOString(),
         };
         
-        const rs = await OperationLogsService.search(params);
+        const rs = await AuditingService.searchOperationLog(params);
 
-        table.value.data = rs;
+        table.value.data = rs.map((item, index) => ({
+            ...item,
+
+            _uid: `${item.logTime}-${index}`,
+        }));
     } catch {
-        notifierStore.error({ content: '取得帳號列表失敗' });
+        notifierStore.error({ content: '查詢操作紀錄失敗' });
     }
 
     inProgress.value = false;

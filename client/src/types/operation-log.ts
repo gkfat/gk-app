@@ -9,6 +9,7 @@ export namespace OperationLog {
         request: string | null;
         result: string | null;
         duration: number;
+        logTime: number;
         level: 'info'|'warn'|'error';
     }
     
