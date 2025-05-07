@@ -14,7 +14,7 @@
                         class="ml-auto"
                     >
                         <v-btn
-                            color="info"
+                            color="primary"
                             append-icon="mdi-reload"
                             @click="onSubmit"
                         >
@@ -127,7 +127,7 @@
                     <template v-if="havePermissionTo.updateAccount && !isSelf(item.id)">
                         <v-btn
                             variant="text"
-                            color="darkgrey"
+                            color="primary"
                             icon="mdi-pencil"
                             @click="showDetail(item, true)"
                         />

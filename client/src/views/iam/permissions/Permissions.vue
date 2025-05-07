@@ -14,7 +14,7 @@
                         class="ml-auto"
                     >
                         <v-btn
-                            color="info"
+                            color="primary"
                             append-icon="mdi-reload"
                             @click="onSubmit"
                         >

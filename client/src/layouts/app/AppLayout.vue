@@ -1,5 +1,5 @@
 <template>
-    <div class="fill-height">
+    <div class="fill-height bg-background">
         <AppNavDrawer />
         <AppSettingDrawer />
         <AppHeader />

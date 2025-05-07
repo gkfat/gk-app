@@ -15,7 +15,7 @@
                     >
                         <v-btn
                             v-if="havePermissionTo.add"
-                            color="primary"
+                            color="success"
                             class="mr-3"
                             append-icon="mdi-plus"
                             @click="onCreatePortfolioClick"
@@ -23,7 +23,7 @@
                             {{ t('button.create') }}
                         </v-btn>
                         <v-btn
-                            color="info"
+                            color="primary"
                             append-icon="mdi-reload"
                             @click="listPortfolios"
                         >
