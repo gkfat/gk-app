@@ -4,6 +4,8 @@ import {
     RouteRecordRaw,
 } from 'vue-router';
 
+import { Permissions } from '@/enums/permissions';
+
 import { installGuard } from './guard';
 import { accountsRoutes } from './routes/accounts';
 import { auditingRoutes } from './routes/auditing';
@@ -22,6 +24,25 @@ const routes: RouteRecordRaw[] = [
             title: '',
         },
         component: () => import('@/views/login/Login.vue'),
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        meta: {
+            requireLoggedIn: true,
+            permissions: [Permissions.account.me.get],
+            permissionsMode: 'allof',
+            hidden: true,
+            icon: 'mdi-account',
+            title: 'nav.profile',
+        },
+        component: () => import('@/layouts/app/AppLayout.vue'),
+        children: [
+            {
+                path: '',
+                component: () => import('@/views/profile/Profile.vue'),
+            },
+        ],
     },
     {
         path: '',

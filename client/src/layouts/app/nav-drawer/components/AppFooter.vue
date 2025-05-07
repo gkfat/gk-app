@@ -6,7 +6,7 @@
         >
             <template #prepend>
                 <v-avatar
-                    color="secondary"
+                    color="primary"
                     rounded="lg"
                 >
                     <v-img

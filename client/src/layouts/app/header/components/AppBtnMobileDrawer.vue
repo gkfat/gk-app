@@ -1,7 +1,7 @@
 <template>
     <v-btn
         icon="mdi-menu"
-        color="darkgrey"
+        color="primary"
         flat
         @click="appStore.toggleDrawer"
     />

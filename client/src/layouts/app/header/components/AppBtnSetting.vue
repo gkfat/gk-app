@@ -1,7 +1,7 @@
 <template>
     <v-btn
         icon="mdi-cog"
-        color="darkgrey"
+        color="primary"
         flat
         @click="appStore.toggleSettingDrawer"
     />

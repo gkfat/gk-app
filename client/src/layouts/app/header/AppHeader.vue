@@ -9,6 +9,8 @@
 
         <v-spacer />
 
+        <AppBtnProfile />
+
         <AppBtnSetting />
     </v-app-bar>
 </template>
@@ -22,6 +24,7 @@ import { useAuthStore } from '@/store/auth';
 
 import AppBreadcrumbs from './components/AppBreadcrumbs.vue';
 import AppBtnMobileDrawer from './components/AppBtnMobileDrawer.vue';
+import AppBtnProfile from './components/AppBtnProfile.vue';
 import AppBtnSetting from './components/AppBtnSetting.vue';
 
 const authStore = useAuthStore();
