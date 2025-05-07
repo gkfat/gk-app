@@ -1,10 +1,15 @@
 import {
+    Request,
+    Response,
+} from 'express';
+import {
     Observable,
     tap,
 } from 'rxjs';
 import { OPERATION_LOG_KEY } from 'src/decorators/operation-log.decorators';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
-import { LoggerService } from 'src/middlewares/logger.service';
+import { AuditingService } from 'src/modules/auditing/auditing.service';
+import { OperationLogSetup } from 'src/types/operation-log';
 import { redactHelper } from 'src/utils/redact-helper';
 
 import {
@@ -18,33 +23,43 @@ import { Reflector } from '@nestjs/core';
 @Injectable()
 export class OperationLogInterceptor implements NestInterceptor {
     constructor(
-        private readonly loggerService: LoggerService,
+        private readonly auditingService: AuditingService,
         private readonly reflector: Reflector,
     ) {}
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        const shouldLog = this.reflector.get<boolean>(
-            OPERATION_LOG_KEY,
-            context.getHandler(),
-        );
+        const setup = this.reflector.get<OperationLogSetup>(OPERATION_LOG_KEY, context.getHandler());
 
-        if (!shouldLog) return next.handle();
+        if (setup?.ignoreLog) {
+            return next.handle();
+        }
     
         const ctx = context.switchToHttp();
-        const request = ctx.getRequest<Request & { $tokenPayload?: ITokenPayload }>();
-        const response = ctx.getResponse();
+        const request = ctx.getRequest<Request & { headers: { $tokenPayload?: ITokenPayload } }>();
+        const response = ctx.getResponse<Response>();
 
         const startTime = new Date();
 
-        const userPayload = request.$tokenPayload?.scope;
+        const userPayload = request.headers.$tokenPayload?.scope ?? (request as any).$tokenPayload?.scope;
         const user = userPayload
-            ? `(${userPayload.sub}} ${userPayload.email}`
+            ? `(${userPayload.sub}) ${userPayload.email}`
             : null;
-            
-        const requestBody = request.body
-            ? redactHelper.redactValue({
-                cfg: { serialize: true }, content: request.body, 
-            })
+
+        console.log({ user });
+
+        const requestBody = !setup?.ignoreRequestBody && request.body
+            ?
+            (
+                setup?.redact === false
+                    ? request.body
+                    : redactHelper.redactValue({
+                        cfg: {
+                            serialize: true,
+                            ...(setup?.redact || {}), 
+                        },
+                        content: request.body,
+                    })
+            )
             : null;
 
         return next.handle().pipe(
@@ -53,12 +68,23 @@ export class OperationLogInterceptor implements NestInterceptor {
                     const endTime = new Date();
                     const duration = endTime.getTime() - startTime.getTime();
                         
-                    const responseBodyStr = redactHelper.redactValue({
-                        cfg: { serialize: true }, content: responseBody, 
-                    });
+                    const responseBodyStr = !setup?.ignoreResponseBody
+                        ? 
+                        (
+                            setup?.redact === false
+                                ? responseBody
+                                : redactHelper.redactValue({
+                                    cfg: {
+                                        serialize: true,
+                                        ...(setup?.redact || {}), 
+                                    },
+                                    content: responseBody,
+                                })
+                        )
+                        : null;
 
                     try {
-                        await this.loggerService.operationLog({
+                        await this.auditingService.writeOperationLog({
                             startDate: startTime.toISOString(),
                             endDate: endTime.toISOString(),
                             path: request.url,
@@ -69,6 +95,7 @@ export class OperationLogInterceptor implements NestInterceptor {
                             result: responseBodyStr,
                             duration,
                             level: 'info',
+                            logTime: Date.now() * 1_000_000,
                         });
                     } catch (err) {
                         console.error('[OperationLogInterceptor] Logging failed', err);

@@ -42,7 +42,7 @@ export class MarketDataController {
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.marketData.intraday.get)
     @ApiOkResponse({ type: QuoteTicker })
-    async quoteTicler(@Param('ticker') ticker: string) {
+    async quoteTicker(@Param('ticker') ticker: string) {
         const result = await this.marketDataService.quoteTicker(ticker);
 
         return result;

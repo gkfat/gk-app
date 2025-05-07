@@ -9,6 +9,7 @@ import {
     Body,
     Controller,
     ForbiddenException,
+    HttpCode,
     InternalServerErrorException,
     Post,
     Req,
@@ -98,8 +99,9 @@ export class AuthController {
         return { message: 'ok' };
     }
 
-    @OperationLog()
+    @OperationLog({ ignoreResponseBody: true })
     @Post('login')
+    @HttpCode(200)
     async login(
         @Req() req: Request & { $tokenPayload?: ITokenPayload },
         @Body() reqBody: LoginOrCreateDto,

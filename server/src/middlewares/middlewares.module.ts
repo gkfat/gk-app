@@ -12,7 +12,6 @@ import {
 } from '@nestjs/jwt';
 
 import { AuthGuard } from './auth.guard';
-import { LoggerService } from './logger.service';
 import { PermissionsGuard } from './permissions.guard';
 
 @Module({
@@ -30,13 +29,11 @@ import { PermissionsGuard } from './permissions.guard';
         },
         CacheService,
         JwtService,
-        LoggerService,
     ],
     exports: [
         RbacService,
         CacheService,
         JwtService,
-        LoggerService,
     ],
 })
 export class MiddlewaresModule {}

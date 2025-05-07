@@ -46,6 +46,7 @@ export class AccountsController {
         private readonly cacheService: CacheService,
     ) {}
 
+    @OperationLog({ ignoreResponseBody: true })
     @Get()
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.get)
@@ -55,7 +56,8 @@ export class AccountsController {
 
         return accounts;
     }
-
+    
+    @OperationLog({ ignoreResponseBody: true })
     @Get('me')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.me.get)

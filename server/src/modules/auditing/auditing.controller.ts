@@ -1,3 +1,4 @@
+import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import { Permissions } from 'src/enums';
 import { AuthGuard } from 'src/middlewares/auth.guard';
@@ -11,21 +12,22 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
+import { AuditingService } from './auditing.service';
 import { SearchLogsRequestDto } from './dto/search-logs.dto';
-import { OperationLogsService } from './operation-logs.service';
 
 @ApiBearerAuth('Authorization')
-@Controller('operation-logs')
-export class OperationLogsController {
+@Controller('auditing')
+export class AuditingController {
     constructor(
-        private readonly operationLogsService: OperationLogsService,
+        private readonly auditingService: AuditingService,
     ) {}
 
-    @Post('search')
+    @OperationLog({ ignoreResponseBody: true })
+    @Post('operation-log/search')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.auditing.operationLogs.get)
     async search(@Body() reqBody: SearchLogsRequestDto) {
-        const result = await this.operationLogsService.searchLogs(reqBody);
+        const result = await this.auditingService.searchOperationLog(reqBody);
 
         return result;
     }

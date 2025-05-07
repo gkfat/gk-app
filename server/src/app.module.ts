@@ -18,10 +18,10 @@ import { DatabaseModule } from './database/database.module';
 import { OperationLogInterceptor } from './interceptors/operation-log.interceptor';
 import { MiddlewaresModule } from './middlewares/middlewares.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
+import { AuditingModule } from './modules/auditing/auditing.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { MarketDataModule } from './modules/market-data/market-data.module';
-import { OperationLogsModule } from './modules/operation-logs/operation-logs.module';
 import { PortfoliosModule } from './modules/portfolios/portfolios.module';
 import { PrivilegesModule } from './modules/privileges/privileges.module';
 
@@ -65,7 +65,7 @@ const envFilePath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.en
         PrivilegesModule,
         PortfoliosModule,
         MarketDataModule,
-        OperationLogsModule,
+        AuditingModule,
     ],
     providers: [
         {
