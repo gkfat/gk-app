@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request } from 'express';
 import ms from 'ms';
 import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { ITokenPayload } from 'src/decorators/token-payload.decorators';
@@ -12,7 +12,6 @@ import {
     InternalServerErrorException,
     Post,
     Req,
-    Res,
 } from '@nestjs/common';
 
 import { AccountsService } from '../accounts/accounts.service';
@@ -44,7 +43,7 @@ export class AuthController {
 
     @OperationLog()
     @Post('sign-up')
-    async signUp(@Body() reqBody: SignUpDto, @Res() res: Response) {
+    async signUp(@Body() reqBody: SignUpDto) {
         const findAccount = await this.accountsService.findOneByEmail(reqBody.email);
 
         if (findAccount) {
@@ -57,12 +56,12 @@ export class AuthController {
 
         await this.emailService.sendVerificationCode(reqBody.email, code);
 
-        return res.json({ account });
+        return { account };
     }
 
     @OperationLog()
     @Post('send-verification-code')
-    async sendVerificationCode(@Body() reqBody: SendVerificationCodeDto, @Res() res: Response) {
+    async sendVerificationCode(@Body() reqBody: SendVerificationCodeDto) {
         const verifier = await this.cacheService.getValue(`verification_code:${reqBody.email}`);
 
         if (verifier) {
@@ -73,12 +72,12 @@ export class AuthController {
 
         await this.emailService.sendVerificationCode(reqBody.email, code);
 
-        return res.json({ message: 'ok' });
+        return { message: 'ok' };
     }
 
     @OperationLog()
     @Post('verify-code')
-    async verifyCode(@Body() reqBody: VerifyCodeDto, @Res() res: Response) {
+    async verifyCode(@Body() reqBody: VerifyCodeDto) {
         const {
             email,
             verificationCode,
@@ -96,12 +95,15 @@ export class AuthController {
 
         await this.authService.verifyAccount(email);
 
-        return res.json({ message: 'ok' });
+        return { message: 'ok' };
     }
 
     @OperationLog()
     @Post('login')
-    async login(@Body() reqBody: LoginOrCreateDto, @Req() req: Request) {
+    async login(
+        @Req() req: Request & { $tokenPayload?: ITokenPayload },
+        @Body() reqBody: LoginOrCreateDto,
+    ) {
         const { id } = await this.authService.loginOrCreate(reqBody);
 
         const account = await this.accountsService.findOne(id);
@@ -130,8 +132,7 @@ export class AuthController {
             },
         };
 
-        // 紀錄在 req 給 operationLog 使用
-        (req as any).$tokenPayload = tokenPayload;
+        req.$tokenPayload = tokenPayload;
 
         return {
             account,

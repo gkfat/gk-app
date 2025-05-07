@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import { Permissions } from 'src/enums';
@@ -9,7 +8,6 @@ import {
     Controller,
     Get,
     Param,
-    Res,
     UseGuards,
 } from '@nestjs/common';
 import {
@@ -33,10 +31,10 @@ export class MarketDataController {
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.marketData.intraday.get)
     @ApiOkResponse({ type: GetTickersDto })
-    async listTickers(@Res() res: Response<GetTickersDto>) {
+    async listTickers() {
         const result = await this.marketDataService.listTickers();
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -44,9 +42,9 @@ export class MarketDataController {
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.marketData.intraday.get)
     @ApiOkResponse({ type: QuoteTicker })
-    async quoteTicler(@Param('ticker') ticker: string, @Res() res: Response<QuoteTicker>) {
+    async quoteTicler(@Param('ticker') ticker: string) {
         const result = await this.marketDataService.quoteTicker(ticker);
 
-        return res.json(result);
+        return result;
     }
 }

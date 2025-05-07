@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
@@ -19,7 +18,6 @@ import {
     Param,
     Post,
     Put,
-    Res,
     UseGuards,
 } from '@nestjs/common';
 import {
@@ -52,12 +50,12 @@ export class PortfoliosController {
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.portfolio.portfolios.get)
     @ApiOkResponse({ type: [PortfolioDto] })
-    async listPortfolios(@$TokenPayload() payload: ITokenPayload | null, @Res() res: Response<PortfolioDto[]>) {
+    async listPortfolios(@$TokenPayload() payload: ITokenPayload | null) {
         const { scope: { sub } } = payload;
 
         const result = await this.portfoliosService.listPortfoliosByAccountId(+sub);
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -68,13 +66,12 @@ export class PortfoliosController {
     async createPortfolio(
         @$TokenPayload() payload: ITokenPayload | null,
         @Body() createPortfolioDto: CreatePortfolioDto,
-        @Res() res: Response<PortfolioDto>,
     ) {
         const { scope: { sub } } = payload;
 
         const result = await this.portfoliosService.createPortfolio(+sub, createPortfolioDto);
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -86,7 +83,6 @@ export class PortfoliosController {
         @$TokenPayload() payload: ITokenPayload | null,
         @Param('id') id: string, 
         @Body() updatePortfolioDto: UpdatePortfolioDto,
-        @Res() res: Response<PortfolioDto>,
     ) {
         const { scope: { sub } } = payload;
 
@@ -102,7 +98,7 @@ export class PortfoliosController {
 
         const result = await this.portfoliosService.updatePortfolio(+id, updatePortfolioDto);
 
-        return res.json(result);
+        return result;
     }
     
     @OperationLog()
@@ -113,7 +109,6 @@ export class PortfoliosController {
     async deletePortfolio(
         @$TokenPayload() payload: ITokenPayload | null,
         @Param('id') id: string,
-        @Res() res: Response<Portfolio>,
     ) {
         const { scope: { sub } } = payload;
 
@@ -129,7 +124,7 @@ export class PortfoliosController {
 
         const result = await this.portfoliosService.deletePortfolio(+id);
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -148,7 +143,6 @@ export class PortfoliosController {
     async createTransaction(
         @$TokenPayload() payload: ITokenPayload | null,
         @Body() createTransactionDto: CreateTransactionDto,
-        @Res() res: Response<StockTradeRecord | FXTradeRecord | CashTradeRecord>,
     ) {
         const { scope: { sub } } = payload;
 
@@ -162,7 +156,7 @@ export class PortfoliosController {
 
         const result = await this.portfoliosService.createTransaction(createTransactionDto);
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -174,7 +168,6 @@ export class PortfoliosController {
         @$TokenPayload() payload: ITokenPayload | null,
         @Param('id') id: string, 
         @Body() deletePositionDto: DeletePositionDto,
-        @Res() res: Response<PortfolioDto>,
     ) {
         const { scope: { sub } } = payload;
 
@@ -190,7 +183,7 @@ export class PortfoliosController {
 
         const result = await this.portfoliosService.deletePosition(+id, deletePositionDto);
         
-        return res.json(result);
+        return result;
     }
 
 }

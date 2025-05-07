@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import { Permissions } from 'src/enums';
@@ -11,7 +10,6 @@ import {
     Get,
     Param,
     Put,
-    Res,
     UseGuards,
 } from '@nestjs/common';
 import {
@@ -36,20 +34,20 @@ export class PrivilegesController {
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.iam.roles.get)
     @ApiOkResponse({ type: [RoleDto] })
-    async listRoles(@Res() res: Response<RoleDto[]>) {
+    async listRoles() {
         const result = await this.privilegesService.listRoles();
 
-        return res.json(result);
+        return result;
     }
 
     @Get('permissions')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.iam.permissions.get)
     @ApiOkResponse({ type: [PermissionDto] })
-    async listPermissions(@Res() res: Response<PermissionDto[]>) {
+    async listPermissions() {
         const result = await this.privilegesService.listPermissions();
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -60,25 +58,23 @@ export class PrivilegesController {
     async updatePermission(
         @Param('permissionId') permissionId: string,
         @Body() req: UpdatePermissionRequestDto,
-        @Res() res: Response<PermissionDto>,
     ) {
-        console.log({ req });
         const result = await this.privilegesService.updatePermission({
             permissionId: +permissionId,
             description: req.description,
         });
 
-        return res.json(result);
+        return result;
     }
 
     @Get()
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.iam.privileges.get)
     @ApiOkResponse({ type: [RoleDto] })
-    async listPrivileges(@Res() res: Response<RoleDto[]>) {
+    async listPrivileges() {
         const result = await this.privilegesService.listPrivileges();
 
-        return res.json(result);
+        return result;
     }
 
     @OperationLog()
@@ -90,14 +86,13 @@ export class PrivilegesController {
     async updatePrivileges(
         @Param('roleId') roleId: string,
         @Body() req: UpdatePrivilegesRequestDto,
-        @Res() res: Response<RoleDto>,
     ) {
         const result = await this.privilegesService.updatePrivileges({
             roleId: +roleId,
             permissions: req.permissions,
         });
 
-        return res.json(result);
+        return result;
     }
 
 }

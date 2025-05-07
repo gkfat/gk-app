@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { OperationLog } from 'src/decorators/operation-log.decorators';
 import { RequirePermissions } from 'src/decorators/require-permissions.decorators';
 import {
     $TokenPayload,
@@ -20,7 +20,6 @@ import {
     Param,
     Post,
     Put,
-    Res,
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
@@ -51,17 +50,17 @@ export class AccountsController {
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.get)
     @ApiOkResponse({ type: [Account] })
-    async list(@Res() res: Response<Account[]>) {
+    async list() {
         const accounts = await this.accountsService.findAll();
 
-        return res.json(accounts);
+        return accounts;
     }
 
     @Get('me')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.me.get)
     @ApiOkResponse({ type: Account })
-    async getAccount(@$TokenPayload() payload: ITokenPayload | null, @Res() res: Response) {
+    async getAccount(@$TokenPayload() payload: ITokenPayload | null) {
         const { scope: { sub } } = payload;
 
         const findAccount = await this.accountsService.findOne(+sub);
@@ -70,24 +69,26 @@ export class AccountsController {
             throw new NotFoundException('Account not found');
         }
 
-        return res.json(findAccount);
+        return findAccount;
     }
 
+    @OperationLog()
     @Post('create')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.add)
     @ApiOkResponse({ type: Account })
-    async createAccount(@Body() createAccountDto: CreateAccountDto, @Res() res: Response<Account>) {
+    async createAccount(@Body() createAccountDto: CreateAccountDto) {
         const account =  await this.accountsService.create(createAccountDto);
 
-        return res.json(account);
+        return account;
     }
 
+    @OperationLog()
     @Put(':id/enable')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.update)
     @ApiOkResponse({ type: Account })
-    async enableAccount(@Param('id') id: string, @Res() res: Response<Account>) {
+    async enableAccount(@Param('id') id: string) {
         const findAccount = await this.accountsService.findOne(+id);
 
         if (!findAccount) {
@@ -96,14 +97,15 @@ export class AccountsController {
 
         const result = await this.accountsService.enableAccount(+id);
 
-        return res.json(result);
+        return result;
     }
 
+    @OperationLog()
     @Put(':id/roles')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.update)
     @ApiOkResponse({ type: Account })
-    async updateRoles(@Param('id') id: string, @Body() reqBody: UpdateAccountRolesDto, @Res() res: Response<Account>) {
+    async updateRoles(@Param('id') id: string, @Body() reqBody: UpdateAccountRolesDto) {
         const findAccount = await this.accountsService.findOne(+id);
 
         if (!findAccount) {
@@ -114,9 +116,10 @@ export class AccountsController {
 
         await this.cacheService.deleteValue(`token:${id}`);
 
-        return res.json(result);
+        return result;
     }
 
+    @OperationLog()
     @Put(':id/update')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.me.update)
@@ -124,7 +127,6 @@ export class AccountsController {
     async update(
         @$TokenPayload() payload: ITokenPayload, @Param('id') id: string,
         @Body() reqBody: UpdateAccountDto,
-        @Res() res: Response<UpdateAccountResponseDto>,
     ) {
         const { scope: { sub } } = payload;
 
@@ -136,14 +138,15 @@ export class AccountsController {
 
         const token = await this.authService.generateJwt(account);
 
-        return res.json({ token });
+        return { token };
     }
 
+    @OperationLog()
     @Delete(':id')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.account.accounts.delete)
     @ApiOkResponse({ type: Account })
-    async deleteAccount(@$TokenPayload() payload: ITokenPayload, @Param('id') id: string, @Res() res: Response<Account>) {
+    async deleteAccount(@$TokenPayload() payload: ITokenPayload, @Param('id') id: string) {
         const { scope: { sub } } = payload;
 
         if (+id === sub) {
@@ -152,6 +155,6 @@ export class AccountsController {
 
         const result = await this.accountsService.deleteAccount(+id);
 
-        return res.json(result);
+        return result;
     }
 }
