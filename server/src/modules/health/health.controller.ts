@@ -1,3 +1,5 @@
+import { OperationLog } from 'src/decorators/operation-log.decorators';
+
 import {
     Controller,
     Get,
@@ -13,6 +15,7 @@ export class HealthController {
         private readonly healthService: HealthCheckService,
     ) {}
 
+    @OperationLog({ ignoreLog: true })
     @Get()
     @HealthCheck()
     async check() {

@@ -45,8 +45,6 @@ export class OperationLogInterceptor implements NestInterceptor {
             ? `(${userPayload.sub}) ${userPayload.email}`
             : null;
 
-        console.log({ user });
-
         const requestBody = !setup?.ignoreRequestBody && request.body
             ?
             (
