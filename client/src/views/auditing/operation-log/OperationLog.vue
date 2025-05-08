@@ -44,6 +44,7 @@
                 :headers="table.headers"
                 :items="table.data"
                 :search="table.search"
+                density="compact"
                 :items-per-page="10"
                 :no-data-text="t('common.no_data')"
                 class="text-no-wrap"

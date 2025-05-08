@@ -21,11 +21,9 @@ import Notifier from '@/components/notifier/Notifier.vue';
 import Overlay from './components/overlay/Overlay.vue';
 import { useAppStore } from './store/app';
 import { useAuthStore } from './store/auth';
-import { useMarketDataStore } from './store/market-data';
 
 const appStore = useAppStore();
 const authStore = useAuthStore();
-const marketDataStore = useMarketDataStore();
 
 const router = useRouter();
 const theme = useTheme();
@@ -45,7 +43,7 @@ watch(
     () => setTheme(currentTheme.value),
 );
 
-const setEnvironmentVaraibles = async () => {
+const setEnvironmentVariables = async () => {
     appStore.state.environmentVariables = {
         appTitle: import.meta.env.VITE_APP_TITLE ?? 'GkApp', 
         apiUrl: import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:3000/api/v1',
@@ -53,24 +51,19 @@ const setEnvironmentVaraibles = async () => {
 };
 
 const checkIsLoggedIn = () => {
-    if (authStore.state.token) {
-        // 更新股票資訊
-        marketDataStore.refreshTickers();
-    } else {
+    if (!authStore.state.token) {
         router.push('/login');
     }
 };
 
 onMounted(async () => {
     setTheme(currentTheme.value);
-    await setEnvironmentVaraibles();
+    await setEnvironmentVariables();
     checkIsLoggedIn();
 });
 
 watch(
     () => authStore.state.token,
-    () => {
-        checkIsLoggedIn();
-    },
+    () => checkIsLoggedIn(),
 );
 </script>

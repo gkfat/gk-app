@@ -36,6 +36,7 @@
                 :items="table.data"
                 :search="table.search"
                 :items-per-page="10"
+                density="compact"
                 :no-data-text="t('common.no_data')"
                 class="text-no-wrap"
                 :mobile="smAndDown"

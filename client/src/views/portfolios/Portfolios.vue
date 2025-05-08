@@ -118,6 +118,7 @@ import { PortfoliosService } from '@/api/portfolios';
 import { Permissions } from '@/enums/permissions';
 import PageContent from '@/layouts/panel/PageContent.vue';
 import { useAuthStore } from '@/store/auth';
+import { useMarketDataStore } from '@/store/market-data';
 import { useNotifierStore } from '@/store/notifier';
 import { Portfolio } from '@/types/portfolio';
 import { templateRef } from '@vueuse/core';
@@ -128,6 +129,7 @@ import PortfolioStatus from './status/PortfolioStatus.vue';
 import StockPositionsCard from './stock/StockPositionsCard.vue';
 
 const notifierStore = useNotifierStore();
+const marketDataStore = useMarketDataStore();
 const authStore = useAuthStore();
 const { t } = useI18n();
 
@@ -163,6 +165,7 @@ const onCreatePortfolioClick = () => {
 };
 
 onMounted(async () => {
+    marketDataStore.refreshTickers();
     await listPortfolios();
 });
 </script>
