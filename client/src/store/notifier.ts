@@ -13,32 +13,31 @@ const MAXIMUM_NOTIFY = 6;
 
 const presetSettings = {
     info: {
-        color: 'primary',
+        color: 'info',
         timeout: 5000,
     },
     error: {
         color: 'error',
-        timeout: 3000,
+        timeout: 5000,
     },
-    warn: {
-        color: 'warn',
+    warning: {
+        color: 'warning',
         timeout: 5000,
     },
     success: {
         color: 'success',
-        timeout: 3000,
+        timeout: 5000,
     },
 };
 
 const createNotifierItem = (options: Notify.Options): Notify.Item => ({
     id: randomId(),
     content: options.content || '',
-    color: options.color || 'primary',
+    color: options.color || 'info',
     timeout: options.timeout || 5000,
 });
 
 export const useNotifierStore = defineStore('notifier', () => {
-    /** 正在顯示的通知 */
     const list = ref([] as Notify.Item[]);
 
     /** 等待顯示的通知 */
@@ -71,8 +70,8 @@ export const useNotifierStore = defineStore('notifier', () => {
     });
 
     /** 增加 Warn 類型的通知 */
-    const warn = (options: Notify.Options) => add({
-        ...presetSettings.warn,
+    const warning = (options: Notify.Options) => add({
+        ...presetSettings.warning,
         ...options,
     });
 
@@ -101,7 +100,7 @@ export const useNotifierStore = defineStore('notifier', () => {
         add,
         success,
         info,
-        warn,
+        warning,
         error,
         remove,
     };

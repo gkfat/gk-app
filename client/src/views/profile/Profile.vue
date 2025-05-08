@@ -14,7 +14,6 @@
         <v-row class="ga-3">
             <v-col
                 cols="12"
-                md="auto"
             >
                 <AccountInfo :account="account" />
             </v-col>
@@ -32,6 +31,7 @@ import { useI18n } from 'vue-i18n';
 
 import PageContent from '@/layouts/panel/PageContent.vue';
 import { useAuthStore } from '@/store/auth';
+import { humanReadable } from '@/utils/time';
 
 import AccountInfo from './components/AccountInfo.vue';
 
@@ -40,4 +40,6 @@ const authStore = useAuthStore();
 const inProgress = ref(false);
 
 const account = computed(() => authStore.state?.account);
+
+const getLastLoggedIn = computed(() => humanReadable(account.value.last_login_at, true));
 </script>

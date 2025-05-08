@@ -47,12 +47,14 @@ export const createDate = (time?: ConfigType, keepLocalTime: boolean = false) =>
  *
  * @param format - see https://day.js.org/docs/en/parse/string-format
  */
-export const humanReadable = (time: ConfigType, format: string = 'YYYY-MM-DD HH:mm:ss'): string => {
-    if (dayjs.isDayjs(time)) {
-        return dayjs(time).format(format);
+export const humanReadable = (time: ConfigType, formatOrRelative: string | true = 'YYYY-MM-DD HH:mm:ss'): string => {
+    const d = dayjs(time).utcOffset(timezoneOffset);
+
+    if (typeof formatOrRelative === 'boolean' && formatOrRelative) {
+        return d.fromNow();
     }
 
-    return dayjs(time).utcOffset(timezoneOffset).format(format);
+    return d.format(formatOrRelative);
 };
 
 /**
@@ -92,20 +94,4 @@ export const getRelativeRangeOfDay = (offset: number = 0): {
         from,
         to,
     };
-};
-
-export const toSeconds = (timestamp: number) => {
-    if (String(timestamp).length === 10) {
-        return timestamp;
-    }
-
-    return Math.floor(timestamp / 1000);
-};
-
-export const toMiliSeconds = (timestamp: number) => {
-    if (String(timestamp).length === 10) {
-        return timestamp * 1000;
-    }
-
-    return timestamp;
 };

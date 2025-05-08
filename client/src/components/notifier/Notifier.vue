@@ -24,6 +24,7 @@ import { useNotifierStore } from '@/store/notifier';
 import NotificationCard from './components/NotificationCard.vue';
 
 const notifierStore = useNotifierStore();
+
 </script>
 
 <style lang="scss" scoped>

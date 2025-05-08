@@ -62,8 +62,7 @@
                         <v-card-text>
                             <v-btn
                                 color="primary"
-                                flat
-                                rounded="xl"
+                                rounded="lg"
                                 :loading="loading"
                                 block
                                 @click="onSubmit"
@@ -153,9 +152,8 @@
         
                         <v-card-text>
                             <v-btn
-                                color="warning"
-                                flat
-                                rounded="xl"
+                                color="primary"
+                                rounded="lg"
                                 :loading="loading"
                                 block
                                 @click="onSubmit"
@@ -206,9 +204,8 @@
 
                         <v-card-text>
                             <v-btn
-                                color="warning"
-                                flat
-                                rounded="xl"
+                                color="secondary"
+                                rounded="lg"
                                 class="mb-3"
                                 :loading="loading"
                                 block
@@ -219,8 +216,7 @@
                             <v-btn
                                 color="primary"
                                 :disabled="!form.verificationCode"
-                                flat
-                                rounded="xl"
+                                rounded="lg"
                                 :loading="loading"
                                 block
                                 @click="onSubmit"
@@ -293,7 +289,7 @@ import {
     useRoute,
     useRouter,
 } from 'vue-router';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useDisplay } from 'vuetify';
 import * as yup from 'yup';
 
 import { AuthService } from '@/api/auth';
@@ -386,7 +382,9 @@ const form = {
 
 const doLogin = async (data: Auth.Login.Request) => {
     try {
-        await authStore.login(data);
+        const account = await authStore.login(data);
+
+        notifierStore.success({ content: `歡迎回來，${account.name}` });
 
         // change route
         const redirect = route.query.redirect as string ?? '/';

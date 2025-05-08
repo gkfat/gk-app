@@ -20,6 +20,8 @@ export const useAuthStore = defineStore('auth', () => {
 
         state.value.token = token;
         state.value.account = account;
+
+        return account;
     };
 
     const logout = async () => {
