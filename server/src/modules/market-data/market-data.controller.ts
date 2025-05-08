@@ -26,7 +26,7 @@ export class MarketDataController {
         private readonly marketDataService: MarketDataService,
     ) {}
 
-    @OperationLog()
+    @OperationLog({ ignoreResponseBody: true })
     @Get('intraday/tickers')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.marketData.intraday.get)

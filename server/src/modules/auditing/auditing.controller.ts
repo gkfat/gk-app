@@ -7,6 +7,7 @@ import { PermissionsGuard } from 'src/middlewares/permissions.guard';
 import {
     Body,
     Controller,
+    HttpCode,
     Post,
     UseGuards,
 } from '@nestjs/common';
@@ -26,6 +27,7 @@ export class AuditingController {
     @Post('operation-log/search')
     @UseGuards(AuthGuard, PermissionsGuard)
     @RequirePermissions(Permissions.auditing.operationLogs.get)
+    @HttpCode(200)
     async search(@Body() reqBody: SearchLogsRequestDto) {
         const result = await this.auditingService.searchOperationLog(reqBody);
 
