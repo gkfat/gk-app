@@ -6,6 +6,10 @@ import {
     RedisModule,
     RedisModuleOptions,
 } from '@liaoliaots/nestjs-redis';
+import {
+    BullModule,
+    BullRootModuleOptions,
+} from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import {
     ConfigModule,
@@ -40,6 +44,20 @@ const envFilePath = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.en
                 return {
                     readyLog: true,
                     config: {
+                        host: configService.getOrThrow('REDIS_HOST'),
+                        port: +configService.getOrThrow('REDIS_PORT'),
+                        username: configService.get('REDIS_USERNAME'),
+                        password: configService.get('REDIS_PASSWORD'),
+                    },
+                };
+            },
+        }),
+        BullModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService): Promise<BullRootModuleOptions> => {
+                return {
+                    connection: {
                         host: configService.getOrThrow('REDIS_HOST'),
                         port: +configService.getOrThrow('REDIS_PORT'),
                         username: configService.get('REDIS_USERNAME'),

@@ -1,0 +1,1 @@
+export const APP_QUEUE_NAME = 'gkapp-queue';

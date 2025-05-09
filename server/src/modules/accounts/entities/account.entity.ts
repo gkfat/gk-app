@@ -1,3 +1,4 @@
+import { ScheduledApi } from 'src/modules/popcron/entities/scheduled-api';
 import { Portfolio } from 'src/modules/portfolios/entities/portfolio.entity';
 import { Role } from 'src/modules/privileges/entities/role.entity';
 import {
@@ -81,5 +82,10 @@ export class Account {
         cascade: true, onDelete: 'CASCADE', 
     })
         portfolios: Portfolio[];
+
+    @OneToMany(() => ScheduledApi, (scheduledApi) => scheduledApi.account, {
+        cascade: true, onDelete: 'CASCADE',
+    })
+        scheduledApis: ScheduledApi[];
 }
 

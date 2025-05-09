@@ -127,7 +127,8 @@ export class AccountsController {
     @RequirePermissions(Permissions.account.me.update)
     @ApiOkResponse({ type: UpdateAccountResponseDto })
     async update(
-        @$TokenPayload() payload: ITokenPayload, @Param('id') id: string,
+        @$TokenPayload() payload: ITokenPayload,
+        @Param('id') id: string,
         @Body() reqBody: UpdateAccountDto,
     ) {
         const { scope: { sub } } = payload;

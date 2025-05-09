@@ -47,6 +47,18 @@ export const Permissions = {
     marketData: { intraday: { get: 'market_data.intraday.get' } },
 
     /**
+     * 定時呼叫 API 相關
+     */
+    popcron: {
+        scheduledApis: {
+            get: 'popcron.scheduled_apis.get',
+            add: 'popcron.scheduled_apis.add',
+            delete: 'popcron.scheduled_apis.delete',
+        },
+        scheduledPeriod: { update: 'popcron.scheduled_period.update' },
+    },
+
+    /**
      * 審計相關
      */
     auditing: {
