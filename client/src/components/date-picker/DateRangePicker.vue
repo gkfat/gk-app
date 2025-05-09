@@ -11,37 +11,25 @@
                 :placeholder="customProps.label ?? '選擇日期'"
                 readonly
                 hide-details="auto"
-                density="compact"
-                variant="outlined"
                 :model-value="dateRangeTextFieldValue"
+                :density="customProps.density ?? 'default'"
                 :error-messages="customProps.errorMessages"
                 prepend-inner-icon="mdi-calendar-blank-outline"
             />
         </template>
 
         <v-card rounded="lg">
-            <v-card-title class="bg-primary">
-                <v-row class="align-center">
-                    <v-col
-                        cols="auto"
-                        class="text-h6"
-                    >
-                        選擇日期區間
-                    </v-col>
-                    <v-col
-                        cols="auto"
-                        class="ml-auto"
-                    >
-                        <v-btn
-                            color="white"
-                            icon="mdi-close"
-                            variant="text"
-                            :disabled="isSelecting"
-                            @click="toggleDialog(false)"
-                        />
-                    </v-col>
-                </v-row>
-            </v-card-title>
+            <v-toolbar color="primary">
+                <v-card-title>
+                    選擇日期區間
+                </v-card-title>
+                <v-btn
+                    class="ml-auto"
+                    icon="mdi-close"
+                    :disabled="isSelecting"
+                    @click="toggleDialog(false)"
+                />
+            </v-toolbar>
 
             <v-card-text class="pa-0 overflow-y-auto">
                 <vue-date-picker
@@ -117,6 +105,7 @@ import {
 } from 'vue';
 
 import { useI18n } from 'vue-i18n';
+import { Density } from 'vuetify/lib/composables/density';
 
 import { Range } from '@/enums/time';
 import { useAppStore } from '@/store/app';
@@ -133,11 +122,17 @@ const appStore = useAppStore();
 
 const datePickerRef = ref<DatePickerInstance>();
 
-const customProps = defineProps<{
-    errorMessages?: string,
-    maxDate?: Date,
-    label?: string
-}>();
+const customProps = withDefaults(defineProps<{
+    errorMessages?: string;
+    maxDate?: Date;
+    label?: string;
+    density?: Density;
+}>(), { 
+    errorMessages: undefined,
+    maxDate: undefined,
+    label: undefined,
+    density: 'default', 
+});
 
 const model = defineModel<[Date, Date]>();
 

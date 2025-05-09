@@ -5,13 +5,13 @@
         max-width="600px"
     >
         <v-card
-            v-if="account"
+            v-if="data"
             :loading="inProgress"
             :disabled="inProgress"
         >
             <v-toolbar color="primary">
                 <v-card-title>
-                    {{ isEditing ? t('button.edit') : t('button.detail') }}
+                    {{ editable ? t('button.edit') : t('button.detail') }}
                 </v-card-title>
                 <v-btn
                     class="ml-auto"
@@ -23,96 +23,52 @@
             <v-card-text>
                 <v-form
                     validate-on="input"
-                    :readonly="!isEditing"
+                    :readonly="!editable"
                 >
-                    <v-row class="align-center">
-                        <v-col
-                            cols="12"
-                            sm="4"
-                            class="text-secondary text-no-wrap"
-                        >
-                            頭像
-                        </v-col>
-
-                        <v-col>
-                            <v-avatar
-                                color="primary"
-                                rounded="lg"
-                            >
-                                <v-img
-                                    v-if="account.avatar"
-                                    alt="avatar"
-                                    :src="account.avatar"
-                                />
-
-                                <v-icon
-                                    v-else
-                                    icon="mdi-account"
-                                />
-                            </v-avatar>
-                        </v-col>
-                    </v-row>
-                
-                    <v-row class="align-center">
-                        <v-col
-                            cols="12"
-                            sm="4"
-                            class="text-secondary text-no-wrap"
-                        >
-                            編號
+                    <v-row>
+                        <v-col cols="4">
+                            <v-text-field
+                                v-model="data.id"
+                                label="ID"
+                                hide-details
+                                variant="outlined"
+                                readonly
+                            />
                         </v-col>
                         <v-col>
-                            {{ account.id }}
+                            <v-text-field
+                                v-model="data.email"
+                                label="Email"
+                                hide-details
+                                variant="outlined"
+                                readonly
+                            />
                         </v-col>
                     </v-row>
-                
-                    <v-row class="align-center">
-                        <v-col
-                            cols="12"
-                            sm="4"
-                            class="text-secondary text-no-wrap"
-                        >
-                            使用者名稱
-                        </v-col>
-
+                    <!-- name -->
+                    <v-row>
                         <v-col>
-                            {{ account.name }}
+                            <v-text-field
+                                v-model="data.name"
+                                label="名稱"
+                                hide-details
+                                variant="outlined"
+                                readonly
+                            />
                         </v-col>
                     </v-row>
-
-                    <v-row class="align-center">
-                        <v-col
-                            cols="12"
-                            sm="4"
-                            class="text-secondary text-no-wrap"
-                        >
-                            Email
-                        </v-col>
-
-                        <v-col>
-                            {{ account.email }}
-                        </v-col>
-                    </v-row>
-                   
-                    <v-row class="align-center">
-                        <v-col
-                            cols="12"
-                            sm="4"
-                            class="text-secondary text-no-wrap"
-                        >
-                            角色
-                        </v-col>
-                        
+                    <!-- roles -->
+                    <v-row>
                         <v-col>
                             <v-autocomplete
                                 v-model="accountRoles"
                                 :items="rolesSelection"
-                                :readonly="!isEditing || !havePermissionTo.update"
-                                :clearable="isEditing"
+                                :readonly="!editable || !havePermissionTo.update"
+                                label="角色"
+                                :clearable="editable"
                                 chips
                                 closable-chips
                                 hide-no-data
-                                density="compact"
                                 multiple
                                 return-object
                                 variant="outlined"
@@ -137,7 +93,7 @@
             <v-card-actions>
                 <v-spacer />
                 <v-btn
-                    v-if="isEditing"
+                    v-if="editable"
                     color="success"
                     @click="onSubmit"
                 >
@@ -177,8 +133,8 @@ const authStore = useAuthStore();
 
 const havePermissionTo = ref({ update: authStore.havePermission(Permissions.account.accounts.update) });
 
-const account = ref<Account.Account>(null);
-const isEditing = ref(false);
+const data = ref<Account.Account>(null);
+const editable = ref(false);
 const inProgress = ref(false);
 const openDialog = ref(false);
 
@@ -189,15 +145,7 @@ const rolesSelection = computed(() => rolesData.value
         value: v.id,
     })),
 );
-
-const accountRoles = computed(() => {
-    const res = account.value?.roles?.map((v) => ({
-        title: t(`role.${v.role}`),
-        value: v.id,
-    })) || [];
-
-    return res;
-});
+const accountRoles = ref<{ title: string; value: number }[]>([]);
 
 const fetchRolesData = async () => {
     if (rolesData.value.length) return;
@@ -214,7 +162,7 @@ const fetchRolesData = async () => {
 };
 
 const setReadonlyData = () => {
-    rolesData.value = account.value?.roles.filter((v)=> v.role !== EnumRoles.SUPER) || [];
+    rolesData.value = data.value?.roles.filter((v)=> v.role !== EnumRoles.SUPER) || [];
 };
 
 const toggleDialog = (open: boolean) => {
@@ -226,10 +174,10 @@ const emit = defineEmits(['update:detail']);
 const onSubmit = async () => {
     inProgress.value = true;
 
-    const { id } = account.value;
+    const { id } = data.value;
 
     try {
-        const roleIdList = account.value.roles.map((r) => r.id);
+        const roleIdList = data.value.roles.map((r) => r.id);
 
         await AccountsService.updateRoles(id, roleIdList);
 
@@ -240,14 +188,19 @@ const onSubmit = async () => {
     }
 
     inProgress.value = false;
+    toggleDialog(false);
 };
 
-const show = async (data: Account.Account, editable: boolean) => {
-    account.value = JSON.parse(JSON.stringify(data));
-    
-    isEditing.value = editable;
+const show = async (account: Account.Account, edit: boolean) => {
+    data.value = JSON.parse(JSON.stringify(account));
+    accountRoles.value = data.value.roles.map((v) => ({
+        title: t(`role.${v.role}`),
+        value: v.id,
+    }));
+    editable.value = edit;
 
-    if (editable) {
+    // 有編輯權限才須 fetch all roles data
+    if (edit) {
         await fetchRolesData();
     } else {
         setReadonlyData();

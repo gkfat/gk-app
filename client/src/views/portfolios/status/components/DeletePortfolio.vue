@@ -9,16 +9,22 @@
             :loading="inProgress"
             :disabled="inProgress"
         >
-            <v-card-title class="text-error">
-                刪除投資組合
-            </v-card-title>
-          
-            <v-card-subtitle>
-                {{ portfolio.id }} - {{ portfolio.title }}
-            </v-card-subtitle>
+            <v-toolbar color="error">
+                <v-card-title>
+                    刪除投資組合
+                </v-card-title>
+                <v-btn
+                    class="ml-auto"
+                    icon="mdi-close"
+                    :disabled="isSelecting"
+                    @click="toggleDialog(false)"
+                />
+            </v-toolbar>
 
             <v-card-text>
-                確認刪除？
+                <p class="mb-3">
+                    確認刪除 <span class="text-info font-weight-bold">{{ portfolio.title }}</span> ？
+                </p>
             </v-card-text>
            
             <v-divider />

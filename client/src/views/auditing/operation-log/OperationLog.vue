@@ -13,7 +13,10 @@
                         cols="12"
                         md="6"
                     >
-                        <DateRangePicker v-model="form.dateRange.value.value" />
+                        <DateRangePicker
+                            v-model="form.dateRange.value.value"
+                            density="compact"
+                        />
                     </v-col>
                 </v-row>
         

@@ -1,19 +1,27 @@
 <template>
     <v-card elevation="2">
         <v-card-title>
-            個人資訊
-           
-            <!-- <v-col
-                    cols="auto"
+            <v-row>
+                <v-col
+                    cols="12"
+                    sm="auto"
+                    class="text-h6"
+                >
+                    個人資訊
+                </v-col>
+                <v-col
+                    cols="12"
+                    sm="auto"
                     class="ml-auto"
                 >
                     <v-btn
-                        color="primary"
-                        prepend-icon="mdi-pencil"
+                        color="warning"
+                        prepend-icon="mdi-lock"
                     >
-                        編輯
+                        變更密碼
                     </v-btn>
-                </v-col> -->
+                </v-col>
+            </v-row>
         </v-card-title>
 
         <v-divider />

@@ -7,12 +7,10 @@
         <template #activator="{ props}">
             <v-text-field
                 v-bind="props"
-                rounded="lg"
                 :label="customProps.label ?? '選擇日期'"
                 :placeholder="customProps.label ?? '選擇日期'"
                 readonly
                 hide-details="auto"
-                variant="outlined"
                 :model-value="dateRangeTextFieldValue"
                 :error-messages="customProps.errorMessages"
                 prepend-inner-icon="mdi-calendar-blank-outline"

@@ -9,12 +9,19 @@
             :loading="inProgress"
             :disabled="inProgress"
         >
-            <v-card-title class="text-primary my-3">
-                新增投資組合
-            </v-card-title>
+            <v-toolbar color="primary">
+                <v-card-title>
+                    新增投資組合
+                </v-card-title>
+                <v-btn
+                    class="ml-auto"
+                    icon="mdi-close"
+                    @click="toggleDialog(false)"
+                />
+            </v-toolbar>
 
             <v-card-text>
-                <v-row>
+                <v-row class="px-3">
                     <v-col cols="12">
                         <DatePicker
                             v-model="form.createDate.value.value"
@@ -24,21 +31,18 @@
                         />
                     </v-col>
                     <v-col cols="12">
-                        <AutoCompleteEx
+                        <v-autocomplete
                             v-model="form.currency.value.value"
                             :items="currencyCodes"
                             :label="'幣別'"
                             hide-details="auto"
-                            variant="outlined"
                         />
                     </v-col>
                     <v-col cols="12">
                         <v-text-field
                             v-model="form.title.value.value"
                             :error-messages="form.title.errorMessage.value"
-                            rounded="lg"
                             hide-details="auto"
-                            variant="outlined"
                             :label="'名稱'"
                         />
                     </v-col>
@@ -46,12 +50,10 @@
                         <v-text-field
                             v-model="form.initialBalance.value.value"
                             :error-messages="form.initialBalance.errorMessage.value"
-                            rounded="lg"
                             type="number"
                             :label="'起始資金'"
                             :prefix="form.currency.value.value"
                             hide-details="auto"
-                            variant="outlined"
                         />
                     </v-col>
                 </v-row>

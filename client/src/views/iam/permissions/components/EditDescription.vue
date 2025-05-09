@@ -2,7 +2,7 @@
     <v-dialog
         v-model="openDialog"
         persistent
-        :width="300"
+        :width="500"
     >
         <v-card
             v-if="data"
@@ -10,20 +10,28 @@
             :loading="inProgress"
             :disabled="inProgress"
         >
-            <v-card-title>
-                編輯描述
-            </v-card-title>
-          
-            <v-card-subtitle>
-                {{ data.permission }}
-            </v-card-subtitle>
+            <v-toolbar color="primary">
+                <v-card-title>
+                    編輯描述
+                </v-card-title>
+                <v-btn
+                    class="ml-auto"
+                    icon="mdi-close"
+                    @click="toggleDialog(false)"
+                />
+            </v-toolbar>
 
             <v-card-text>
+                <p class="mb-3">
+                    正在變更 <span class="text-info font-weight-bold">{{ data.permission }}</span> 的描述
+                </p>
+
                 <v-text-field
                     v-model="data.description"
                     hide-details
+                    autofocus
+                    clearable
                     placeholder="請輸入描述"
-                    @keyup.enter="onSubmit"
                 />
             </v-card-text>
            

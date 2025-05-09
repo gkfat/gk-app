@@ -281,9 +281,7 @@ const onSubmit = async () => {
 };
 
 const showDetail = (data: Account.Account, editable = false) => {
-    if (accountDetailRef.value) {
-        accountDetailRef.value.show(data, editable);
-    }
+    accountDetailRef.value?.show(data, editable);
 };
 
 const showEnableAccount = (data: Account.Account) => {
