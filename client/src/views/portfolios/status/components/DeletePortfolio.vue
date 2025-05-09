@@ -16,7 +16,6 @@
                 <v-btn
                     class="ml-auto"
                     icon="mdi-close"
-                    :disabled="isSelecting"
                     @click="toggleDialog(false)"
                 />
             </v-toolbar>
